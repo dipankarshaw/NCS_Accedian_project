@@ -49,20 +49,21 @@ def onnet_CC(A,B):
     Spirent_L2_Gen = Create_Spirent_L2_Gen() ## create the spirent object.
     Spirent_L2_Gen.Port_Init() # reserve the port.
     # # test_result['loop_testAB'] = perform_spirent_loop_test(my_config,Spirent_L2_Gen,rfc_stream_handle[0],A,B)
-    # # test_result['LLF_test'] = LLF_test(my_config,Spirent_L2_Gen,A,B,1)
-    # # test_result['LLF_UNI_test'] = LLF_UNI_Test(my_config,A,B,1)
+    test_result['LLF_test'] = LLF_test(my_config,Spirent_L2_Gen,A,B,1)
+    test_result['LLF_UNI_test'] = LLF_UNI_Test(my_config,A,B,1)
     # # test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,1) ## lag_failover_test
     # # test_result['frr_test'] = fast_reroute_test(my_config,Spirent_L2_Gen,A,B,1)
     # # ###  Perform RFC test 
     rfc_stream_handle = get_rfc_stream_handle(A,B,Spirent_L2_Gen,**input_dict)
     test_result['rfc_tput_test'] = Spirent_L2_Gen.rfc_2544_throughput_test(rfc_stream_handle[0],rfc_stream_handle[1])
     test_result['rfc_fl_test'] = Spirent_L2_Gen.rfc_2544_frameloss_test(rfc_stream_handle[0],rfc_stream_handle[1])
-    # # test_result['rfc_b2b_test'] = Spirent_L2_Gen.rfc_2544_backtoback_test(rfc_stream_handle[0],rfc_stream_handle[1])
-    # # test_result['rfc_latency_test'] = Spirent_L2_Gen.rfc_2544_latency_test(rfc_stream_handle[0],rfc_stream_handle[1])
+    # test_result['rfc_b2b_test'] = Spirent_L2_Gen.rfc_2544_backtoback_test(rfc_stream_handle[0],rfc_stream_handle[1])
+    # test_result['rfc_latency_test'] = Spirent_L2_Gen.rfc_2544_latency_test(rfc_stream_handle[0],rfc_stream_handle[1])
     Spirent_L2_Gen.delete_streams_clear_counters()
 
     # test UC,MC,BC Traffic, with % of total BW
-    for tr in ['UC','BC']:
+    
+    for tr in ['UC','BC','mc']:
         UC_BC_MC_stream_handle = get_UC_BC_MC_stream_handle(A,B,tr,Spirent_L2_Gen,**input_dict)         
         Spirent_L2_Gen.Generate_Stream_Traffic(UC_BC_MC_stream_handle[0],UC_BC_MC_stream_handle[1]) # will generate Traffic on Stream level
         Spirent_L2_Gen.Traffic_Collection()
@@ -109,13 +110,13 @@ def onnet_CC_delete(A,B):
 
 result['FF'] = onnet_CC('F','F')
 result['LL'] = onnet_CC('PL','PL')  ## not applicable for bundle & ELAN
-# result['XX'] = onnet_CC('X','X')
-# result['PP'] = onnet_CC('P','P')
-# result['XP'] = onnet_CC('X','P')
-# result['PX'] = onnet_CC('P','X')
-# result['FY'] = onnet_CC('F','Y')
-# result['YF'] = onnet_CC('Y','F')
-# result['YY'] = onnet_CC('Y','Y')
+result['XX'] = onnet_CC('X','X')
+result['PP'] = onnet_CC('P','P')
+result['XP'] = onnet_CC('X','P')
+result['PX'] = onnet_CC('P','X')
+result['FY'] = onnet_CC('F','Y')
+result['YF'] = onnet_CC('Y','F')
+result['YY'] = onnet_CC('Y','Y')
 
 pprint(result)
 #print(json.dumps(result,indent=4))
