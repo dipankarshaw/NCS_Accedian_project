@@ -3,7 +3,7 @@ Spirent_Test_Topology:
    traffic_duration: 60 #### seconds, this duration is used for RFC test and Traffic Test.
    sw_test_duration: 80 #### seconds, this duration is used for traffic switchover test
    UC_BC_MC_Frame_Size : 64 #### Frame size used for UC,BC,MC Traffic Test.
-   rfc_frame_size : ['64'] #### Specify the List of frame size required for RFC test.
+   rfc_frame_size : ['64','9100'] #### Specify the List of frame size required for RFC test.
    rfc_load_end: 100 #### RFC test Load End percentage.
    rfc_load_start: 100 #### RFC test Load start percentage.
    rfc_load_step: 1 #### RFC Test Load Step.

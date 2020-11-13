@@ -1566,10 +1566,10 @@ class Spirent_L2_Traffic_Gen:
 		dict_local[self.port_list[1]] = {}
 		dict_local[self.port_list[0]]['tx'] = deviceA_tx
 		dict_local[self.port_list[0]]['rx'] = deviceA_rx
-		dict_local[self.port_list[0]]['drop'] = int(deviceA_tx) - int(deviceB_rx)		
+		dict_local[self.port_list[0]]['drop_to_othend'] = int(deviceA_tx) - int(deviceB_rx)		
 		dict_local[self.port_list[1]]['tx'] = deviceB_tx
 		dict_local[self.port_list[1]]['rx'] = deviceB_rx
-		dict_local[self.port_list[1]]['drop'] = int(deviceB_tx) - int(deviceA_rx)
+		dict_local[self.port_list[1]]['drop_to_othend'] = int(deviceB_tx) - int(deviceA_rx)
 		dict_local['result'] = test_result1
 		return dict_local
 	def rfc_2544_throughput_test(self,StreamBlock1,StreamBlock2):

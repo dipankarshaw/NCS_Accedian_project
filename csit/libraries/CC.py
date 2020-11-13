@@ -55,7 +55,7 @@ def onnet_CC(A,B):
     # # test_result['frr_test'] = fast_reroute_test(my_config,Spirent_L2_Gen,A,B,1)
     # # ###  Perform RFC test 
     rfc_stream_handle = get_rfc_stream_handle(A,B,Spirent_L2_Gen,**input_dict)
-    # # test_result['rfc_tput_test'] = Spirent_L2_Gen.rfc_2544_throughput_test(rfc_stream_handle[0],rfc_stream_handle[1])
+    test_result['rfc_tput_test'] = Spirent_L2_Gen.rfc_2544_throughput_test(rfc_stream_handle[0],rfc_stream_handle[1])
     test_result['rfc_fl_test'] = Spirent_L2_Gen.rfc_2544_frameloss_test(rfc_stream_handle[0],rfc_stream_handle[1])
     # # test_result['rfc_b2b_test'] = Spirent_L2_Gen.rfc_2544_backtoback_test(rfc_stream_handle[0],rfc_stream_handle[1])
     # # test_result['rfc_latency_test'] = Spirent_L2_Gen.rfc_2544_latency_test(rfc_stream_handle[0],rfc_stream_handle[1])
@@ -72,15 +72,15 @@ def onnet_CC(A,B):
 
     ########  test Mac/vlan Transparency for P-P service and L2CP transparency
 
-    # if (A == 'P' and B == 'P') or (A == 'PL' and B == 'PL'):
-    #     for mt_vt in ['L2CP']:
-    #         print("**** {} traffic is going to run".format(mt_vt))
-    #         MT_VT_l2CP_stream_handle = get_MT_VT_l2CP_stream_handle(mt_vt,Spirent_L2_Gen,**input_dict)
-    #         for i in range(len(MT_VT_l2CP_stream_handle[0])):
-    #             Spirent_L2_Gen.Generate_Stream_Traffic(MT_VT_l2CP_stream_handle[0][i],MT_VT_l2CP_stream_handle[1][i])
-    #             Spirent_L2_Gen.Traffic_Collection()
-    #             test_result['L2CP_{}_traffic'.format(MT_VT_l2CP_stream_handle[0][i]['name'])] = Spirent_L2_Gen.Validate_Traffic_Result2()
-    #         Spirent_L2_Gen.delete_streams_clear_counters()
+    if (A == 'P' and B == 'P') or (A == 'PL' and B == 'PL'):
+        for mt_vt in ['L2CP']:
+            print("**** {} traffic is going to run".format(mt_vt))
+            MT_VT_l2CP_stream_handle = get_MT_VT_l2CP_stream_handle(mt_vt,Spirent_L2_Gen,**input_dict)
+            for i in range(len(MT_VT_l2CP_stream_handle[0])):
+                Spirent_L2_Gen.Generate_Stream_Traffic(MT_VT_l2CP_stream_handle[0][i],MT_VT_l2CP_stream_handle[1][i])
+                Spirent_L2_Gen.Traffic_Collection()
+                test_result['L2CP_{}_traffic'.format(MT_VT_l2CP_stream_handle[0][i]['name'])] = Spirent_L2_Gen.Validate_Traffic_Result2()
+            Spirent_L2_Gen.delete_streams_clear_counters()
 
     Spirent_L2_Gen.Clean_Up_Spirent()
     my_config.connect_nodes()
@@ -108,11 +108,10 @@ def onnet_CC_delete(A,B):
     return test_result
 
 result['FF'] = onnet_CC('F','F')
-# result['FF'] = onnet_CC_delete('X','X')
-# result['PL-PL'] = onnet_CC('PL','PL')  ## not applicable for bundle & ELAN
-# result['XX'] = onnet_CC_delete('X','X')
+result['LL'] = onnet_CC('PL','PL')  ## not applicable for bundle & ELAN
+# result['XX'] = onnet_CC('X','X')
 # result['PP'] = onnet_CC('P','P')
-# result['XP'] = onnet_CC_delete('X','P')
+# result['XP'] = onnet_CC('X','P')
 # result['PX'] = onnet_CC('P','X')
 # result['FY'] = onnet_CC('F','Y')
 # result['YF'] = onnet_CC('Y','F')

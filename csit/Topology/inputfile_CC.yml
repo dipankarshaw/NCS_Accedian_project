@@ -1,5 +1,5 @@
 QOS_REQUIRED: "YES"
-Flat_QOS: False
+Flat_QOS: False # Boolean(True or False), if HQOS required Make it False, if Flat QOS is required, set as True.
 CCM_REQUIRED: "NO"
 item: 2315
 # total_BW: 20000000
@@ -11,10 +11,10 @@ colt_vlan_ethType: "s-vlan"
 customer_vlan_ethtype: "c-vlan"
 olo_eth_type: "s-vlan"
 CCM_interval: "1s"
-config_test: 15
-performance_test: 5
-STP_percentage: 100
-ELAN: True
+config_test: 15 # Duration in Seconds, for Y-1564 step test from Accedian.
+performance_test: 5 # Duration in Minutes, for Y-1564 Test from Accedian.
+STP_percentage: 100 # How much percent of service_BW, STP traffic is required?
+ELAN: True # Boolean(True or False), if ELAN required Make it True, if ELINE is required, set as False
 OLO_type: "P-OLO"
 olo_vlan: 2501
 site_list: 
@@ -42,28 +42,3 @@ site_list:
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
-# site_list: 
-#  - 
-#   main_interface: "GigabitEthernet0/0/0/11"
-#   side: "L2PE_EP"
-#   Node_name: "AR13"
-#   port_type: "F-type"
-#   Local_MEP: 2
-#   Remote_MEP: 1
-#   login: 
-#    host: "10.91.126.199"
-#    username: "dshaw1"
-#    password: "N0@ught33b0y"
-#    device_type: "cisco_xr"
-#  - 
-#   main_interface: "GigabitEthernet0/0/0/11"
-#   side: "L2PE_EP"
-#   Node_name: "AR14"
-#   port_type: "F-type"
-#   Local_MEP: 1
-#   Remote_MEP: 2
-#   login: 
-#    host: "10.91.126.200"
-#    username: "dshaw1"
-#    password: "N0@ught33b0y"
-#    device_type: "cisco_xr"
