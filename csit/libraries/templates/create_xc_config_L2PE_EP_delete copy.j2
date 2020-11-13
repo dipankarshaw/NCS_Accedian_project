@@ -19,5 +19,30 @@ ethernet cfm domain COLT-1 level {{MEG_level}} id null
 no service ALX_NCS_LE-{{ 100000 + item|int }}
 {% else -%}
 {% endif -%}
-no policy-map {{service_BW}}-{{QOS_type}}-DIPNKR
+{% if Flat_QOS -%}
+no policy-map {{service_BW}}-{{QOS_type}}_{{ item }}_DIP
+{% else -%}
+no policy-map P2P_PARENT_HQOS_INGRESS_{{ item }}_DIP
+no policy-map P2P_PARENT_HQOS_EGGRESS_{{ item }}_DIP
+no policy-map P2P_CHILD_HQOS_INGRESS_{{ item }}_DIP
+no policy-map P2P_CHILD_HQOS_EGGRESS_{{ item }}_DIP
+no policy-map NNI-QOS-EGRESS-InnerCoS_{{ item }}_DIP
+no class-map PREMIUM-PCP-5-7_{{ item }}_DIP
+no class-map BUSINESS2-PCP-2_{{ item }}_DIP
+no class-map BUSINESS3-PCP-1_{{ item }}_DIP
+no class-map BUSINESS1-PCP-3_{{ item }}_DIP
+no class-map standard-PCP-4_0_{{ item }}_DIP
+no class-map Premium-TC6-{{ item }}_Egress
+no class-map Business1-TC5-{{ item }}_Egress
+no class-map Business2-TC4-{{ item }}_Egress
+no class-map Business3-TC3-{{ item }}_Egress
+no class-map Standard-CIR-TC2-{{ item }}_Egress
+no class-map Premium-{{ item }}_MatchQOS
+no class-map Business1-{{ item }}_MatchQOS
+no class-map Business2-{{ item }}_MatchQOS
+no class-map Business3-{{ item }}_MatchQOS
+no class-map Standard-CIR-{{ item }}_MatchQOS
+no class-map Standard-EIR-{{ item }}_MatchQOS
+no class-map NC-{{ item }}_MatchQOS
+{% endif -%}
 no evpn evi {{ 50000 + item|int }}

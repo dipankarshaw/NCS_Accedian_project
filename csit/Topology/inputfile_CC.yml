@@ -1,9 +1,9 @@
 QOS_REQUIRED: "YES"
-Flat_QOS: "YES"
-CCM_REQUIRED: "YES"
-item: 2310
+Flat_QOS: False
+CCM_REQUIRED: "NO"
+item: 2315
 # total_BW: 20000000
-service_BW: 10000000
+service_BW: 10000000 # this is in Kbps.
 CIR_percentage: 25
 MEG_level: 1
 QOS_type: "Business2" # Possible values are Premium,Standard,Business2,Business1,Business3
@@ -14,31 +14,31 @@ CCM_interval: "1s"
 config_test: 15
 performance_test: 5
 STP_percentage: 100
-ELAN: False
+ELAN: True
 OLO_type: "P-OLO"
 olo_vlan: 2501
 site_list: 
  - 
-  main_interface: "TenGigE0/0/0/16"
+  main_interface: "TenGigE0/0/1/3/2"
   side: "L2PE_EP"
-  Node_name: "AR19"
+  Node_name: "AR5"
   port_type: "F-type"
   Local_MEP: 2
   Remote_MEP: 1
   login: 
-   host: "10.91.126.205"
+   host: "10.91.126.115"
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
  - 
-  main_interface: "Bundle-Ether300"
+  main_interface: "TenGigE0/0/0/5"
   side: "L2PE_EP"
-  Node_name: "AR6"
+  Node_name: "AR15"
   port_type: "F-type"
   Local_MEP: 1
   Remote_MEP: 2
   login: 
-   host: "10.91.126.116"
+   host: "10.91.126.201"
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"

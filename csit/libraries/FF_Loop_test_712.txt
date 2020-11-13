@@ -1,0 +1,3038 @@
+Current OS: Linux,4.15.0-121-generic,#123-Ubuntu SMP Mon Oct 5 16:16:40 UTC 2020; python version: 3.6.9
+HLPy Error: need set system environ variable STC_TCL firstly
+
+HLPY: error happened when connecting hltapiserver and loading hltapi.
+!
+!!
+************** Test FF type EP ************* 
+!!!!!!
+**** connection established with node AR18
+**** connection established with node AR11
+**** connection established with node LTS_144
+****  Logged in node : LTS_144
+****  persing completed on LTS_144
+{'meg': 4, 'del_meg': 4, 'mep': 1, 'dmm': 1, 'slm': 1}
+****  Logged in node : AR18
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport encapsulation dot1q 2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport service-policy input 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-l2vpn-xc-p2p-pw)#evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7514
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn-svc)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 continuity-check interval 1s
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 mep crosscheck mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log crosscheck errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check mep changes
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 cos 4
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile DMM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile SLM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap)# class class-default
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  police rate percent 0 burst 1200 kbytes peak-rate percent 3 peak-burst 1000 kbytes
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  set traffic-class 2
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  set qos-group 4
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# end-policy-map
+
+RP/0/RP0/CPU0:ar18.BLB(config)#!
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+****  Configration completed on AR18
+****  Logged in node : AR11
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport encapsulation dot1ad 2410
+
+RP/0/RP0/CPU0:ar11.BLB(config)#        interface Bundle-Ether112.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    interface Bundle-Ether112.2310 l2transport
+
+RP/0/RP0/CPU0:ar11.BLB(config-subif)#interface Bundle-Ether112.2310 l2transport service-policy input NNI-QOS-INGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport service-policy output NNI-QOS-EGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p-pw)#    evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7505
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+****  Configration completed on AR11
+****  Logged in node : LTS_144
+bandwidth-regulator add regulator U9_ALX/NCS/LE-102310 cir 150000 cir-max 150000 cbs 100 eir 600000 eir-max 600000 ebs 10 color-mode blind coupling-flag false
+C122-0787: bandwidth-regulator add regulator N5_ALX/NCS/LE-102310  cir 600000 cir-max 600000 cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+C122-0787: vid-set add N5_ALX/NCS/LE-102310 policy-list Traffic-5 vlan-type s-vlan vid-list 2410
+C122-0787:     policy edit Traffic-5 14 state enable action permit pre-marking green regulator enable N5_ALX/NCS/LE-102310 filter vlan N5_ALX/NCS/LE-102310 evc-encapsulation pop cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port PORT-9
+C122-0787: vid-set add U9_ALX/NCS/LE-102310 policy-list Traffic-9 vlan-type c-vlan vid-list 2310
+C122-0787:     policy edit Traffic-9 14 state enable action permit pre-marking green regulator enable U9_ALX/NCS/LE-102310 filter vlan U9_ALX/NCS/LE-102310 evc-encapsulation push evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port LAG-3
+C122-0787: interface add s-vlan-2410 type vlan port LAG-3 vlan1-ethertype s-vlan vlan1-id 2410 vlan1-priority 4
+    cfm assign interface s-vlan-2410
+C122-0787:     cfm assign interface s-vlan-2410
+C122-0787:     cfm add meg name LEXXX-102310 name-format icc-based ccm-interval 1000 index 4 mhf-creation none sndr-id-perm none  level 1 rmep-auto-discovery disable mepid-list 1,2 vid-list 2310 vlan-type c-vlan
+C122-0787:     cfm add mep name LEXXX-102310|1|2  active yes index 1 direction down cci-enable yes ccm-seq-number enable meg-idx 4 lowest-alarm-pri macRemErrXconAis mep-id 1 port s-vlan-2410 priority 4 pvid 2310
+C122-0787:     cfm add dmm name ALX/NCS/LE-102310|1|1|2 index 1 enable yes  interval 1000 mep-idx 1 ow-ad-threshold 125 ow-adv-threshold 4 ow-delay enable ow-delay-threshold 4 ow-dv enable ow-dv-threshold 10  ow-max-delay 125 ow-max-dv 50  priority 4 reference-period 15  rmep-id 2 tw-ad-threshold 250 tw-adv-threshold 10 tw-delay enable tw-delay-threshold 4 tw-dv enable tw-dv-threshold 4  tw-max-delay 250 tw-max-dv 10
+C122-0787:     cfm add slm name ALX/NCS/LE-102310|1|1|2 index 1 far-end-threshold 100000  interval 100 mep-idx 1 near-end-threshold 100000 priority 4 reference-period 15  rmep-id 2 state enable
+C122-0787:     sa add service ALX/NCS/LE-102310|1|1|2 window-size 5 hli-window-size 3 time-interval 20 reporting-period 5
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2F slm-far-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2N slm-near-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa edit service ALX/NCS/LE-102310|1|1|2 state IS
+C122-0787: 
+C122-0787: 
+****  Configration completed on LTS_144
+**** wait for 10 seconds
+**** AR18 : ccm is UP
+LTS_144 : ccm is UP
+*** L2 Loop create commands are templated for AR18
+*** L2 Loop delete commands are templated for AR18
+*** Loop create commands are templated for LTS_144
+*** Loop delete commands are templated for LTS_144
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#int Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#ethernet loopback permit internal
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#commit
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#exit
+
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback start local interface Bundle-Ether581.2310 internal destination mac-address 0022.0022.0022 timeout 1800
+
+Session on interface Bundle-Ether581.2310 successfully created with ID 1.
+RP/0/RP0/CPU0:ar18.BLB#
+
+C122-0787: y1564 add test Y1564-ALX-NCS-LE-102310 description STANDARD_P2P_ACCEPTANCE_TEST configuration enable step-duration 15 performance enable test-duration 1 parallel enable port PORT-6 delay-type two-way-delay time-sync-mandatory disable packet-type l2-generic dst-mac-addr 00:22:00:22:00:22 y1731-level 1
+y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan vlan2-header enable vlan2-id 2310 vlan2-priority 4 vlan2-ethertype c-vlan
+C122-0787: y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan vlan2-header enable vlan2-id 2310 vlan2-priority 4 vlan2-ethertype c-vlan
+C122-0787:     Y1564 start activation test Y1564-ALX-NCS-LE-102310 filename Y1564-LE-102310
+C122-0787: 
+Name          : Y1564-LE-102310
+Overall Status: IN PROGRESS
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       63%       ---       ---       ---       ---       ---       ---         ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+***  Hold your breathe for 150 seconds
+Name          : Y1564-LE-102310
+Overall Status: PASSED
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       PASS      PASS      PASS      PASS      N/A       N/A       PASS        ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback stop local interface Bundle-Ether581.2310 id 1
+
+Session with ID 1 on interface Bundle-Ether581.2310 successfully stopped.
+RP/0/RP0/CPU0:ar18.BLB#configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#no ethernet loopback
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#
+
+C122-0787: 
+C122-0787: Y1564 delete report Y1564-LE-102310
+C122-0787: 
+C122-0787: 
+C122-0787: Y1564 delete test Y1564-ALX-NCS-LE-102310
+C122-0787: 
+**** LTS_144 :
+Statistics for MEP instance 1, MEPID 1
+
+Transmit                                Receive
+ CCM                   :           209   CCM                   :           416
+ CCM with RDI          :             0   CCM with RDI          :             0
+ LBM                   :             0   LBR                   :             0
+ LBR                   :             0   LBM                   :             0
+ LTM                   :             0   LTR                   :             0
+ LTR                   :             0   LTM                   :             0
+ CSF                   :             0   CSF                   :             0
+ DMM priority 0        :             0   DMR priority 0        :             0
+ DMM priority 1        :             0   DMR priority 1        :             0
+ DMM priority 2        :             0   DMR priority 2        :             0
+ DMM priority 3        :             0   DMR priority 3        :             0
+ DMM priority 4        :           208   DMR priority 4        :           208
+ DMM priority 5        :             0   DMR priority 5        :             0
+ DMM priority 6        :             0   DMR priority 6        :             0
+ DMM priority 7        :             0   DMR priority 7        :             0
+ DMR priority 0        :             0   DMM priority 0        :             0
+ DMR priority 1        :             0   DMM priority 1        :             0
+ DMR priority 2        :             0   DMM priority 2        :             0
+ DMR priority 3        :             0   DMM priority 3        :             0
+ DMR priority 4        :             0   DMM priority 4        :             0
+ DMR priority 5        :             0   DMM priority 5        :             0
+ DMR priority 6        :             0   DMM priority 6        :             0
+ DMR priority 7        :             0   DMM priority 7        :             0
+ SLM priority 0        :             0   SLR priority 0        :             0
+ SLM priority 1        :             0   SLR priority 1        :             0
+ SLM priority 2        :             0   SLR priority 2        :             0
+ SLM priority 3        :             0   SLR priority 3        :             0
+ SLM priority 4        :         2,077   SLR priority 4        :         2,077
+ SLM priority 5        :             0   SLR priority 5        :             0
+ SLM priority 6        :             0   SLR priority 6        :             0
+ SLM priority 7        :             0   SLR priority 7        :             0
+ SLR priority 0        :             0   SLM priority 0        :             0
+ SLR priority 1        :             0   SLM priority 1        :             0
+ SLR priority 2        :             0   SLM priority 2        :             0
+ SLR priority 3        :             0   SLM priority 3        :             0
+ SLR priority 4        :             0   SLM priority 4        :             0
+ SLR priority 5        :             0   SLM priority 5        :             0
+ SLR priority 6        :             0   SLM priority 6        :             0
+ SLR priority 7        :             0   SLM priority 7        :             0
+
+Receive errors
+ CCM sequence errors   :             0   Unexpected LBR        :             0
+ LBR out of order      :             0   LBR with bad MSDU     :             0
+ Unexpected LTR        :             0   LTR dropped bad MAC   :             0
+ CSF invalid flags     :             0  
+
+Domain COLT-1 (level 1), Service ALX_NCS_LE-102310
+Up MEP on Bundle-Ether581.2310 MEP-ID 2
+================================================================================
+  Interface state: Up      MAC address: 7c31.0e08.6cdb
+  Peer MEPs: 1 up, 0 with errors, 0 timed out (archived)
+  Cross-check errors: 0 missing, 0 unexpected
+
+  CCM generation enabled:  Yes, 1s (Remote Defect detected: No)
+                           CCM processing offloaded to software
+  AIS generation enabled:  No
+  Sending AIS:             No
+  Receiving AIS:           No
+
+  Packet        Sent      Received
+  ------  ----------  ---------------------------------------------------------
+  CCM            214           209  (out of seq: 0)
+  DMM              0           209
+  DMR            209             0
+  SLM              0          2086
+  SLR           2086             0
+
+Bundle-Ether581.2310 input: 600000-Standard-DIPNKR
+
+Class class-default
+  Classification statistics          (packets/bytes)     (rate - kbps)
+    Matched             :             4149514/7221188462           373054
+    Transmitted         :             4149514/7221188462           373054
+    Total Dropped       :                   0/0                    0
+  Policing statistics                (packets/bytes)     (rate - kbps) 
+    Policed(conform)    :                 674/1169652              0
+    Policed(exceed)     :             4148840/7220018810           373054
+    Policed(violate)    :                   0/0                    0
+    Policed and dropped :                   0/0                  
+Policy Bag Stats time: 1603210730866  [Local Time: 10/20/20 16:18:50.866] 
+NOTE:- Configured values are displayed within parentheses
+Node 0/0/CPU0, Interface Bundle-Ether581.2310 Ifh 0x80040de (BundleMain) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           20000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+New traffic class                        =   2
+New qos group                            =   4
+
+Policer Bucket ID                        =   0x58
+Policer Stats Handle                     =   0x0
+Policer committed rate                   =   0 kbps (0 %)
+Policer peak rate                        =   601953 kbps (3 %)
+Policer conform burst                    =   1191168 bytes (1200 kilobytes)
+Policer exceed burst                     =   2189312 bytes (1000 kilobytes)
+
+Interface TenGigE0/0/0/13 Ifh 0x48 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+Interface TenGigE0/0/0/12 Ifh 0x60 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#no interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no service ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+policy edit Traffic-5 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: policy edit Traffic-9 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: bandwidth-regulator delete regulator U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete U9_ALX/NCS/LE-102310
+C122-0787: cfm delete meg 4
+C122-0787:     sa delete service ALX/NCS/LE-102310|1|1|2
+C122-0787:     cfm unassign interface s-vlan-2410
+C122-0787:     interface delete s-vlan-2410
+
+C122-0787: 
+C122-0787: 
+**** disconnected successfully from node AR18
+**** disconnected successfully from node AR11
+**** disconnected successfully from node LTS_144
+!
+!!
+************** Test XX type EP ************* 
+!!!!!!
+**** connection established with node AR18
+**** connection established with node AR11
+**** connection established with node LTS_144
+****  Logged in node : LTS_144
+****  persing completed on LTS_144
+{'meg': 4, 'del_meg': 4, 'mep': 1, 'dmm': 1, 'slm': 1}
+****  Logged in node : AR18
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport encapsulation dot1q 2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport service-policy input 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-l2vpn-xc-p2p-pw)#evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7514
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn-svc)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 continuity-check interval 1s
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 mep crosscheck mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log crosscheck errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check mep changes
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 cos 4
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile DMM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile SLM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap)# class class-default
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  police rate percent 0 burst 1200 kbytes peak-rate percent 3 peak-burst 1000 kbytes
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  set traffic-class 2
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  set qos-group 4
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# end-policy-map
+
+RP/0/RP0/CPU0:ar18.BLB(config)#!
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+****  Configration completed on AR18
+****  Logged in node : AR11
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport encapsulation dot1ad 2410
+
+RP/0/RP0/CPU0:ar11.BLB(config)#        interface Bundle-Ether112.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    interface Bundle-Ether112.2310 l2transport
+
+RP/0/RP0/CPU0:ar11.BLB(config-subif)#interface Bundle-Ether112.2310 l2transport service-policy input NNI-QOS-INGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport service-policy output NNI-QOS-EGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p-pw)#    evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7505
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+****  Configration completed on AR11
+****  Logged in node : LTS_144
+bandwidth-regulator add regulator U9_ALX/NCS/LE-102310 cir 150000 cir-max 150000 cbs 100 eir 600000 eir-max 600000 ebs 10 color-mode blind coupling-flag false
+C122-0787: bandwidth-regulator add regulator N5_ALX/NCS/LE-102310  cir 600000 cir-max 600000 cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+C122-0787: vid-set add N5_ALX/NCS/LE-102310 policy-list Traffic-5 vlan-type s-vlan vid-list 2410
+C122-0787:     policy edit Traffic-5 14 state enable action permit pre-marking green regulator enable N5_ALX/NCS/LE-102310 filter vlan N5_ALX/NCS/LE-102310 evc-encapsulation replace evc-ethertype c-vlan evc-vlan-id 2310 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port PORT-9
+C122-0787: vid-set add U9_ALX/NCS/LE-102310 policy-list Traffic-9 vlan-type c-vlan vid-list 2310
+C122-0787:     policy edit Traffic-9 14 state enable action permit pre-marking green regulator enable U9_ALX/NCS/LE-102310 filter vlan U9_ALX/NCS/LE-102310 evc-encapsulation replace evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port LAG-3
+C122-0787: cfm add meg name LEXXX-102310 name-format icc-based ccm-interval 1000 index 4 mhf-creation none sndr-id-perm none  level 1 rmep-auto-discovery disable mepid-list 1,2 vid-list 2410 vlan-type s-vlan
+C122-0787:     cfm add mep name LEXXX-102310|1|2  active yes index 1 direction down cci-enable yes ccm-seq-number enable meg-idx 4 lowest-alarm-pri macRemErrXconAis mep-id 1 port LAG-3 priority 4 pvid 2410
+C122-0787:     cfm add dmm name ALX/NCS/LE-102310|1|1|2 index 1 enable yes  interval 1000 mep-idx 1 ow-ad-threshold 125 ow-adv-threshold 4 ow-delay enable ow-delay-threshold 4 ow-dv enable ow-dv-threshold 10  ow-max-delay 125 ow-max-dv 50  priority 4 reference-period 15  rmep-id 2 tw-ad-threshold 250 tw-adv-threshold 10 tw-delay enable tw-delay-threshold 4 tw-dv enable tw-dv-threshold 4  tw-max-delay 250 tw-max-dv 10
+C122-0787:     cfm add slm name ALX/NCS/LE-102310|1|1|2 index 1 far-end-threshold 100000  interval 100 mep-idx 1 near-end-threshold 100000 priority 4 reference-period 15  rmep-id 2 state enable
+C122-0787:     sa add service ALX/NCS/LE-102310|1|1|2 window-size 5 hli-window-size 3 time-interval 20 reporting-period 5
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2F slm-far-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2N slm-near-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa edit service ALX/NCS/LE-102310|1|1|2 state IS
+C122-0787: 
+C122-0787: 
+****  Configration completed on LTS_144
+**** wait for 10 seconds
+**** AR18 : ccm is UP
+LTS_144 : ccm is UP
+*** L2 Loop create commands are templated for AR18
+*** L2 Loop delete commands are templated for AR18
+*** Loop create commands are templated for LTS_144
+*** Loop delete commands are templated for LTS_144
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#int Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#ethernet loopback permit internal
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#commit
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#exit
+
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback start local interface Bundle-Ether581.2310 internal destination mac-address 0022.0022.0022 timeout 1800
+
+Session on interface Bundle-Ether581.2310 successfully created with ID 1.
+RP/0/RP0/CPU0:ar18.BLB#
+
+C122-0787: y1564 add test Y1564-ALX-NCS-LE-102310 description STANDARD_P2P_ACCEPTANCE_TEST configuration enable step-duration 15 performance enable test-duration 1 parallel enable port PORT-6 delay-type two-way-delay time-sync-mandatory disable packet-type l2-generic dst-mac-addr 00:22:00:22:00:22 y1731-level 1
+y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan
+C122-0787: y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan
+C122-0787:     Y1564 start activation test Y1564-ALX-NCS-LE-102310 filename Y1564-LE-102310
+C122-0787: 
+Name          : Y1564-LE-102310
+Overall Status: IN PROGRESS
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       63%       ---       ---       ---       ---       ---       ---         ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+***  Hold your breathe for 150 seconds
+Name          : Y1564-LE-102310
+Overall Status: PASSED
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       PASS      PASS      PASS      PASS      N/A       N/A       PASS        ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback stop local interface Bundle-Ether581.2310 id 1
+
+Session with ID 1 on interface Bundle-Ether581.2310 successfully stopped.
+RP/0/RP0/CPU0:ar18.BLB#configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#no ethernet loopback
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#
+
+C122-0787: 
+C122-0787: Y1564 delete report Y1564-LE-102310
+C122-0787: 
+C122-0787: 
+C122-0787: Y1564 delete test Y1564-ALX-NCS-LE-102310
+C122-0787: 
+**** LTS_144 :
+Statistics for MEP instance 1, MEPID 1
+
+Transmit                                Receive
+ CCM                   :           208   CCM                   :           418
+ CCM with RDI          :             0   CCM with RDI          :             4
+ LBM                   :             0   LBR                   :             0
+ LBR                   :             0   LBM                   :             0
+ LTM                   :             0   LTR                   :             0
+ LTR                   :             0   LTM                   :             0
+ CSF                   :             0   CSF                   :             0
+ DMM priority 0        :             0   DMR priority 0        :           208
+ DMM priority 1        :             0   DMR priority 1        :             0
+ DMM priority 2        :             0   DMR priority 2        :             0
+ DMM priority 3        :             0   DMR priority 3        :             0
+ DMM priority 4        :           208   DMR priority 4        :             0
+ DMM priority 5        :             0   DMR priority 5        :             0
+ DMM priority 6        :             0   DMR priority 6        :             0
+ DMM priority 7        :             0   DMR priority 7        :             0
+ DMR priority 0        :             0   DMM priority 0        :             0
+ DMR priority 1        :             0   DMM priority 1        :             0
+ DMR priority 2        :             0   DMM priority 2        :             0
+ DMR priority 3        :             0   DMM priority 3        :             0
+ DMR priority 4        :             0   DMM priority 4        :             0
+ DMR priority 5        :             0   DMM priority 5        :             0
+ DMR priority 6        :             0   DMM priority 6        :             0
+ DMR priority 7        :             0   DMM priority 7        :             0
+ SLM priority 0        :             0   SLR priority 0        :         2,089
+ SLM priority 1        :             0   SLR priority 1        :             0
+ SLM priority 2        :             0   SLR priority 2        :             0
+ SLM priority 3        :             0   SLR priority 3        :             0
+ SLM priority 4        :         2,089   SLR priority 4        :             0
+ SLM priority 5        :             0   SLR priority 5        :             0
+ SLM priority 6        :             0   SLR priority 6        :             0
+ SLM priority 7        :             0   SLR priority 7        :             0
+ SLR priority 0        :             0   SLM priority 0        :             0
+ SLR priority 1        :             0   SLM priority 1        :             0
+ SLR priority 2        :             0   SLM priority 2        :             0
+ SLR priority 3        :             0   SLM priority 3        :             0
+ SLR priority 4        :             0   SLM priority 4        :             0
+ SLR priority 5        :             0   SLM priority 5        :             0
+ SLR priority 6        :             0   SLM priority 6        :             0
+ SLR priority 7        :             0   SLM priority 7        :             0
+
+Receive errors
+ CCM sequence errors   :             0   Unexpected LBR        :             0
+ LBR out of order      :             0   LBR with bad MSDU     :             0
+ Unexpected LTR        :             0   LTR dropped bad MAC   :             0
+ CSF invalid flags     :             0  
+
+Domain COLT-1 (level 1), Service ALX_NCS_LE-102310
+Up MEP on Bundle-Ether581.2310 MEP-ID 2
+================================================================================
+  Interface state: Up      MAC address: 7c31.0e08.6cdb
+  Peer MEPs: 1 up, 0 with errors, 0 timed out (archived)
+  Cross-check errors: 0 missing, 0 unexpected
+
+  CCM generation enabled:  Yes, 1s (Remote Defect detected: No)
+                           CCM processing offloaded to software
+  AIS generation enabled:  No
+  Sending AIS:             No
+  Receiving AIS:           No
+
+  Packet        Sent      Received
+  ------  ----------  ---------------------------------------------------------
+  CCM            214           208  (out of seq: 0)
+  DMM              0           209
+  DMR            209             0
+  SLM              0          2098
+  SLR           2098             0
+
+Bundle-Ether581.2310 input: 600000-Standard-DIPNKR
+
+Class class-default
+  Classification statistics          (packets/bytes)     (rate - kbps)
+    Matched             :             4157778/7237648776           228260
+    Transmitted         :             4157778/7237648776           228260
+    Total Dropped       :                   0/0                    0
+  Policing statistics                (packets/bytes)     (rate - kbps) 
+    Policed(conform)    :                 674/1169988              0
+    Policed(exceed)     :             4157104/7236478788           228260
+    Policed(violate)    :                   0/0                    0
+    Policed and dropped :                   0/0                  
+Policy Bag Stats time: 1603211000867  [Local Time: 10/20/20 16:23:20.867] 
+NOTE:- Configured values are displayed within parentheses
+Node 0/0/CPU0, Interface Bundle-Ether581.2310 Ifh 0x80040e6 (BundleMain) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           20000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+New traffic class                        =   2
+New qos group                            =   4
+
+Policer Bucket ID                        =   0x58
+Policer Stats Handle                     =   0x0
+Policer committed rate                   =   0 kbps (0 %)
+Policer peak rate                        =   601953 kbps (3 %)
+Policer conform burst                    =   1191168 bytes (1200 kilobytes)
+Policer exceed burst                     =   2189312 bytes (1000 kilobytes)
+
+Interface TenGigE0/0/0/13 Ifh 0x48 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+Interface TenGigE0/0/0/12 Ifh 0x60 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#no interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no service ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+policy edit Traffic-5 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: policy edit Traffic-9 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: bandwidth-regulator delete regulator U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete U9_ALX/NCS/LE-102310
+C122-0787: cfm delete meg 4
+C122-0787:     sa delete service ALX/NCS/LE-102310|1|1|2
+C122-0787: 
+C122-0787: 
+**** disconnected successfully from node AR18
+**** disconnected successfully from node AR11
+**** disconnected successfully from node LTS_144
+!
+!!
+************** Test PP type EP ************* 
+!!!!!!
+**** connection established with node AR18
+**** connection established with node AR11
+**** connection established with node LTS_144
+****  Logged in node : LTS_144
+****  persing completed on LTS_144
+{'meg': 4, 'del_meg': 4, 'mep': 1, 'dmm': 1, 'slm': 1}
+****  Logged in node : AR18
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport encapsulation default
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport service-policy input 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-l2vpn-xc-p2p-pw)#evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7514
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn-svc)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 continuity-check interval 1s
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 mep crosscheck mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log crosscheck errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check mep changes
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 cos 4
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile DMM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile SLM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap)# class class-default
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  police rate percent 0 burst 1200 kbytes peak-rate percent 3 peak-burst 1000 kbytes
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  set traffic-class 2
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  set qos-group 4
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# end-policy-map
+
+RP/0/RP0/CPU0:ar18.BLB(config)#!
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+****  Configration completed on AR18
+****  Logged in node : AR11
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport encapsulation dot1ad 2410
+
+RP/0/RP0/CPU0:ar11.BLB(config)#        interface Bundle-Ether112.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    interface Bundle-Ether112.2310 l2transport
+
+RP/0/RP0/CPU0:ar11.BLB(config-subif)#interface Bundle-Ether112.2310 l2transport service-policy input NNI-QOS-INGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport service-policy output NNI-QOS-EGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p-pw)#    evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7505
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+****  Configration completed on AR11
+****  Logged in node : LTS_144
+bandwidth-regulator add regulator U9_ALX/NCS/LE-102310 cir 150000 cir-max 150000 cbs 100 eir 600000 eir-max 600000 ebs 10 color-mode blind coupling-flag false
+C122-0787: bandwidth-regulator add regulator N5_ALX/NCS/LE-102310  cir 600000 cir-max 600000 cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+C122-0787: vid-set add N5_ALX/NCS/LE-102310 policy-list Traffic-5 vlan-type s-vlan vid-list 2410
+C122-0787:     policy edit Traffic-5 14 state enable action permit pre-marking green regulator enable N5_ALX/NCS/LE-102310 filter vlan N5_ALX/NCS/LE-102310 evc-encapsulation pop cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port PORT-9
+C122-0787: policy edit Traffic-9 14 state enable action permit pre-marking green regulator enable U9_ALX/NCS/LE-102310 filter l2 *default evc-encapsulation push evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port LAG-3
+C122-0787: cfm add meg name LEXXX-102310 name-format icc-based ccm-interval 1000 index 4 mhf-creation none sndr-id-perm none  level 1 rmep-auto-discovery disable mepid-list 1,2 vid-list 2410 vlan-type s-vlan
+C122-0787:     cfm add mep name LEXXX-102310|1|2  active yes index 1 direction down cci-enable yes ccm-seq-number enable meg-idx 4 lowest-alarm-pri macRemErrXconAis mep-id 1 port LAG-3 priority 4 pvid 2410
+C122-0787:     cfm add dmm name ALX/NCS/LE-102310|1|1|2 index 1 enable yes  interval 1000 mep-idx 1 ow-ad-threshold 125 ow-adv-threshold 4 ow-delay enable ow-delay-threshold 4 ow-dv enable ow-dv-threshold 10  ow-max-delay 125 ow-max-dv 50  priority 4 reference-period 15  rmep-id 2 tw-ad-threshold 250 tw-adv-threshold 10 tw-delay enable tw-delay-threshold 4 tw-dv enable tw-dv-threshold 4  tw-max-delay 250 tw-max-dv 10
+C122-0787:     cfm add slm name ALX/NCS/LE-102310|1|1|2 index 1 far-end-threshold 100000  interval 100 mep-idx 1 near-end-threshold 100000 priority 4 reference-period 15  rmep-id 2 state enable
+C122-0787:     sa add service ALX/NCS/LE-102310|1|1|2 window-size 5 hli-window-size 3 time-interval 20 reporting-period 5
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2F slm-far-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2N slm-near-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa edit service ALX/NCS/LE-102310|1|1|2 state IS
+C122-0787: 
+C122-0787: 
+****  Configration completed on LTS_144
+**** wait for 10 seconds
+**** AR18 : ccm is UP
+LTS_144 : ccm is UP
+*** L2 Loop create commands are templated for AR18
+*** L2 Loop delete commands are templated for AR18
+*** Loop create commands are templated for LTS_144
+*** Loop delete commands are templated for LTS_144
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#int Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#ethernet loopback permit internal
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#commit
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#exit
+
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback start local interface Bundle-Ether581.2310 internal destination mac-address 0022.0022.0022 timeout 1800
+
+Session on interface Bundle-Ether581.2310 successfully created with ID 1.
+RP/0/RP0/CPU0:ar18.BLB#
+
+C122-0787: y1564 add test Y1564-ALX-NCS-LE-102310 description STANDARD_P2P_ACCEPTANCE_TEST configuration enable step-duration 15 performance enable test-duration 1 parallel enable port PORT-6 delay-type two-way-delay time-sync-mandatory disable packet-type l2-generic dst-mac-addr 00:22:00:22:00:22 y1731-level 1
+y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan
+C122-0787: y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan
+C122-0787:     Y1564 start activation test Y1564-ALX-NCS-LE-102310 filename Y1564-LE-102310
+C122-0787: 
+Name          : Y1564-LE-102310
+Overall Status: IN PROGRESS
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       63%       ---       ---       ---       ---       ---       ---         ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+***  Hold your breathe for 150 seconds
+Name          : Y1564-LE-102310
+Overall Status: PASSED
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       PASS      PASS      PASS      PASS      N/A       N/A       PASS        ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback stop local interface Bundle-Ether581.2310 id 1
+
+Session with ID 1 on interface Bundle-Ether581.2310 successfully stopped.
+RP/0/RP0/CPU0:ar18.BLB#configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#no ethernet loopback
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#
+
+C122-0787: 
+C122-0787: Y1564 delete report Y1564-LE-102310
+C122-0787: 
+C122-0787: 
+C122-0787: Y1564 delete test Y1564-ALX-NCS-LE-102310
+C122-0787: 
+**** LTS_144 :
+Statistics for MEP instance 1, MEPID 1
+
+Transmit                                Receive
+ CCM                   :           207   CCM                   :           414
+ CCM with RDI          :             0   CCM with RDI          :             2
+ LBM                   :             0   LBR                   :             0
+ LBR                   :             0   LBM                   :             0
+ LTM                   :             0   LTR                   :             0
+ LTR                   :             0   LTM                   :             0
+ CSF                   :             0   CSF                   :             0
+ DMM priority 0        :             0   DMR priority 0        :           207
+ DMM priority 1        :             0   DMR priority 1        :             0
+ DMM priority 2        :             0   DMR priority 2        :             0
+ DMM priority 3        :             0   DMR priority 3        :             0
+ DMM priority 4        :           207   DMR priority 4        :             0
+ DMM priority 5        :             0   DMR priority 5        :             0
+ DMM priority 6        :             0   DMR priority 6        :             0
+ DMM priority 7        :             0   DMR priority 7        :             0
+ DMR priority 0        :             0   DMM priority 0        :             0
+ DMR priority 1        :             0   DMM priority 1        :             0
+ DMR priority 2        :             0   DMM priority 2        :             0
+ DMR priority 3        :             0   DMM priority 3        :             0
+ DMR priority 4        :             0   DMM priority 4        :             0
+ DMR priority 5        :             0   DMM priority 5        :             0
+ DMR priority 6        :             0   DMM priority 6        :             0
+ DMR priority 7        :             0   DMM priority 7        :             0
+ SLM priority 0        :             0   SLR priority 0        :         2,069
+ SLM priority 1        :             0   SLR priority 1        :             0
+ SLM priority 2        :             0   SLR priority 2        :             0
+ SLM priority 3        :             0   SLR priority 3        :             0
+ SLM priority 4        :         2,069   SLR priority 4        :             0
+ SLM priority 5        :             0   SLR priority 5        :             0
+ SLM priority 6        :             0   SLR priority 6        :             0
+ SLM priority 7        :             0   SLR priority 7        :             0
+ SLR priority 0        :             0   SLM priority 0        :             0
+ SLR priority 1        :             0   SLM priority 1        :             0
+ SLR priority 2        :             0   SLM priority 2        :             0
+ SLR priority 3        :             0   SLM priority 3        :             0
+ SLR priority 4        :             0   SLM priority 4        :             0
+ SLR priority 5        :             0   SLM priority 5        :             0
+ SLR priority 6        :             0   SLM priority 6        :             0
+ SLR priority 7        :             0   SLM priority 7        :             0
+
+Receive errors
+ CCM sequence errors   :             0   Unexpected LBR        :             0
+ LBR out of order      :             0   LBR with bad MSDU     :             0
+ Unexpected LTR        :             0   LTR dropped bad MAC   :             0
+ CSF invalid flags     :             0  
+
+Domain COLT-1 (level 1), Service ALX_NCS_LE-102310
+Up MEP on Bundle-Ether581.2310 MEP-ID 2
+================================================================================
+  Interface state: Up      MAC address: 7c31.0e08.6cdb
+  Peer MEPs: 1 up, 0 with errors, 0 timed out (archived)
+  Cross-check errors: 0 missing, 0 unexpected
+
+  CCM generation enabled:  Yes, 1s (Remote Defect detected: No)
+                           CCM processing offloaded to software
+  AIS generation enabled:  No
+  Sending AIS:             No
+  Receiving AIS:           No
+
+  Packet        Sent      Received
+  ------  ----------  ---------------------------------------------------------
+  CCM            213           206  (out of seq: 0)
+  DMM              0           208
+  DMR            208             0
+  SLM              0          2078
+  SLR           2078             0
+
+Bundle-Ether581.2310 input: 600000-Standard-DIPNKR
+
+Class class-default
+  Classification statistics          (packets/bytes)     (rate - kbps)
+    Matched             :             4157785/7221018833           181385
+    Transmitted         :             4157785/7221018833           181385
+    Total Dropped       :                   0/0                    0
+  Policing statistics                (packets/bytes)     (rate - kbps) 
+    Policed(conform)    :                 676/1167626              1
+    Policed(exceed)     :             4157109/7219851207           181145
+    Policed(violate)    :                   0/0                    0
+    Policed and dropped :                   0/0                  
+Policy Bag Stats time: 1603211270865  [Local Time: 10/20/20 16:27:50.865] 
+NOTE:- Configured values are displayed within parentheses
+Node 0/0/CPU0, Interface Bundle-Ether581.2310 Ifh 0x80040ee (BundleMain) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           20000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+New traffic class                        =   2
+New qos group                            =   4
+
+Policer Bucket ID                        =   0x58
+Policer Stats Handle                     =   0x0
+Policer committed rate                   =   0 kbps (0 %)
+Policer peak rate                        =   601953 kbps (3 %)
+Policer conform burst                    =   1191168 bytes (1200 kilobytes)
+Policer exceed burst                     =   2189312 bytes (1000 kilobytes)
+
+Interface TenGigE0/0/0/13 Ifh 0x48 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+Interface TenGigE0/0/0/12 Ifh 0x60 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#no interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no service ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+policy edit Traffic-5 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: policy edit Traffic-9 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: bandwidth-regulator delete regulator U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete N5_ALX/NCS/LE-102310
+C122-0787: cfm delete meg 4
+C122-0787:     sa delete service ALX/NCS/LE-102310|1|1|2
+C122-0787: 
+C122-0787: 
+**** disconnected successfully from node AR18
+**** disconnected successfully from node AR11
+**** disconnected successfully from node LTS_144
+!
+!!
+************** Test XP type EP ************* 
+!!!!!!
+**** connection established with node AR18
+**** connection established with node AR11
+**** connection established with node LTS_144
+****  Logged in node : LTS_144
+****  persing completed on LTS_144
+{'meg': 4, 'del_meg': 4, 'mep': 1, 'dmm': 1, 'slm': 1}
+****  Logged in node : AR18
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport encapsulation dot1q 2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport service-policy input 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-l2vpn-xc-p2p-pw)#evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7514
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn-svc)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 continuity-check interval 1s
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 mep crosscheck mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log crosscheck errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check mep changes
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 cos 4
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile DMM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile SLM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap)# class class-default
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  police rate percent 0 burst 1200 kbytes peak-rate percent 3 peak-burst 1000 kbytes
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  set traffic-class 2
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  set qos-group 4
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# end-policy-map
+
+RP/0/RP0/CPU0:ar18.BLB(config)#!
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+****  Configration completed on AR18
+****  Logged in node : AR11
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport encapsulation dot1ad 2410
+
+RP/0/RP0/CPU0:ar11.BLB(config)#        interface Bundle-Ether112.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    interface Bundle-Ether112.2310 l2transport
+
+RP/0/RP0/CPU0:ar11.BLB(config-subif)#interface Bundle-Ether112.2310 l2transport service-policy input NNI-QOS-INGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport service-policy output NNI-QOS-EGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p-pw)#    evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7505
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+****  Configration completed on AR11
+****  Logged in node : LTS_144
+bandwidth-regulator add regulator U9_ALX/NCS/LE-102310 cir 150000 cir-max 150000 cbs 100 eir 600000 eir-max 600000 ebs 10 color-mode blind coupling-flag false
+C122-0787: bandwidth-regulator add regulator N5_ALX/NCS/LE-102310  cir 600000 cir-max 600000 cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+C122-0787: vid-set add N5_ALX/NCS/LE-102310 policy-list Traffic-5 vlan-type s-vlan vid-list 2410
+C122-0787:     policy edit Traffic-5 14 state enable action permit pre-marking green regulator enable N5_ALX/NCS/LE-102310 filter vlan N5_ALX/NCS/LE-102310 evc-encapsulation pop cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port PORT-9
+C122-0787: policy edit Traffic-9 14 state enable action permit pre-marking green regulator enable U9_ALX/NCS/LE-102310 filter l2 *default evc-encapsulation push evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port LAG-3
+C122-0787: cfm add meg name LEXXX-102310 name-format icc-based ccm-interval 1000 index 4 mhf-creation none sndr-id-perm none  level 1 rmep-auto-discovery disable mepid-list 1,2 vid-list 2410 vlan-type s-vlan
+C122-0787:     cfm add mep name LEXXX-102310|1|2  active yes index 1 direction down cci-enable yes ccm-seq-number enable meg-idx 4 lowest-alarm-pri macRemErrXconAis mep-id 1 port LAG-3 priority 4 pvid 2410
+C122-0787:     cfm add dmm name ALX/NCS/LE-102310|1|1|2 index 1 enable yes  interval 1000 mep-idx 1 ow-ad-threshold 125 ow-adv-threshold 4 ow-delay enable ow-delay-threshold 4 ow-dv enable ow-dv-threshold 10  ow-max-delay 125 ow-max-dv 50  priority 4 reference-period 15  rmep-id 2 tw-ad-threshold 250 tw-adv-threshold 10 tw-delay enable tw-delay-threshold 4 tw-dv enable tw-dv-threshold 4  tw-max-delay 250 tw-max-dv 10
+C122-0787:     cfm add slm name ALX/NCS/LE-102310|1|1|2 index 1 far-end-threshold 100000  interval 100 mep-idx 1 near-end-threshold 100000 priority 4 reference-period 15  rmep-id 2 state enable
+C122-0787:     sa add service ALX/NCS/LE-102310|1|1|2 window-size 5 hli-window-size 3 time-interval 20 reporting-period 5
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2F slm-far-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2N slm-near-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa edit service ALX/NCS/LE-102310|1|1|2 state IS
+C122-0787: 
+C122-0787: 
+****  Configration completed on LTS_144
+**** wait for 10 seconds
+**** AR18 : ccm is UP
+LTS_144 : ccm is UP
+*** L2 Loop create commands are templated for AR18
+*** L2 Loop delete commands are templated for AR18
+*** Loop create commands are templated for LTS_144
+*** Loop delete commands are templated for LTS_144
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#int Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#ethernet loopback permit internal
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#commit
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#exit
+
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback start local interface Bundle-Ether581.2310 internal destination mac-address 0022.0022.0022 timeout 1800
+
+Session on interface Bundle-Ether581.2310 successfully created with ID 1.
+RP/0/RP0/CPU0:ar18.BLB#
+
+C122-0787: y1564 add test Y1564-ALX-NCS-LE-102310 description STANDARD_P2P_ACCEPTANCE_TEST configuration enable step-duration 15 performance enable test-duration 1 parallel enable port PORT-6 delay-type two-way-delay time-sync-mandatory disable packet-type l2-generic dst-mac-addr 00:22:00:22:00:22 y1731-level 1
+y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan
+C122-0787: y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan
+C122-0787:     Y1564 start activation test Y1564-ALX-NCS-LE-102310 filename Y1564-LE-102310
+C122-0787: 
+Name          : Y1564-LE-102310
+Overall Status: IN PROGRESS
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       63%       ---       ---       ---       ---       ---       ---         ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+***  Hold your breathe for 150 seconds
+Name          : Y1564-LE-102310
+Overall Status: PASSED
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       PASS      PASS      PASS      PASS      N/A       N/A       PASS        ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback stop local interface Bundle-Ether581.2310 id 1
+
+Session with ID 1 on interface Bundle-Ether581.2310 successfully stopped.
+RP/0/RP0/CPU0:ar18.BLB#configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#no ethernet loopback
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#
+
+C122-0787: 
+C122-0787: Y1564 delete report Y1564-LE-102310
+C122-0787: 
+C122-0787: 
+C122-0787: Y1564 delete test Y1564-ALX-NCS-LE-102310
+C122-0787: 
+**** LTS_144 :
+Statistics for MEP instance 1, MEPID 1
+
+Transmit                                Receive
+ CCM                   :           208   CCM                   :           416
+ CCM with RDI          :             0   CCM with RDI          :             0
+ LBM                   :             0   LBR                   :             0
+ LBR                   :             0   LBM                   :             0
+ LTM                   :             0   LTR                   :             0
+ LTR                   :             0   LTM                   :             0
+ CSF                   :             0   CSF                   :             0
+ DMM priority 0        :             0   DMR priority 0        :           207
+ DMM priority 1        :             0   DMR priority 1        :             0
+ DMM priority 2        :             0   DMR priority 2        :             0
+ DMM priority 3        :             0   DMR priority 3        :             0
+ DMM priority 4        :           207   DMR priority 4        :             0
+ DMM priority 5        :             0   DMR priority 5        :             0
+ DMM priority 6        :             0   DMR priority 6        :             0
+ DMM priority 7        :             0   DMR priority 7        :             0
+ DMR priority 0        :             0   DMM priority 0        :             0
+ DMR priority 1        :             0   DMM priority 1        :             0
+ DMR priority 2        :             0   DMM priority 2        :             0
+ DMR priority 3        :             0   DMM priority 3        :             0
+ DMR priority 4        :             0   DMM priority 4        :             0
+ DMR priority 5        :             0   DMM priority 5        :             0
+ DMR priority 6        :             0   DMM priority 6        :             0
+ DMR priority 7        :             0   DMM priority 7        :             0
+ SLM priority 0        :             0   SLR priority 0        :         2,077
+ SLM priority 1        :             0   SLR priority 1        :             0
+ SLM priority 2        :             0   SLR priority 2        :             0
+ SLM priority 3        :             0   SLR priority 3        :             0
+ SLM priority 4        :         2,077   SLR priority 4        :             0
+ SLM priority 5        :             0   SLR priority 5        :             0
+ SLM priority 6        :             0   SLR priority 6        :             0
+ SLM priority 7        :             0   SLR priority 7        :             0
+ SLR priority 0        :             0   SLM priority 0        :             0
+ SLR priority 1        :             0   SLM priority 1        :             0
+ SLR priority 2        :             0   SLM priority 2        :             0
+ SLR priority 3        :             0   SLM priority 3        :             0
+ SLR priority 4        :             0   SLM priority 4        :             0
+ SLR priority 5        :             0   SLM priority 5        :             0
+ SLR priority 6        :             0   SLM priority 6        :             0
+ SLR priority 7        :             0   SLM priority 7        :             0
+
+Receive errors
+ CCM sequence errors   :             0   Unexpected LBR        :             0
+ LBR out of order      :             0   LBR with bad MSDU     :             0
+ Unexpected LTR        :             0   LTR dropped bad MAC   :             0
+ CSF invalid flags     :             0  
+
+Domain COLT-1 (level 1), Service ALX_NCS_LE-102310
+Up MEP on Bundle-Ether581.2310 MEP-ID 2
+================================================================================
+  Interface state: Up      MAC address: 7c31.0e08.6cdb
+  Peer MEPs: 1 up, 0 with errors, 0 timed out (archived)
+  Cross-check errors: 0 missing, 0 unexpected
+
+  CCM generation enabled:  Yes, 1s (Remote Defect detected: No)
+                           CCM processing offloaded to software
+  AIS generation enabled:  No
+  Sending AIS:             No
+  Receiving AIS:           No
+
+  Packet        Sent      Received
+  ------  ----------  ---------------------------------------------------------
+  CCM            213           208  (out of seq: 0)
+  DMM              0           208
+  DMR            208             0
+  SLM              0          2086
+  SLR           2086             0
+
+Bundle-Ether581.2310 input: 600000-Standard-DIPNKR
+
+Class class-default
+  Classification statistics          (packets/bytes)     (rate - kbps)
+    Matched             :             4157778/7237648776           196655
+    Transmitted         :             4157778/7237648776           196655
+    Total Dropped       :                   0/0                    0
+  Policing statistics                (packets/bytes)     (rate - kbps) 
+    Policed(conform)    :                 674/1169988              0
+    Policed(exceed)     :             4157104/7236478788           196655
+    Policed(violate)    :                   0/0                    0
+    Policed and dropped :                   0/0                  
+Policy Bag Stats time: 1603211570866  [Local Time: 10/20/20 16:32:50.866] 
+NOTE:- Configured values are displayed within parentheses
+Node 0/0/CPU0, Interface Bundle-Ether581.2310 Ifh 0x80040f6 (BundleMain) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           20000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+New traffic class                        =   2
+New qos group                            =   4
+
+Policer Bucket ID                        =   0x58
+Policer Stats Handle                     =   0x0
+Policer committed rate                   =   0 kbps (0 %)
+Policer peak rate                        =   601953 kbps (3 %)
+Policer conform burst                    =   1191168 bytes (1200 kilobytes)
+Policer exceed burst                     =   2189312 bytes (1000 kilobytes)
+
+Interface TenGigE0/0/0/13 Ifh 0x48 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+Interface TenGigE0/0/0/12 Ifh 0x60 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#no interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no service ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+policy edit Traffic-5 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: policy edit Traffic-9 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: bandwidth-regulator delete regulator U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete N5_ALX/NCS/LE-102310
+C122-0787: cfm delete meg 4
+C122-0787:     sa delete service ALX/NCS/LE-102310|1|1|2
+C122-0787: 
+C122-0787: 
+**** disconnected successfully from node AR18
+**** disconnected successfully from node AR11
+**** disconnected successfully from node LTS_144
+!
+!!
+************** Test PX type EP ************* 
+!!!!!!
+**** connection established with node AR18
+**** connection established with node AR11
+**** connection established with node LTS_144
+****  Logged in node : LTS_144
+****  persing completed on LTS_144
+{'meg': 4, 'del_meg': 4, 'mep': 1, 'dmm': 1, 'slm': 1}
+****  Logged in node : AR18
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport encapsulation default
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport service-policy input 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-l2vpn-xc-p2p-pw)#evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7514
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn-svc)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 continuity-check interval 1s
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 mep crosscheck mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log crosscheck errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check mep changes
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 cos 4
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile DMM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile SLM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap)# class class-default
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  police rate percent 0 burst 1200 kbytes peak-rate percent 3 peak-burst 1000 kbytes
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  set traffic-class 2
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  set qos-group 4
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# end-policy-map
+
+RP/0/RP0/CPU0:ar18.BLB(config)#!
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+****  Configration completed on AR18
+****  Logged in node : AR11
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport encapsulation dot1ad 2410
+
+RP/0/RP0/CPU0:ar11.BLB(config)#        interface Bundle-Ether112.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    interface Bundle-Ether112.2310 l2transport
+
+RP/0/RP0/CPU0:ar11.BLB(config-subif)#interface Bundle-Ether112.2310 l2transport service-policy input NNI-QOS-INGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport service-policy output NNI-QOS-EGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p-pw)#    evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7505
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+****  Configration completed on AR11
+****  Logged in node : LTS_144
+bandwidth-regulator add regulator U9_ALX/NCS/LE-102310 cir 150000 cir-max 150000 cbs 100 eir 600000 eir-max 600000 ebs 10 color-mode blind coupling-flag false
+C122-0787: bandwidth-regulator add regulator N5_ALX/NCS/LE-102310  cir 600000 cir-max 600000 cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+C122-0787: vid-set add N5_ALX/NCS/LE-102310 policy-list Traffic-5 vlan-type s-vlan vid-list 2410
+C122-0787:     policy edit Traffic-5 14 state enable action permit pre-marking green regulator enable N5_ALX/NCS/LE-102310 filter vlan N5_ALX/NCS/LE-102310 evc-encapsulation replace evc-ethertype c-vlan evc-vlan-id 2310 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port PORT-9
+C122-0787: vid-set add U9_ALX/NCS/LE-102310 policy-list Traffic-9 vlan-type c-vlan vid-list 2310
+C122-0787:     policy edit Traffic-9 14 state enable action permit pre-marking green regulator enable U9_ALX/NCS/LE-102310 filter vlan U9_ALX/NCS/LE-102310 evc-encapsulation replace evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port LAG-3
+C122-0787: cfm add meg name LEXXX-102310 name-format icc-based ccm-interval 1000 index 4 mhf-creation none sndr-id-perm none  level 1 rmep-auto-discovery disable mepid-list 1,2 vid-list 2410 vlan-type s-vlan
+C122-0787:     cfm add mep name LEXXX-102310|1|2  active yes index 1 direction down cci-enable yes ccm-seq-number enable meg-idx 4 lowest-alarm-pri macRemErrXconAis mep-id 1 port LAG-3 priority 4 pvid 2410
+C122-0787:     cfm add dmm name ALX/NCS/LE-102310|1|1|2 index 1 enable yes  interval 1000 mep-idx 1 ow-ad-threshold 125 ow-adv-threshold 4 ow-delay enable ow-delay-threshold 4 ow-dv enable ow-dv-threshold 10  ow-max-delay 125 ow-max-dv 50  priority 4 reference-period 15  rmep-id 2 tw-ad-threshold 250 tw-adv-threshold 10 tw-delay enable tw-delay-threshold 4 tw-dv enable tw-dv-threshold 4  tw-max-delay 250 tw-max-dv 10
+C122-0787:     cfm add slm name ALX/NCS/LE-102310|1|1|2 index 1 far-end-threshold 100000  interval 100 mep-idx 1 near-end-threshold 100000 priority 4 reference-period 15  rmep-id 2 state enable
+C122-0787:     sa add service ALX/NCS/LE-102310|1|1|2 window-size 5 hli-window-size 3 time-interval 20 reporting-period 5
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2F slm-far-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2N slm-near-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa edit service ALX/NCS/LE-102310|1|1|2 state IS
+C122-0787: 
+C122-0787: 
+****  Configration completed on LTS_144
+**** wait for 10 seconds
+**** AR18 : ccm is UP
+LTS_144 : ccm is UP
+*** L2 Loop create commands are templated for AR18
+*** L2 Loop delete commands are templated for AR18
+*** Loop create commands are templated for LTS_144
+*** Loop delete commands are templated for LTS_144
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#int Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#ethernet loopback permit internal
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#commit
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#exit
+
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback start local interface Bundle-Ether581.2310 internal destination mac-address 0022.0022.0022 timeout 1800
+
+Session on interface Bundle-Ether581.2310 successfully created with ID 1.
+RP/0/RP0/CPU0:ar18.BLB#
+
+C122-0787: y1564 add test Y1564-ALX-NCS-LE-102310 description STANDARD_P2P_ACCEPTANCE_TEST configuration enable step-duration 15 performance enable test-duration 1 parallel enable port PORT-6 delay-type two-way-delay time-sync-mandatory disable packet-type l2-generic dst-mac-addr 00:22:00:22:00:22 y1731-level 1
+y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan
+C122-0787: y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan
+C122-0787:     Y1564 start activation test Y1564-ALX-NCS-LE-102310 filename Y1564-LE-102310
+C122-0787: 
+Name          : Y1564-LE-102310
+Overall Status: IN PROGRESS
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       63%       ---       ---       ---       ---       ---       ---         ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+***  Hold your breathe for 150 seconds
+Name          : Y1564-LE-102310
+Overall Status: PASSED
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       PASS      PASS      PASS      PASS      N/A       N/A       PASS        ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback stop local interface Bundle-Ether581.2310 id 1
+
+Session with ID 1 on interface Bundle-Ether581.2310 successfully stopped.
+RP/0/RP0/CPU0:ar18.BLB#configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#no ethernet loopback
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#
+
+C122-0787: 
+C122-0787: Y1564 delete report Y1564-LE-102310
+C122-0787: 
+C122-0787: 
+C122-0787: Y1564 delete test Y1564-ALX-NCS-LE-102310
+C122-0787: 
+**** LTS_144 :
+Statistics for MEP instance 1, MEPID 1
+
+Transmit                                Receive
+ CCM                   :           208   CCM                   :           416
+ CCM with RDI          :             0   CCM with RDI          :             2
+ LBM                   :             0   LBR                   :             0
+ LBR                   :             0   LBM                   :             0
+ LTM                   :             0   LTR                   :             0
+ LTR                   :             0   LTM                   :             0
+ CSF                   :             0   CSF                   :             0
+ DMM priority 0        :             0   DMR priority 0        :           207
+ DMM priority 1        :             0   DMR priority 1        :             0
+ DMM priority 2        :             0   DMR priority 2        :             0
+ DMM priority 3        :             0   DMR priority 3        :             0
+ DMM priority 4        :           207   DMR priority 4        :             0
+ DMM priority 5        :             0   DMR priority 5        :             0
+ DMM priority 6        :             0   DMR priority 6        :             0
+ DMM priority 7        :             0   DMR priority 7        :             0
+ DMR priority 0        :             0   DMM priority 0        :             0
+ DMR priority 1        :             0   DMM priority 1        :             0
+ DMR priority 2        :             0   DMM priority 2        :             0
+ DMR priority 3        :             0   DMM priority 3        :             0
+ DMR priority 4        :             0   DMM priority 4        :             0
+ DMR priority 5        :             0   DMM priority 5        :             0
+ DMR priority 6        :             0   DMM priority 6        :             0
+ DMR priority 7        :             0   DMM priority 7        :             0
+ SLM priority 0        :             0   SLR priority 0        :         2,075
+ SLM priority 1        :             0   SLR priority 1        :             0
+ SLM priority 2        :             0   SLR priority 2        :             0
+ SLM priority 3        :             0   SLR priority 3        :             0
+ SLM priority 4        :         2,075   SLR priority 4        :             0
+ SLM priority 5        :             0   SLR priority 5        :             0
+ SLM priority 6        :             0   SLR priority 6        :             0
+ SLM priority 7        :             0   SLR priority 7        :             0
+ SLR priority 0        :             0   SLM priority 0        :             0
+ SLR priority 1        :             0   SLM priority 1        :             0
+ SLR priority 2        :             0   SLM priority 2        :             0
+ SLR priority 3        :             0   SLM priority 3        :             0
+ SLR priority 4        :             0   SLM priority 4        :             0
+ SLR priority 5        :             0   SLM priority 5        :             0
+ SLR priority 6        :             0   SLM priority 6        :             0
+ SLR priority 7        :             0   SLM priority 7        :             0
+
+Receive errors
+ CCM sequence errors   :             0   Unexpected LBR        :             0
+ LBR out of order      :             0   LBR with bad MSDU     :             0
+ Unexpected LTR        :             0   LTR dropped bad MAC   :             0
+ CSF invalid flags     :             0  
+
+Domain COLT-1 (level 1), Service ALX_NCS_LE-102310
+Up MEP on Bundle-Ether581.2310 MEP-ID 2
+================================================================================
+  Interface state: Up      MAC address: 7c31.0e08.6cdb
+  Peer MEPs: 1 up, 0 with errors, 0 timed out (archived)
+  Cross-check errors: 0 missing, 0 unexpected
+
+  CCM generation enabled:  Yes, 1s (Remote Defect detected: No)
+                           CCM processing offloaded to software
+  AIS generation enabled:  No
+  Sending AIS:             No
+  Receiving AIS:           No
+
+  Packet        Sent      Received
+  ------  ----------  ---------------------------------------------------------
+  CCM            213           208  (out of seq: 0)
+  DMM              0           208
+  DMR            208             0
+  SLM              0          2084
+  SLR           2084             0
+
+Bundle-Ether581.2310 input: 600000-Standard-DIPNKR
+
+Class class-default
+  Classification statistics          (packets/bytes)     (rate - kbps)
+    Matched             :             4157785/7221018833           158058
+    Transmitted         :             4157785/7221018833           158058
+    Total Dropped       :                   0/0                    0
+  Policing statistics                (packets/bytes)     (rate - kbps) 
+    Policed(conform)    :                 675/1167459              1
+    Policed(exceed)     :             4157110/7219851374           157722
+    Policed(violate)    :                   0/0                    0
+    Policed and dropped :                   0/0                  
+Policy Bag Stats time: 1603211840865  [Local Time: 10/20/20 16:37:20.865] 
+NOTE:- Configured values are displayed within parentheses
+Node 0/0/CPU0, Interface Bundle-Ether581.2310 Ifh 0x80040fe (BundleMain) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           20000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+New traffic class                        =   2
+New qos group                            =   4
+
+Policer Bucket ID                        =   0x58
+Policer Stats Handle                     =   0x0
+Policer committed rate                   =   0 kbps (0 %)
+Policer peak rate                        =   601953 kbps (3 %)
+Policer conform burst                    =   1191168 bytes (1200 kilobytes)
+Policer exceed burst                     =   2189312 bytes (1000 kilobytes)
+
+Interface TenGigE0/0/0/13 Ifh 0x48 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+Interface TenGigE0/0/0/12 Ifh 0x60 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#no interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no service ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+policy edit Traffic-5 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: policy edit Traffic-9 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: bandwidth-regulator delete regulator U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete U9_ALX/NCS/LE-102310
+C122-0787: cfm delete meg 4
+C122-0787:     sa delete service ALX/NCS/LE-102310|1|1|2
+C122-0787: 
+C122-0787: 
+**** disconnected successfully from node AR18
+**** disconnected successfully from node AR11
+**** disconnected successfully from node LTS_144
+!
+!!
+************** Test FY type EP ************* 
+!!!!!!
+**** connection established with node AR18
+**** connection established with node AR11
+**** connection established with node LTS_144
+****  Logged in node : LTS_144
+****  persing completed on LTS_144
+{'meg': 4, 'del_meg': 4, 'mep': 1, 'dmm': 1, 'slm': 1}
+****  Logged in node : AR18
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport encapsulation dot1q 2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport service-policy input 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-l2vpn-xc-p2p-pw)#evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7514
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn-svc)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 continuity-check interval 1s
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 mep crosscheck mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log crosscheck errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check mep changes
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 cos 4
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile DMM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile SLM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap)# class class-default
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  police rate percent 0 burst 1200 kbytes peak-rate percent 3 peak-burst 1000 kbytes
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  set traffic-class 2
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  set qos-group 4
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# end-policy-map
+
+RP/0/RP0/CPU0:ar18.BLB(config)#!
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+****  Configration completed on AR18
+****  Logged in node : AR11
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport encapsulation dot1ad 2410
+
+RP/0/RP0/CPU0:ar11.BLB(config)#        interface Bundle-Ether112.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    interface Bundle-Ether112.2310 l2transport
+
+RP/0/RP0/CPU0:ar11.BLB(config-subif)#interface Bundle-Ether112.2310 l2transport service-policy input NNI-QOS-INGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport service-policy output NNI-QOS-EGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p-pw)#    evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7505
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+****  Configration completed on AR11
+****  Logged in node : LTS_144
+bandwidth-regulator add regulator U9_ALX/NCS/LE-102310 cir 150000 cir-max 150000 cbs 100 eir 600000 eir-max 600000 ebs 10 color-mode blind coupling-flag false
+C122-0787: bandwidth-regulator add regulator N5_ALX/NCS/LE-102310  cir 600000 cir-max 600000 cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+C122-0787: vid-set add N5_ALX/NCS/LE-102310 policy-list Traffic-5 vlan-type s-vlan vid-list 2410
+C122-0787:     policy edit Traffic-5 14 state enable action permit pre-marking green regulator enable N5_ALX/NCS/LE-102310 filter vlan N5_ALX/NCS/LE-102310 evc-encapsulation replace evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port PORT-9
+C122-0787: filter add l2 U9_ALX/NCS/LE-102310 vlan1-ethertype s-vlan vlan1-id 2410 enable vlan2-ethertype c-vlan vlan2-id 2310 enable
+C122-0787:     policy edit Traffic-9 14 state enable action permit pre-marking green regulator enable U9_ALX/NCS/LE-102310 filter l2 U9_ALX/NCS/LE-102310 evc-encapsulation replace evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port LAG-3
+C122-0787: interface add s-vlan-2410 type vlan port LAG-3 vlan1-ethertype s-vlan vlan1-id 2410 vlan1-priority 4
+    cfm assign interface s-vlan-2410
+C122-0787:     cfm assign interface s-vlan-2410
+C122-0787:     cfm add meg name LEXXX-102310 name-format icc-based ccm-interval 1000 index 4 mhf-creation none sndr-id-perm none  level 1 rmep-auto-discovery disable mepid-list 1,2 vid-list 2310 vlan-type c-vlan
+C122-0787:     cfm add mep name LEXXX-102310|1|2  active yes index 1 direction down cci-enable yes ccm-seq-number enable meg-idx 4 lowest-alarm-pri macRemErrXconAis mep-id 1 port s-vlan-2410 priority 4 pvid 2310
+C122-0787:     cfm add dmm name ALX/NCS/LE-102310|1|1|2 index 1 enable yes  interval 1000 mep-idx 1 ow-ad-threshold 125 ow-adv-threshold 4 ow-delay enable ow-delay-threshold 4 ow-dv enable ow-dv-threshold 10  ow-max-delay 125 ow-max-dv 50  priority 4 reference-period 15  rmep-id 2 tw-ad-threshold 250 tw-adv-threshold 10 tw-delay enable tw-delay-threshold 4 tw-dv enable tw-dv-threshold 4  tw-max-delay 250 tw-max-dv 10
+C122-0787:     cfm add slm name ALX/NCS/LE-102310|1|1|2 index 1 far-end-threshold 100000  interval 100 mep-idx 1 near-end-threshold 100000 priority 4 reference-period 15  rmep-id 2 state enable
+C122-0787:     sa add service ALX/NCS/LE-102310|1|1|2 window-size 5 hli-window-size 3 time-interval 20 reporting-period 5
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2F slm-far-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2N slm-near-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa edit service ALX/NCS/LE-102310|1|1|2 state IS
+C122-0787: 
+C122-0787: 
+****  Configration completed on LTS_144
+**** wait for 10 seconds
+**** AR18 : ccm is UP
+LTS_144 : ccm is UP
+*** L2 Loop create commands are templated for AR18
+*** L2 Loop delete commands are templated for AR18
+*** Loop create commands are templated for LTS_144
+*** Loop delete commands are templated for LTS_144
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#int Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#ethernet loopback permit internal
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#commit
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#exit
+
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback start local interface Bundle-Ether581.2310 internal destination mac-address 0022.0022.0022 timeout 1800
+
+Session on interface Bundle-Ether581.2310 successfully created with ID 1.
+RP/0/RP0/CPU0:ar18.BLB#
+
+C122-0787: y1564 add test Y1564-ALX-NCS-LE-102310 description STANDARD_P2P_ACCEPTANCE_TEST configuration enable step-duration 15 performance enable test-duration 1 parallel enable port PORT-6 delay-type two-way-delay time-sync-mandatory disable packet-type l2-generic dst-mac-addr 00:22:00:22:00:22 y1731-level 1
+y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan vlan2-header enable vlan2-id 2310 vlan2-priority 4 vlan2-ethertype c-vlan
+C122-0787: y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan vlan2-header enable vlan2-id 2310 vlan2-priority 4 vlan2-ethertype c-vlan
+C122-0787:     Y1564 start activation test Y1564-ALX-NCS-LE-102310 filename Y1564-LE-102310
+C122-0787: 
+Name          : Y1564-LE-102310
+Overall Status: IN PROGRESS
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       63%       ---       ---       ---       ---       ---       ---         ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+***  Hold your breathe for 150 seconds
+Name          : Y1564-LE-102310
+Overall Status: PASSED
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       PASS      PASS      PASS      PASS      N/A       N/A       PASS        ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback stop local interface Bundle-Ether581.2310 id 1
+
+Session with ID 1 on interface Bundle-Ether581.2310 successfully stopped.
+RP/0/RP0/CPU0:ar18.BLB#configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#no ethernet loopback
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#
+
+C122-0787: 
+C122-0787: Y1564 delete report Y1564-LE-102310
+C122-0787: 
+C122-0787: 
+C122-0787: Y1564 delete test Y1564-ALX-NCS-LE-102310
+C122-0787: 
+**** LTS_144 :
+Statistics for MEP instance 1, MEPID 1
+
+Transmit                                Receive
+ CCM                   :           208   CCM                   :           416
+ CCM with RDI          :             0   CCM with RDI          :             0
+ LBM                   :             0   LBR                   :             0
+ LBR                   :             0   LBM                   :             0
+ LTM                   :             0   LTR                   :             0
+ LTR                   :             0   LTM                   :             0
+ CSF                   :             0   CSF                   :             0
+ DMM priority 0        :             0   DMR priority 0        :             0
+ DMM priority 1        :             0   DMR priority 1        :             0
+ DMM priority 2        :             0   DMR priority 2        :             0
+ DMM priority 3        :             0   DMR priority 3        :             0
+ DMM priority 4        :           207   DMR priority 4        :           207
+ DMM priority 5        :             0   DMR priority 5        :             0
+ DMM priority 6        :             0   DMR priority 6        :             0
+ DMM priority 7        :             0   DMR priority 7        :             0
+ DMR priority 0        :             0   DMM priority 0        :             0
+ DMR priority 1        :             0   DMM priority 1        :             0
+ DMR priority 2        :             0   DMM priority 2        :             0
+ DMR priority 3        :             0   DMM priority 3        :             0
+ DMR priority 4        :             0   DMM priority 4        :             0
+ DMR priority 5        :             0   DMM priority 5        :             0
+ DMR priority 6        :             0   DMM priority 6        :             0
+ DMR priority 7        :             0   DMM priority 7        :             0
+ SLM priority 0        :             0   SLR priority 0        :             0
+ SLM priority 1        :             0   SLR priority 1        :             0
+ SLM priority 2        :             0   SLR priority 2        :             0
+ SLM priority 3        :             0   SLR priority 3        :             0
+ SLM priority 4        :         2,072   SLR priority 4        :         2,072
+ SLM priority 5        :             0   SLR priority 5        :             0
+ SLM priority 6        :             0   SLR priority 6        :             0
+ SLM priority 7        :             0   SLR priority 7        :             0
+ SLR priority 0        :             0   SLM priority 0        :             0
+ SLR priority 1        :             0   SLM priority 1        :             0
+ SLR priority 2        :             0   SLM priority 2        :             0
+ SLR priority 3        :             0   SLM priority 3        :             0
+ SLR priority 4        :             0   SLM priority 4        :             0
+ SLR priority 5        :             0   SLM priority 5        :             0
+ SLR priority 6        :             0   SLM priority 6        :             0
+ SLR priority 7        :             0   SLM priority 7        :             0
+
+Receive errors
+ CCM sequence errors   :             0   Unexpected LBR        :             0
+ LBR out of order      :             0   LBR with bad MSDU     :             0
+ Unexpected LTR        :             0   LTR dropped bad MAC   :             0
+ CSF invalid flags     :             0  
+
+Domain COLT-1 (level 1), Service ALX_NCS_LE-102310
+Up MEP on Bundle-Ether581.2310 MEP-ID 2
+================================================================================
+  Interface state: Up      MAC address: 7c31.0e08.6cdb
+  Peer MEPs: 1 up, 0 with errors, 0 timed out (archived)
+  Cross-check errors: 0 missing, 0 unexpected
+
+  CCM generation enabled:  Yes, 1s (Remote Defect detected: No)
+                           CCM processing offloaded to software
+  AIS generation enabled:  No
+  Sending AIS:             No
+  Receiving AIS:           No
+
+  Packet        Sent      Received
+  ------  ----------  ---------------------------------------------------------
+  CCM            214           208  (out of seq: 0)
+  DMM              0           208
+  DMR            208             0
+  SLM              0          2082
+  SLR           2082             0
+
+Bundle-Ether581.2310 input: 600000-Standard-DIPNKR
+
+Class class-default
+  Classification statistics          (packets/bytes)     (rate - kbps)
+    Matched             :             4149514/7221188462           283875
+    Transmitted         :             4149514/7221188462           283875
+    Total Dropped       :                   0/0                    0
+  Policing statistics                (packets/bytes)     (rate - kbps) 
+    Policed(conform)    :                 674/1169652              3
+    Policed(exceed)     :             4148840/7220018810           281570
+    Policed(violate)    :                   0/0                    0
+    Policed and dropped :                   0/0                  
+Policy Bag Stats time: 1603212080867  [Local Time: 10/20/20 16:41:20.867] 
+NOTE:- Configured values are displayed within parentheses
+Node 0/0/CPU0, Interface Bundle-Ether581.2310 Ifh 0x8004106 (BundleMain) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           20000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+New traffic class                        =   2
+New qos group                            =   4
+
+Policer Bucket ID                        =   0x58
+Policer Stats Handle                     =   0x0
+Policer committed rate                   =   0 kbps (0 %)
+Policer peak rate                        =   601953 kbps (3 %)
+Policer conform burst                    =   1191168 bytes (1200 kilobytes)
+Policer exceed burst                     =   2189312 bytes (1000 kilobytes)
+
+Interface TenGigE0/0/0/13 Ifh 0x48 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+Interface TenGigE0/0/0/12 Ifh 0x60 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#no interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no service ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+policy edit Traffic-5 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: policy edit Traffic-9 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787:     filter delete l2 U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete N5_ALX/NCS/LE-102310
+C122-0787: cfm delete meg 4
+C122-0787:     sa delete service ALX/NCS/LE-102310|1|1|2
+C122-0787:     cfm unassign interface s-vlan-2410
+C122-0787:     interface delete s-vlan-2410
+
+C122-0787: 
+C122-0787: 
+**** disconnected successfully from node AR18
+**** disconnected successfully from node AR11
+**** disconnected successfully from node LTS_144
+!
+!!
+************** Test YF type EP ************* 
+!!!!!!
+**** connection established with node AR18
+**** connection established with node AR11
+**** connection established with node LTS_144
+****  Logged in node : LTS_144
+****  persing completed on LTS_144
+{'meg': 4, 'del_meg': 4, 'mep': 1, 'dmm': 1, 'slm': 1}
+****  Logged in node : AR18
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport encapsulation dot1ad 2410 dot1q 2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport service-policy input 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-l2vpn-xc-p2p-pw)#evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7514
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn-svc)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 continuity-check interval 1s
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 mep crosscheck mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log crosscheck errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check mep changes
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 cos 4
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile DMM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile SLM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap)# class class-default
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  police rate percent 0 burst 1200 kbytes peak-rate percent 3 peak-burst 1000 kbytes
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  set traffic-class 2
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  set qos-group 4
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# end-policy-map
+
+RP/0/RP0/CPU0:ar18.BLB(config)#!
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+****  Configration completed on AR18
+****  Logged in node : AR11
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport encapsulation dot1ad 2410
+
+RP/0/RP0/CPU0:ar11.BLB(config)#        interface Bundle-Ether112.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    interface Bundle-Ether112.2310 l2transport
+
+RP/0/RP0/CPU0:ar11.BLB(config-subif)#interface Bundle-Ether112.2310 l2transport service-policy input NNI-QOS-INGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport service-policy output NNI-QOS-EGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p-pw)#    evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7505
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+****  Configration completed on AR11
+****  Logged in node : LTS_144
+bandwidth-regulator add regulator U9_ALX/NCS/LE-102310 cir 150000 cir-max 150000 cbs 100 eir 600000 eir-max 600000 ebs 10 color-mode blind coupling-flag false
+C122-0787: bandwidth-regulator add regulator N5_ALX/NCS/LE-102310  cir 600000 cir-max 600000 cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+C122-0787: vid-set add N5_ALX/NCS/LE-102310 policy-list Traffic-5 vlan-type s-vlan vid-list 2410
+C122-0787:     policy edit Traffic-5 14 state enable action permit pre-marking green regulator enable N5_ALX/NCS/LE-102310 filter vlan N5_ALX/NCS/LE-102310 evc-encapsulation pop cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port PORT-9
+C122-0787: vid-set add U9_ALX/NCS/LE-102310 policy-list Traffic-9 vlan-type c-vlan vid-list 2310
+C122-0787:     policy edit Traffic-9 14 state enable action permit pre-marking green regulator enable U9_ALX/NCS/LE-102310 filter vlan U9_ALX/NCS/LE-102310 evc-encapsulation push evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port LAG-3
+C122-0787: interface add s-vlan-2410 type vlan port LAG-3 vlan1-ethertype s-vlan vlan1-id 2410 vlan1-priority 4
+    cfm assign interface s-vlan-2410
+C122-0787:     cfm assign interface s-vlan-2410
+C122-0787:     cfm add meg name LEXXX-102310 name-format icc-based ccm-interval 1000 index 4 mhf-creation none sndr-id-perm none  level 1 rmep-auto-discovery disable mepid-list 1,2 vid-list 2310 vlan-type c-vlan
+C122-0787:     cfm add mep name LEXXX-102310|1|2  active yes index 1 direction down cci-enable yes ccm-seq-number enable meg-idx 4 lowest-alarm-pri macRemErrXconAis mep-id 1 port s-vlan-2410 priority 4 pvid 2310
+C122-0787:     cfm add dmm name ALX/NCS/LE-102310|1|1|2 index 1 enable yes  interval 1000 mep-idx 1 ow-ad-threshold 125 ow-adv-threshold 4 ow-delay enable ow-delay-threshold 4 ow-dv enable ow-dv-threshold 10  ow-max-delay 125 ow-max-dv 50  priority 4 reference-period 15  rmep-id 2 tw-ad-threshold 250 tw-adv-threshold 10 tw-delay enable tw-delay-threshold 4 tw-dv enable tw-dv-threshold 4  tw-max-delay 250 tw-max-dv 10
+C122-0787:     cfm add slm name ALX/NCS/LE-102310|1|1|2 index 1 far-end-threshold 100000  interval 100 mep-idx 1 near-end-threshold 100000 priority 4 reference-period 15  rmep-id 2 state enable
+C122-0787:     sa add service ALX/NCS/LE-102310|1|1|2 window-size 5 hli-window-size 3 time-interval 20 reporting-period 5
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2F slm-far-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2N slm-near-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa edit service ALX/NCS/LE-102310|1|1|2 state IS
+C122-0787: 
+C122-0787: 
+****  Configration completed on LTS_144
+**** wait for 10 seconds
+**** AR18 : ccm is UP
+LTS_144 : ccm is UP
+*** L2 Loop create commands are templated for AR18
+*** L2 Loop delete commands are templated for AR18
+*** Loop create commands are templated for LTS_144
+*** Loop delete commands are templated for LTS_144
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#int Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#ethernet loopback permit internal
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#commit
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#exit
+
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback start local interface Bundle-Ether581.2310 internal destination mac-address 0022.0022.0022 timeout 1800
+
+Session on interface Bundle-Ether581.2310 successfully created with ID 1.
+RP/0/RP0/CPU0:ar18.BLB#
+
+C122-0787: y1564 add test Y1564-ALX-NCS-LE-102310 description STANDARD_P2P_ACCEPTANCE_TEST configuration enable step-duration 15 performance enable test-duration 1 parallel enable port PORT-6 delay-type two-way-delay time-sync-mandatory disable packet-type l2-generic dst-mac-addr 00:22:00:22:00:22 y1731-level 1
+y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan vlan2-header enable vlan2-id 2310 vlan2-priority 4 vlan2-ethertype c-vlan
+C122-0787: y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan vlan2-header enable vlan2-id 2310 vlan2-priority 4 vlan2-ethertype c-vlan
+C122-0787:     Y1564 start activation test Y1564-ALX-NCS-LE-102310 filename Y1564-LE-102310
+C122-0787: 
+Name          : Y1564-LE-102310
+Overall Status: IN PROGRESS
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       63%       ---       ---       ---       ---       ---       ---         ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+***  Hold your breathe for 150 seconds
+Name          : Y1564-LE-102310
+Overall Status: PASSED
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       PASS      PASS      PASS      PASS      N/A       N/A       PASS        ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback stop local interface Bundle-Ether581.2310 id 1
+
+Session with ID 1 on interface Bundle-Ether581.2310 successfully stopped.
+RP/0/RP0/CPU0:ar18.BLB#configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#no ethernet loopback
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#
+
+C122-0787: 
+C122-0787: Y1564 delete report Y1564-LE-102310
+C122-0787: 
+C122-0787: 
+C122-0787: Y1564 delete test Y1564-ALX-NCS-LE-102310
+C122-0787: 
+**** LTS_144 :
+Statistics for MEP instance 1, MEPID 1
+
+Transmit                                Receive
+ CCM                   :           207   CCM                   :           416
+ CCM with RDI          :             0   CCM with RDI          :             2
+ LBM                   :             0   LBR                   :             0
+ LBR                   :             0   LBM                   :             0
+ LTM                   :             0   LTR                   :             0
+ LTR                   :             0   LTM                   :             0
+ CSF                   :             0   CSF                   :             0
+ DMM priority 0        :             0   DMR priority 0        :             0
+ DMM priority 1        :             0   DMR priority 1        :             0
+ DMM priority 2        :             0   DMR priority 2        :             0
+ DMM priority 3        :             0   DMR priority 3        :             0
+ DMM priority 4        :           207   DMR priority 4        :           207
+ DMM priority 5        :             0   DMR priority 5        :             0
+ DMM priority 6        :             0   DMR priority 6        :             0
+ DMM priority 7        :             0   DMR priority 7        :             0
+ DMR priority 0        :             0   DMM priority 0        :             0
+ DMR priority 1        :             0   DMM priority 1        :             0
+ DMR priority 2        :             0   DMM priority 2        :             0
+ DMR priority 3        :             0   DMM priority 3        :             0
+ DMR priority 4        :           137   DMM priority 4        :           137
+ DMR priority 5        :             0   DMM priority 5        :             0
+ DMR priority 6        :             0   DMM priority 6        :             0
+ DMR priority 7        :             0   DMM priority 7        :             0
+ SLM priority 0        :             0   SLR priority 0        :             0
+ SLM priority 1        :             0   SLR priority 1        :             0
+ SLM priority 2        :             0   SLR priority 2        :             0
+ SLM priority 3        :             0   SLR priority 3        :             0
+ SLM priority 4        :         2,073   SLR priority 4        :         2,073
+ SLM priority 5        :             0   SLR priority 5        :             0
+ SLM priority 6        :             0   SLR priority 6        :             0
+ SLM priority 7        :             0   SLR priority 7        :             0
+ SLR priority 0        :             0   SLM priority 0        :             0
+ SLR priority 1        :             0   SLM priority 1        :             0
+ SLR priority 2        :             0   SLM priority 2        :             0
+ SLR priority 3        :             0   SLM priority 3        :             0
+ SLR priority 4        :         1,369   SLM priority 4        :         1,369
+ SLR priority 5        :             0   SLM priority 5        :             0
+ SLR priority 6        :             0   SLM priority 6        :             0
+ SLR priority 7        :             0   SLM priority 7        :             0
+
+Receive errors
+ CCM sequence errors   :             0   Unexpected LBR        :             0
+ LBR out of order      :             0   LBR with bad MSDU     :             0
+ Unexpected LTR        :             0   LTR dropped bad MAC   :             0
+ CSF invalid flags     :             0  
+
+Domain COLT-1 (level 1), Service ALX_NCS_LE-102310
+Up MEP on Bundle-Ether581.2310 MEP-ID 2
+================================================================================
+  Interface state: Up      MAC address: 7c31.0e08.6cdb
+  Peer MEPs: 1 up, 0 with errors, 0 timed out (archived)
+  Cross-check errors: 0 missing, 0 unexpected
+
+  CCM generation enabled:  Yes, 1s (Remote Defect detected: No)
+                           CCM processing offloaded to software
+  AIS generation enabled:  No
+  Sending AIS:             No
+  Receiving AIS:           No
+
+  Packet        Sent      Received
+  ------  ----------  ---------------------------------------------------------
+  CCM            214           207  (out of seq: 0)
+  DMM            138           208
+  DMR            208           138
+  SLM           1379          2083
+  SLR           2083          1379
+
+Bundle-Ether581.2310 input: 600000-Standard-DIPNKR
+
+Class class-default
+  Classification statistics          (packets/bytes)     (rate - kbps)
+    Matched             :             4149514/7237786518           179182
+    Transmitted         :             4149514/7237786518           179182
+    Total Dropped       :                   0/0                    0
+  Policing statistics                (packets/bytes)     (rate - kbps) 
+    Policed(conform)    :                 674/1172348              0
+    Policed(exceed)     :             4148840/7236614170           179182
+    Policed(violate)    :                   0/0                    0
+    Policed and dropped :                   0/0                  
+Policy Bag Stats time: 1603212350864  [Local Time: 10/20/20 16:45:50.864] 
+NOTE:- Configured values are displayed within parentheses
+Node 0/0/CPU0, Interface Bundle-Ether581.2310 Ifh 0x800410e (BundleMain) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           20000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+New traffic class                        =   2
+New qos group                            =   4
+
+Policer Bucket ID                        =   0x58
+Policer Stats Handle                     =   0x0
+Policer committed rate                   =   0 kbps (0 %)
+Policer peak rate                        =   601953 kbps (3 %)
+Policer conform burst                    =   1191168 bytes (1200 kilobytes)
+Policer exceed burst                     =   2189312 bytes (1000 kilobytes)
+
+Interface TenGigE0/0/0/13 Ifh 0x48 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+Interface TenGigE0/0/0/12 Ifh 0x60 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#no interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no service ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+policy edit Traffic-5 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: policy edit Traffic-9 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: bandwidth-regulator delete regulator U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete U9_ALX/NCS/LE-102310
+C122-0787: cfm delete meg 4
+C122-0787:     sa delete service ALX/NCS/LE-102310|1|1|2
+C122-0787:     cfm unassign interface s-vlan-2410
+C122-0787:     interface delete s-vlan-2410
+
+C122-0787: 
+C122-0787: 
+**** disconnected successfully from node AR18
+**** disconnected successfully from node AR11
+**** disconnected successfully from node LTS_144
+!
+!!
+************** Test YY type EP ************* 
+!!!!!!
+**** connection established with node AR18
+**** connection established with node AR11
+**** connection established with node LTS_144
+****  Logged in node : LTS_144
+****  persing completed on LTS_144
+{'meg': 4, 'del_meg': 4, 'mep': 1, 'dmm': 1, 'slm': 1}
+****  Logged in node : AR18
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport encapsulation dot1ad 2410 dot1q 2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport service-policy input 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-l2vpn-xc-p2p-pw)#evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7514
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn-svc)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 continuity-check interval 1s
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 mep crosscheck mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log crosscheck errors
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-102310 xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 id icc-based LE XXX-102310 log continuity-check mep changes
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 cos 4
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile DMM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-102310 mep-id 2 sla operation profile SLM4 target mep-id 1
+
+RP/0/RP0/CPU0:ar18.BLB(config)#policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap)# class class-default
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  police rate percent 0 burst 1200 kbytes peak-rate percent 3 peak-burst 1000 kbytes
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c-police)#  set traffic-class 2
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)#  set qos-group 4
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# !
+
+RP/0/RP0/CPU0:ar18.BLB(config-pmap-c)# end-policy-map
+
+RP/0/RP0/CPU0:ar18.BLB(config)#!
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+****  Configration completed on AR18
+****  Logged in node : AR11
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport encapsulation dot1ad 2410
+
+RP/0/RP0/CPU0:ar11.BLB(config)#        interface Bundle-Ether112.2310 l2transport rewrite ingress tag pop 1 symmetric
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    interface Bundle-Ether112.2310 l2transport
+
+RP/0/RP0/CPU0:ar11.BLB(config-subif)#interface Bundle-Ether112.2310 l2transport service-policy input NNI-QOS-INGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#interface Bundle-Ether112.2310 l2transport service-policy output NNI-QOS-EGRESS
+
+RP/0/RP0/CPU0:ar11.BLB(config)#l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#    l2vpn xconnect group ALX_NCS_LE-102310 p2p ALX_NCS_LE-102310 neighbor evpn evi 52310 target 52310 source 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-l2vpn-xc-p2p-pw)#    evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config-evpn-instance)#evpn evi 52310 bgp rd 8220001:7505
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target import 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#evpn evi 52310 bgp route-target export 8220001:52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+****  Configration completed on AR11
+****  Logged in node : LTS_144
+bandwidth-regulator add regulator U9_ALX/NCS/LE-102310 cir 150000 cir-max 150000 cbs 100 eir 600000 eir-max 600000 ebs 10 color-mode blind coupling-flag false
+C122-0787: bandwidth-regulator add regulator N5_ALX/NCS/LE-102310  cir 600000 cir-max 600000 cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+C122-0787: vid-set add N5_ALX/NCS/LE-102310 policy-list Traffic-5 vlan-type s-vlan vid-list 2410
+C122-0787:     policy edit Traffic-5 14 state enable action permit pre-marking green regulator enable N5_ALX/NCS/LE-102310 filter vlan N5_ALX/NCS/LE-102310 evc-encapsulation replace evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port PORT-9
+C122-0787: filter add l2 U9_ALX/NCS/LE-102310 vlan1-ethertype s-vlan vlan1-id 2410 enable vlan2-ethertype c-vlan vlan2-id 2310 enable
+C122-0787:     policy edit Traffic-9 14 state enable action permit pre-marking green regulator enable U9_ALX/NCS/LE-102310 filter l2 U9_ALX/NCS/LE-102310 evc-encapsulation replace evc-ethertype s-vlan evc-vlan-id 2410 cos-mapping direct green-cfi 0 green-pcp 4 yellow-cfi 0 yellow-pcp 7 out-port LAG-3
+C122-0787: interface add s-vlan-2410 type vlan port LAG-3 vlan1-ethertype s-vlan vlan1-id 2410 vlan1-priority 4
+    cfm assign interface s-vlan-2410
+C122-0787:     cfm assign interface s-vlan-2410
+C122-0787:     cfm add meg name LEXXX-102310 name-format icc-based ccm-interval 1000 index 4 mhf-creation none sndr-id-perm none  level 1 rmep-auto-discovery disable mepid-list 1,2 vid-list 2310 vlan-type c-vlan
+C122-0787:     cfm add mep name LEXXX-102310|1|2  active yes index 1 direction down cci-enable yes ccm-seq-number enable meg-idx 4 lowest-alarm-pri macRemErrXconAis mep-id 1 port s-vlan-2410 priority 4 pvid 2310
+C122-0787:     cfm add dmm name ALX/NCS/LE-102310|1|1|2 index 1 enable yes  interval 1000 mep-idx 1 ow-ad-threshold 125 ow-adv-threshold 4 ow-delay enable ow-delay-threshold 4 ow-dv enable ow-dv-threshold 10  ow-max-delay 125 ow-max-dv 50  priority 4 reference-period 15  rmep-id 2 tw-ad-threshold 250 tw-adv-threshold 10 tw-delay enable tw-delay-threshold 4 tw-dv enable tw-dv-threshold 4  tw-max-delay 250 tw-max-dv 10
+C122-0787:     cfm add slm name ALX/NCS/LE-102310|1|1|2 index 1 far-end-threshold 100000  interval 100 mep-idx 1 near-end-threshold 100000 priority 4 reference-period 15  rmep-id 2 state enable
+C122-0787:     sa add service ALX/NCS/LE-102310|1|1|2 window-size 5 hli-window-size 3 time-interval 20 reporting-period 5
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2F slm-far-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa add metric ALX/NCS/LE-102310|1|1|2 ALX/NCS/LE-102310|1|1|2N slm-near-end-plr ALX/NCS/LE-102310|1|1|2 threshold 100000
+C122-0787:     sa edit service ALX/NCS/LE-102310|1|1|2 state IS
+C122-0787: 
+C122-0787: 
+****  Configration completed on LTS_144
+**** wait for 10 seconds
+**** AR18 : ccm is UP
+LTS_144 : ccm is UP
+*** L2 Loop create commands are templated for AR18
+*** L2 Loop delete commands are templated for AR18
+*** Loop create commands are templated for LTS_144
+*** Loop delete commands are templated for LTS_144
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#int Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#ethernet loopback permit internal
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#commit
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#exit
+
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback start local interface Bundle-Ether581.2310 internal destination mac-address 0022.0022.0022 timeout 1800
+
+Session on interface Bundle-Ether581.2310 successfully created with ID 1.
+RP/0/RP0/CPU0:ar18.BLB#
+
+C122-0787: y1564 add test Y1564-ALX-NCS-LE-102310 description STANDARD_P2P_ACCEPTANCE_TEST configuration enable step-duration 15 performance enable test-duration 1 parallel enable port PORT-6 delay-type two-way-delay time-sync-mandatory disable packet-type l2-generic dst-mac-addr 00:22:00:22:00:22 y1731-level 1
+y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan vlan2-header enable vlan2-id 2310 vlan2-priority 4 vlan2-ethertype c-vlan
+C122-0787: y1564 edit service Y1564-ALX-NCS-LE-102310 1 state enable policing disable step enable availability enable cir 600 cbs 8 eir 0 ebs 8 size-type emix user-packet-size 9100 sequence-of-sizes abcdefgu ftd 200000 ftd-type avg fdv 1000 fdv-type avg flr 0.0001 m-factor 1 y1731-level 1 vlan1-header enable vlan1-id 2410 vlan1-priority 4 vlan1-ethertype s-vlan vlan2-header enable vlan2-id 2310 vlan2-priority 4 vlan2-ethertype c-vlan
+C122-0787:     Y1564 start activation test Y1564-ALX-NCS-LE-102310 filename Y1564-LE-102310
+C122-0787: 
+Name          : Y1564-LE-102310
+Overall Status: IN PROGRESS
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       63%       ---       ---       ---       ---       ---       ---         ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+***  Hold your breathe for 150 seconds
+Name          : Y1564-LE-102310
+Overall Status: PASSED
+
+Service name                    25% CIR   50% CIR   75% CIR   100% CIR  CIR+EIR   Policing  Performance CBS       State
+------------------------------- --------- --------- --------- --------- --------- --------- ----------- --------- --------
+Service_1                       PASS      PASS      PASS      PASS      N/A       N/A       PASS        ---       Enabled 
+Service_2                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_3                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_4                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_5                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_6                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_7                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+Service_8                       ---       ---       ---       ---       ---       ---       ---         ---       Disabled
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#exit
+
+RP/0/RP0/CPU0:ar18.BLB#ethernet loopback stop local interface Bundle-Ether581.2310 id 1
+
+Session with ID 1 on interface Bundle-Ether581.2310 successfully stopped.
+RP/0/RP0/CPU0:ar18.BLB#configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#interface Bundle-Ether581.2310 l2transport
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#no ethernet loopback
+
+RP/0/RP0/CPU0:ar18.BLB(config-subif)#
+
+C122-0787: 
+C122-0787: Y1564 delete report Y1564-LE-102310
+C122-0787: 
+C122-0787: 
+C122-0787: Y1564 delete test Y1564-ALX-NCS-LE-102310
+C122-0787: 
+**** LTS_144 :
+Statistics for MEP instance 1, MEPID 1
+
+Transmit                                Receive
+ CCM                   :           207   CCM                   :           416
+ CCM with RDI          :             0   CCM with RDI          :             4
+ LBM                   :             0   LBR                   :             0
+ LBR                   :             0   LBM                   :             0
+ LTM                   :             0   LTR                   :             0
+ LTR                   :             0   LTM                   :             0
+ CSF                   :             0   CSF                   :             0
+ DMM priority 0        :             0   DMR priority 0        :             0
+ DMM priority 1        :             0   DMR priority 1        :             0
+ DMM priority 2        :             0   DMR priority 2        :             0
+ DMM priority 3        :             0   DMR priority 3        :             0
+ DMM priority 4        :           207   DMR priority 4        :           207
+ DMM priority 5        :             0   DMR priority 5        :             0
+ DMM priority 6        :             0   DMR priority 6        :             0
+ DMM priority 7        :             0   DMR priority 7        :             0
+ DMR priority 0        :             0   DMM priority 0        :             0
+ DMR priority 1        :             0   DMM priority 1        :             0
+ DMR priority 2        :             0   DMM priority 2        :             0
+ DMR priority 3        :             0   DMM priority 3        :             0
+ DMR priority 4        :             0   DMM priority 4        :             0
+ DMR priority 5        :             0   DMM priority 5        :             0
+ DMR priority 6        :             0   DMM priority 6        :             0
+ DMR priority 7        :             0   DMM priority 7        :             0
+ SLM priority 0        :             0   SLR priority 0        :             0
+ SLM priority 1        :             0   SLR priority 1        :             0
+ SLM priority 2        :             0   SLR priority 2        :             0
+ SLM priority 3        :             0   SLR priority 3        :             0
+ SLM priority 4        :         2,078   SLR priority 4        :         2,078
+ SLM priority 5        :             0   SLR priority 5        :             0
+ SLM priority 6        :             0   SLR priority 6        :             0
+ SLM priority 7        :             0   SLR priority 7        :             0
+ SLR priority 0        :             0   SLM priority 0        :             0
+ SLR priority 1        :             0   SLM priority 1        :             0
+ SLR priority 2        :             0   SLM priority 2        :             0
+ SLR priority 3        :             0   SLM priority 3        :             0
+ SLR priority 4        :             0   SLM priority 4        :             0
+ SLR priority 5        :             0   SLM priority 5        :             0
+ SLR priority 6        :             0   SLM priority 6        :             0
+ SLR priority 7        :             0   SLM priority 7        :             0
+
+Receive errors
+ CCM sequence errors   :             0   Unexpected LBR        :             0
+ LBR out of order      :             0   LBR with bad MSDU     :             0
+ Unexpected LTR        :             0   LTR dropped bad MAC   :             0
+ CSF invalid flags     :             0  
+
+Domain COLT-1 (level 1), Service ALX_NCS_LE-102310
+Up MEP on Bundle-Ether581.2310 MEP-ID 2
+================================================================================
+  Interface state: Up      MAC address: 7c31.0e08.6cdb
+  Peer MEPs: 1 up, 0 with errors, 0 timed out (archived)
+  Cross-check errors: 0 missing, 0 unexpected
+
+  CCM generation enabled:  Yes, 1s (Remote Defect detected: No)
+                           CCM processing offloaded to software
+  AIS generation enabled:  No
+  Sending AIS:             No
+  Receiving AIS:           No
+
+  Packet        Sent      Received
+  ------  ----------  ---------------------------------------------------------
+  CCM            213           207  (out of seq: 0)
+  DMM              0           208
+  DMR            208             0
+  SLM              0          2087
+  SLR           2087             0
+
+Bundle-Ether581.2310 input: 600000-Standard-DIPNKR
+
+Class class-default
+  Classification statistics          (packets/bytes)     (rate - kbps)
+    Matched             :             4149514/7237786518           334412
+    Transmitted         :             4149514/7237786518           334412
+    Total Dropped       :                   0/0                    0
+  Policing statistics                (packets/bytes)     (rate - kbps) 
+    Policed(conform)    :                 674/1172348              0
+    Policed(exceed)     :             4148840/7236614170           334412
+    Policed(violate)    :                   0/0                    0
+    Policed and dropped :                   0/0                  
+Policy Bag Stats time: 1603212590911  [Local Time: 10/20/20 16:49:50.911] 
+NOTE:- Configured values are displayed within parentheses
+Node 0/0/CPU0, Interface Bundle-Ether581.2310 Ifh 0x8004116 (BundleMain) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           20000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+New traffic class                        =   2
+New qos group                            =   4
+
+Policer Bucket ID                        =   0x58
+Policer Stats Handle                     =   0x0
+Policer committed rate                   =   0 kbps (0 %)
+Policer peak rate                        =   601953 kbps (3 %)
+Policer conform burst                    =   1191168 bytes (1200 kilobytes)
+Policer exceed burst                     =   2189312 bytes (1000 kilobytes)
+
+Interface TenGigE0/0/0/13 Ifh 0x48 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+Interface TenGigE0/0/0/12 Ifh 0x60 (Member) -- input policy
+NPU Id:                        0
+Total number of classes:       1
+Interface Bandwidth:           10000000 kbps
+Policy Name:                   600000-Standard-DIPNKR
+Accounting Type:               Layer1 (Include Layer 1 encapsulation and above)
+------------------------------------------------------------------------------
+Level1 Class                             =   class-default
+
+configure terminal
+
+Current Configuration Session  Line       User     Date                     Lock
+00001000-00001e3f-00000000     netconf    netconfi Mon Oct 19 07:58:06 2020 
+RP/0/RP0/CPU0:ar18.BLB(config)#no interface Bundle-Ether581.2310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#ethernet cfm domain COLT-1 level 1 id null
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no service ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar18.BLB(config-cfm-dmn)#no policy-map 600000-Standard-DIPNKR
+
+RP/0/RP0/CPU0:ar18.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar18.BLB(config)#
+configure terminal
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no interface Bundle-Ether112.2310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no l2vpn xconnect group ALX_NCS_LE-102310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#no evpn evi 52310
+
+RP/0/RP0/CPU0:ar11.BLB(config)#
+policy edit Traffic-5 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787: policy edit Traffic-9 14 state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+C122-0787:     filter delete l2 U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator U9_ALX/NCS/LE-102310
+C122-0787: bandwidth-regulator delete regulator N5_ALX/NCS/LE-102310
+C122-0787: vid-set delete N5_ALX/NCS/LE-102310
+C122-0787: cfm delete meg 4
+C122-0787:     sa delete service ALX/NCS/LE-102310|1|1|2
+C122-0787:     cfm unassign interface s-vlan-2410
+C122-0787:     interface delete s-vlan-2410
+
+C122-0787: 
+C122-0787: 
+**** disconnected successfully from node AR18
+**** disconnected successfully from node AR11
+**** disconnected successfully from node LTS_144
+{'FF': {'CFM_Stats_Acc': {'LTS_144': {'rx': {'DMR_P4': 208, 'SLR_P4': 2077},
+                                      'tx': {'DMM_P4': 208, 'SLM_P4': 2077}}},
+        'CFM_Stats_cisco': {'AR18': {'rx': {'DMM': 209,
+                                            'DMR': 0,
+                                            'SLM': 2086,
+                                            'SLR': 0},
+                                     'tx': {'DMM': 0,
+                                            'DMR': 209,
+                                            'SLM': 0,
+                                            'SLR': 2086}}},
+        'Loop_test': {'L2': 'pass'},
+        'ccm_status': {'AR18': 'pass', 'LTS_144': 'pass'}},
+ 'FY': {'CFM_Stats_Acc': {'LTS_144': {'rx': {'DMR_P4': 207, 'SLR_P4': 2072},
+                                      'tx': {'DMM_P4': 207, 'SLM_P4': 2072}}},
+        'CFM_Stats_cisco': {'AR18': {'rx': {'DMM': 208,
+                                            'DMR': 0,
+                                            'SLM': 2082,
+                                            'SLR': 0},
+                                     'tx': {'DMM': 0,
+                                            'DMR': 208,
+                                            'SLM': 0,
+                                            'SLR': 2082}}},
+        'Loop_test': {'L2': 'pass'},
+        'ccm_status': {'AR18': 'pass', 'LTS_144': 'pass'}},
+ 'PP': {'CFM_Stats_Acc': {'LTS_144': {'rx': {'DMR_P0': 207, 'SLR_P0': 2069},
+                                      'tx': {'DMM_P4': 207, 'SLM_P4': 2069}}},
+        'CFM_Stats_cisco': {'AR18': {'rx': {'DMM': 208,
+                                            'DMR': 0,
+                                            'SLM': 2078,
+                                            'SLR': 0},
+                                     'tx': {'DMM': 0,
+                                            'DMR': 208,
+                                            'SLM': 0,
+                                            'SLR': 2078}}},
+        'Loop_test': {'L2': 'pass'},
+        'ccm_status': {'AR18': 'pass', 'LTS_144': 'pass'}},
+ 'PX': {'CFM_Stats_Acc': {'LTS_144': {'rx': {'DMR_P0': 207, 'SLR_P0': 2075},
+                                      'tx': {'DMM_P4': 207, 'SLM_P4': 2075}}},
+        'CFM_Stats_cisco': {'AR18': {'rx': {'DMM': 208,
+                                            'DMR': 0,
+                                            'SLM': 2084,
+                                            'SLR': 0},
+                                     'tx': {'DMM': 0,
+                                            'DMR': 208,
+                                            'SLM': 0,
+                                            'SLR': 2084}}},
+        'Loop_test': {'L2': 'pass'},
+        'ccm_status': {'AR18': 'pass', 'LTS_144': 'pass'}},
+ 'XP': {'CFM_Stats_Acc': {'LTS_144': {'rx': {'DMR_P0': 207, 'SLR_P0': 2077},
+                                      'tx': {'DMM_P4': 207, 'SLM_P4': 2077}}},
+        'CFM_Stats_cisco': {'AR18': {'rx': {'DMM': 208,
+                                            'DMR': 0,
+                                            'SLM': 2086,
+                                            'SLR': 0},
+                                     'tx': {'DMM': 0,
+                                            'DMR': 208,
+                                            'SLM': 0,
+                                            'SLR': 2086}}},
+        'Loop_test': {'L2': 'pass'},
+        'ccm_status': {'AR18': 'pass', 'LTS_144': 'pass'}},
+ 'XX': {'CFM_Stats_Acc': {'LTS_144': {'rx': {'DMR_P0': 208, 'SLR_P0': 2089},
+                                      'tx': {'DMM_P4': 208, 'SLM_P4': 2089}}},
+        'CFM_Stats_cisco': {'AR18': {'rx': {'DMM': 209,
+                                            'DMR': 0,
+                                            'SLM': 2098,
+                                            'SLR': 0},
+                                     'tx': {'DMM': 0,
+                                            'DMR': 209,
+                                            'SLM': 0,
+                                            'SLR': 2098}}},
+        'Loop_test': {'L2': 'pass'},
+        'ccm_status': {'AR18': 'pass', 'LTS_144': 'pass'}},
+ 'YF': {'CFM_Stats_Acc': {'LTS_144': {'rx': {'DMM_P4': 137,
+                                             'DMR_P4': 207,
+                                             'SLM_P4': 1369,
+                                             'SLR_P4': 2073},
+                                      'tx': {'DMM_P4': 207,
+                                             'DMR_P4': 137,
+                                             'SLM_P4': 2073,
+                                             'SLR_P4': 1369}}},
+        'CFM_Stats_cisco': {'AR18': {'rx': {'DMM': 208,
+                                            'DMR': 138,
+                                            'SLM': 2083,
+                                            'SLR': 1379},
+                                     'tx': {'DMM': 138,
+                                            'DMR': 208,
+                                            'SLM': 1379,
+                                            'SLR': 2083}}},
+        'Loop_test': {'L2': 'pass'},
+        'ccm_status': {'AR18': 'pass', 'LTS_144': 'pass'}},
+ 'YY': {'CFM_Stats_Acc': {'LTS_144': {'rx': {'DMR_P4': 207, 'SLR_P4': 2078},
+                                      'tx': {'DMM_P4': 207, 'SLM_P4': 2078}}},
+        'CFM_Stats_cisco': {'AR18': {'rx': {'DMM': 208,
+                                            'DMR': 0,
+                                            'SLM': 2087,
+                                            'SLR': 0},
+                                     'tx': {'DMM': 0,
+                                            'DMR': 208,
+                                            'SLM': 0,
+                                            'SLR': 2087}}},
+        'Loop_test': {'L2': 'pass'},
+        'ccm_status': {'AR18': 'pass', 'LTS_144': 'pass'}}}

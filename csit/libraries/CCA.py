@@ -43,13 +43,13 @@ def onnet_CCA(A,B):
     time.sleep(10)
     test_result = {}
     test_result['ccm_status'] = my_config.Validate_ccm()
-    # test_result['Loop_test'] = my_config.Y1564_test()
+    test_result['Loop_test'] = my_config.Y1564_test()
     # my_config.disconnect_nodes()
     # input_dict = {}
     # input_dict = my_config.create_spirent_input_dict()
-    Spirent_L2_Gen = Create_Spirent_L2_Gen()
-    Spirent_L2_Gen.Port_Init()
-    test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,1)
+    # Spirent_L2_Gen = Create_Spirent_L2_Gen()
+    # Spirent_L2_Gen.Port_Init()
+    # test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,1)
     # rfc_stream_handle = get_rfc_stream_handle(A,B,Spirent_L2_Gen,**input_dict)
     # # # test_result['rfc_tput_test'] = Spirent_L2_Gen.rfc_2544_throughput_test(rfc_stream_handle[0],rfc_stream_handle[1])
     # test_result['rfc_fl_test'] = Spirent_L2_Gen.rfc_2544_frameloss_test(rfc_stream_handle[0],rfc_stream_handle[1])
@@ -85,12 +85,12 @@ def onnet_CCA(A,B):
     # #         Spirent_L2_Gen.delete_streams_clear_counters()
    
 
-    Spirent_L2_Gen.Clean_Up_Spirent()
+    # Spirent_L2_Gen.Clean_Up_Spirent()
     # my_config.connect_nodes()
     test_result['CFM_Stats_Acc'] = my_config.mep_statistic_accedian()
     test_result['CFM_Stats_cisco'] = my_config.mep_statistic_cisco()
     my_config.check_QOS_counters_config()
-    my_config.delete_config()
+    # my_config.delete_config()
     my_config.disconnect_nodes()
     return test_result
 
@@ -111,8 +111,8 @@ def onnet_CCA_delete(A,B):
     my_config.disconnect_nodes()
     return test_result
 
-result['FF'] = onnet_CCA('F','F')
-# result['FF'] = onnet_CCA_delete('F','F')
+# result['FF'] = onnet_CCA('F','F')
+result['FF'] = onnet_CCA_delete('F','F')
 # result['XX'] = onnet_CCA('X','X')
 # result['PP'] = onnet_CCA('P','P')
 # result['XP'] = onnet_CCA('X','P')

@@ -16,51 +16,66 @@
 {% else -%}
 {% endif -%}
 {% if port_type == 'Y-type'-%}
-interface {{ main_interface }}.{{ item }} l2transport encapsulation dot1ad {{ item + 100 }} dot1q {{ item }}
-interface {{ main_interface }}.{{ item }} l2transport rewrite ingress tag pop 1 symmetric
-interface {{ main_interface }}.{{ item }} l2transport service-policy input {{service_BW}}-{{QOS_type}}-DIPNKR
+    interface {{ main_interface }}.{{ item }} l2transport encapsulation dot1ad {{ item + 100 }} dot1q {{ item }}
+    interface {{ main_interface }}.{{ item }} l2transport rewrite ingress tag pop 1 symmetric
 {% elif port_type == 'P-type' -%}
-interface {{ main_interface }}.{{ item }} l2transport encapsulation default
-interface {{ main_interface }}.{{ item }} l2transport service-policy input {{service_BW}}-{{QOS_type}}-DIPNKR
+    interface {{ main_interface }}.{{ item }} l2transport encapsulation default
 {% elif port_type == 'PL-type' -%}
-no interface {{ main_interface }}*
-commit
-interface {{ main_interface }} mtu 9186
-interface {{ main_interface }} l2transport service-policy output egr account user-defined 26
-interface {{ main_interface }} lldp receive disable
-interface {{ main_interface }} lldp transmit disable
-interface {{ main_interface }} load-interval 30
-interface {{ main_interface }} l2transport
-interface {{ main_interface }} l2transport service-policy input {{service_BW}}-{{QOS_type}}-DIPNKR
-interface {{ main_interface }} l2transport propagate remote-status
+    no interface {{ main_interface }}*
+    commit
+    interface {{ main_interface }} mtu 9186
+    {% if Flat_QOS -%}
+    interface {{ main_interface }} l2transport service-policy output egr account user-defined 26
+    {% else -%}
+    {% endif -%}
+    interface {{ main_interface }} lldp receive disable
+    interface {{ main_interface }} lldp transmit disable
+    interface {{ main_interface }} load-interval 30
+    interface {{ main_interface }} l2transport
+    interface {{ main_interface }} l2transport propagate remote-status
 {% elif port_type == 'X-type' -%}
-interface {{ main_interface }}.{{ item }} l2transport encapsulation dot1q {{ item }}
-interface {{ main_interface }}.{{ item }} l2transport rewrite ingress tag pop 1 symmetric
-interface {{ main_interface }}.{{ item }} l2transport service-policy input {{service_BW}}-{{QOS_type}}-DIPNKR
+    interface {{ main_interface }}.{{ item }} l2transport encapsulation dot1q {{ item }}
+    interface {{ main_interface }}.{{ item }} l2transport rewrite ingress tag pop 1 symmetric
 {% else -%}
-interface {{ main_interface }}.{{ item }} l2transport encapsulation dot1q {{ item }}
-interface {{ main_interface }}.{{ item }} l2transport service-policy input {{service_BW}}-{{QOS_type}}-DIPNKR
+    interface {{ main_interface }}.{{ item }} l2transport encapsulation dot1q {{ item }}
+{% endif -%}
+{% if Flat_QOS -%}
+    {% if port_type == 'PL-type' -%}
+    interface {{ main_interface }} l2transport service-policy input {{service_BW}}-{{QOS_type}}_{{ item }}_DIP
+    {% else -%}       
+    interface {{ main_interface }}.{{ item }} l2transport service-policy input {{service_BW}}-{{QOS_type}}_{{ item }}_DIP
+    {% endif -%}
+{% else -%}
+    {% if port_type == 'PL-type' -%}
+    interface {{ main_interface }} l2transport service-policy input P2P_PARENT_HQOS_INGRESS_{{ item }}_DIP
+    interface {{ main_interface }} l2transport service-policy output NNI-QOS-EGRESS-InnerCoS_{{ item }}_DIP
+    interface {{ main_interface }} l2transport service-policy output P2P_PARENT_HQOS_EGGRESS_{{ item }}_DIP account user-defined 26    
+    {% else -%}     
+    interface {{ main_interface }}.{{ item }} l2transport service-policy input P2P_PARENT_HQOS_INGRESS_{{ item }}_DIP
+    interface {{ main_interface }}.{{ item }} l2transport service-policy output NNI-QOS-EGRESS-InnerCoS_{{ item }}_DIP
+    interface {{ main_interface }}.{{ item }} l2transport service-policy output P2P_PARENT_HQOS_EGGRESS_{{ item }}_DIP account user-defined 26
+    {% endif -%}
 {% endif -%}
 {% if ELAN -%}
-l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }}
-l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit maximum 100
-l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit action no-flood
-l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mtu 1500
-{% if port_type == 'PL-type'-%}
-l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit maximum 100
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit action no-flood
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mtu 1500
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} evi {{ 50000 + item|int }}
+    evpn evi {{ 50000 + item|int }} advertise-mac
+    {% if port_type == 'PL-type'-%}
+        l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}
+    {% else -%}
+        l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }}
+    {% endif -%}
 {% else -%}
-l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }}
-{% endif -%}
-l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} evi {{ 50000 + item|int }}
-evpn evi {{ 50000 + item|int }} advertise-mac
-{% else -%}
-{% if port_type == 'PL-type'-%}
-l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}
-{% else -%}
-l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }}
-{% endif -%}
-l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} neighbor evpn evi {{ 50000 + item|int }} target {{ 50000 + item|int }} source {{ 50000 + item|int }}
-evpn evi {{ 50000 + item|int }}
+    l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} neighbor evpn evi {{ 50000 + item|int }} target {{ 50000 + item|int }} source {{ 50000 + item|int }}
+    evpn evi {{ 50000 + item|int }}
+    {% if port_type == 'PL-type'-%}
+        l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}
+    {% else -%}
+        l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }}
+    {% endif -%}
 {% endif -%}
 evpn evi {{ 50000 + item|int }} bgp rd 8220001:{{ 5000 + UID|int + item|int }}
 evpn evi {{ 50000 + item|int }} bgp route-target import 8220001:{{ 50000 + item|int }}
@@ -72,31 +87,167 @@ ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|i
 ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} log continuity-check errors
 ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} log crosscheck errors
 ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} log continuity-check mep changes
-{% if port_type == 'PL-type'-%}
-interface {{ main_interface }}  ethernet cfm mep domain COLT-1 service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{ Local_MEP}} cos {{ EXP }}
-interface {{ main_interface }}  ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile DMM{{ EXP }} target mep-id {{ Remote_MEP }}
-interface {{ main_interface }}  ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile SLM{{ EXP }} target mep-id {{ Remote_MEP }}
+    {% if port_type == 'PL-type'-%}
+    interface {{ main_interface }}  ethernet cfm mep domain COLT-1 service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{ Local_MEP}} cos {{ EXP }}
+    interface {{ main_interface }}  ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile DMM{{ EXP }} target mep-id {{ Remote_MEP }}
+    interface {{ main_interface }}  ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile SLM{{ EXP }} target mep-id {{ Remote_MEP }}
+    {% else -%}
+    interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{ Local_MEP}} cos {{ EXP }}
+    interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile DMM{{ EXP }} target mep-id {{ Remote_MEP }}
+    interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile SLM{{ EXP }} target mep-id {{ Remote_MEP }}
+    {% endif -%}
 {% else -%}
-interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{ Local_MEP}} cos {{ EXP }}
-interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile DMM{{ EXP }} target mep-id {{ Remote_MEP }}
-interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile SLM{{ EXP }} target mep-id {{ Remote_MEP }}
 {% endif -%}
+{% if Flat_QOS -%}
+    policy-map {{service_BW}}-{{QOS_type}}_{{ item }}_DIP
+    class class-default
+    {% if 'Bundle' in main_interface and QOS_type!= 'Standard' -%}
+        police rate percent {{  service_BW * 100 // Lag_bw }} burst 1100 kbytes
+    {% elif 'Bundle' in main_interface and QOS_type== 'Standard' -%}
+        police rate percent {{ service_BW * CIR_percentage// Lag_bw }} burst 1200 kbytes peak-rate percent {{ service_BW * 100// Lag_bw }} peak-burst 1000 kbytes
+    {% elif  QOS_type== 'Standard' -%}
+        police rate {{ service_BW* CIR_percentage //100 }} kbps burst 1200 kbytes peak-rate {{ service_BW }} kbps peak-burst 1000 kbytes
+    {% else -%}
+        police rate {{ service_BW }} kbps burst 1100 kbytes
+    {% endif -%}
+    !
+    set traffic-class {{TC}}
+    set qos-group {{EXP}}
+    !
+    end-policy-map
+    !
 {% else -%}
+    policy-map P2P_PARENT_HQOS_INGRESS_{{ item }}_DIP
+    class class-default
+    service-policy P2P_CHILD_HQOS_INGRESS_{{ item }}_DIP
+    {% if 'Bundle' in main_interface -%}
+        police rate percent {{  service_BW * 100 // Lag_bw }}
+    {% elif 'Gigabit' in main_interface -%}
+        police rate percent {{  service_BW * 100 // 1000000 }}
+    {% else -%}
+        police rate percent {{  service_BW * 100 // 10000000 }} 
+    {% endif -%}
+    end-policy-map
+    policy-map P2P_CHILD_HQOS_INGRESS_{{ item }}_DIP
+    class PREMIUM-PCP-5-7_{{ item }}_DIP
+    police rate percent 15 burst 50 kbytes
+    set qos-group 5
+    set traffic-class 6
+    class BUSINESS2-PCP-2_{{ item }}_DIP
+    police rate percent 20 burst 200 kbytes peak-rate percent 100 peak-burst 400 kbytes
+    set qos-group 2
+    set traffic-class 4
+    class BUSINESS3-PCP-1_{{ item }}_DIP
+    police rate percent 20 burst 500 kbytes peak-rate percent 100 peak-burst 1000 kbytes
+    set qos-group 1
+    set traffic-class 3
+    class BUSINESS1-PCP-3_{{ item }}_DIP
+    police rate percent 15 burst 60 bytes peak-rate percent 30 peak-burst 100 kbytes
+    set traffic-class 5
+    set qos-group 3
+    class standard-PCP-4_0_{{ item }}_DIP
+    police rate percent 30 burst 500 kbytes peak-rate percent 100
+    set qos-group 4
+    set traffic-class 2
+    end-policy-map
+    class-map match-any PREMIUM-PCP-5-7_{{ item }}_DIP
+    match cos 5 6 7
+    end-class-map
+    class-map match-any BUSINESS1-PCP-3_{{ item }}_DIP
+    match cos 3
+    end-class-map
+    class-map match-any BUSINESS2-PCP-2_{{ item }}_DIP
+    match cos 2
+    end-class-map
+    class-map match-any BUSINESS3-PCP-1_{{ item }}_DIP
+    match cos 1
+    end-class-map
+    class-map match-any standard-PCP-4_0_{{ item }}_DIP
+    match cos 4 0
+    end-class-map
+    policy-map P2P_PARENT_HQOS_EGGRESS_{{ item }}_DIP
+    class class-default
+    service-policy P2P_CHILD_HQOS_EGGRESS_{{ item }}_DIP
+    {% if 'Bundle' in main_interface -%}
+        shape average percent {{  service_BW * 100 // Lag_bw }}
+    {% elif 'Gigabit' in main_interface -%}
+        shape average percent {{  service_BW * 100 // 1000000 }}
+    {% else -%}
+        shape average percent {{  service_BW * 100 // 10000000 }}  
+    {% endif -%}
+    end-policy-map
+    policy-map P2P_CHILD_HQOS_EGGRESS_{{ item }}_DIP
+    class Premium-TC6-{{ item }}_Egress
+    priority level 1
+    shape average percent 15
+    queue-limit 500 kbytes
+    class Business1-TC5-{{ item }}_Egress
+    priority level 2
+    shape average percent 15
+    queue-limit 500 kbytes
+    class Business2-TC4-{{ item }}_Egress
+    bandwidth percent 20
+    random-detect 5100 kbytes 6000 kbytes
+    class Business3-TC3-{{ item }}_Egress
+    bandwidth percent 20
+    random-detect 12750 kbytes 15000 kbytes
+    class Standard-CIR-TC2-{{ item }}_Egress
+    bandwidth percent 30
+    random-detect 3500 kbytes 5000 kbytes
+    class class-default
+    end-policy-map
+    class-map match-any Premium-TC6-{{ item }}_Egress
+    match traffic-class 6
+    end-class-map
+    class-map match-any Business1-TC5-{{ item }}_Egress
+    match traffic-class 5
+    end-class-map
+    class-map match-any Business2-TC4-{{ item }}_Egress
+    match traffic-class 4
+    end-class-map
+    class-map match-any Business3-TC3-{{ item }}_Egress
+    match traffic-class 3
+    end-class-map
+    class-map match-any Standard-CIR-TC2-{{ item }}_Egress
+    match traffic-class 2
+    end-class-map
+    policy-map NNI-QOS-EGRESS-InnerCoS_{{ item }}_DIP
+    class Premium-{{ item }}_MatchQOS
+    set cos 5
+    class Business1-{{ item }}_MatchQOS
+    set cos 3
+    class Business2-{{ item }}_MatchQOS
+    set cos 2
+    class Business3-{{ item }}_MatchQOS
+    set cos 1
+    class Standard-CIR-{{ item }}_MatchQOS
+    set cos 4
+    class Standard-EIR-{{ item }}_MatchQOS
+    set cos 7
+    class NC-{{ item }}_MatchQOS
+    set cos 6
+    class class-default
+    set cos 0
+    end-policy-map
+    class-map match-any Business2-{{ item }}_MatchQOS
+    match qos-group 2
+    end-class-map
+    class-map match-any Business1-{{ item }}_MatchQOS
+    match qos-group 3
+    end-class-map
+    class-map match-any Premium-{{ item }}_MatchQOS
+    match qos-group 5
+    end-class-map
+    class-map match-any Business3-{{ item }}_MatchQOS
+    match qos-group 1
+    end-class-map
+    class-map match-any Standard-CIR-{{ item }}_MatchQOS
+    match qos-group 4
+    end-class-map
+    class-map match-any Standard-EIR-{{ item }}_MatchQOS
+    match qos-group 7
+    end-class-map
+    class-map match-any NC-{{ item }}_MatchQOS
+    match qos-group 6
+    end-class-map
 {% endif -%}
-policy-map {{service_BW}}-{{QOS_type}}-DIPNKR
- class class-default
-  {% if 'Bundle' in main_interface and QOS_type!= 'Standard' -%}
-  police rate percent {{  service_BW * 100 // Lag_bw }} burst 1100 kbytes
-  {% elif 'Bundle' in main_interface and QOS_type== 'Standard' -%}
-  police rate percent {{ service_BW * CIR_percentage// Lag_bw }} burst 1200 kbytes peak-rate percent {{ service_BW * 100// Lag_bw }} peak-burst 1000 kbytes
-  {% elif  QOS_type== 'Standard' -%}
-  police rate {{ service_BW* CIR_percentage //100 }} kbps burst 1200 kbytes peak-rate {{ service_BW }} kbps peak-burst 1000 kbytes
-  {% else -%}
-  police rate {{ service_BW }} kbps burst 1100 kbytes
-  {% endif -%}
-  !
-  set traffic-class {{TC}}
-  set qos-group {{EXP}}
- !
- end-policy-map
-!

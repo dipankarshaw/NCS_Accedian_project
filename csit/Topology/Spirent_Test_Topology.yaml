@@ -1,16 +1,16 @@
 Spirent_Test_Topology:
    Spirent_Chassis_ip: '10.91.113.124' #### Spirent Chassis IP.
-   traffic_duration: 20 #### seconds, this duration is used for RFC test and Traffic Test.
+   traffic_duration: 60 #### seconds, this duration is used for RFC test and Traffic Test.
    sw_test_duration: 80 #### seconds, this duration is used for traffic switchover test
    UC_BC_MC_Frame_Size : 64 #### Frame size used for UC,BC,MC Traffic Test.
-   rfc_frame_size : ['64','1500','4000','9100'] #### Specify the List of frame size required for RFC test.
+   rfc_frame_size : ['64'] #### Specify the List of frame size required for RFC test.
    rfc_load_end: 100 #### RFC test Load End percentage.
-   rfc_load_start: 96 #### RFC test Load start percentage.
+   rfc_load_start: 100 #### RFC test Load start percentage.
    rfc_load_step: 1 #### RFC Test Load Step.
    Number_of_ports: 2
    Port_Values:
-      Port1: 3/4 #### Port conneted to 'A' side.
-      Port2: 7/8 #### Port connected to 'B' side.
+      Port1: 7/8 #### Port conneted to 'A' side.
+      Port2: 7/7 #### Port connected to 'B' side.
    Port_Speed:
       Port1_Speed: 'ether10000' #### ether1000 or ether10000
       Port2_Speed: 'ether10000' #### ether1000 or ether10000

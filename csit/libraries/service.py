@@ -448,6 +448,12 @@ class Service:
             print("Loop can not be performed")
         elif list1 == ['cisco_xr','accedian'] or list1 == ['accedian','cisco_xr']:
             for node in self.data["site_list"]:
+                if node['login']['device_type'] == 'cisco_xr' and 'EP' in node['side']:
+                    if "Bundle" in node['main_interface']:
+                        Loop_list = ['L2']
+                    else:
+                        Loop_list = ['L1','L2']
+            for node in self.data["site_list"]:
                 if node['login']['device_type'] == 'accedian' and 'EP' in node['side']:
                     if node['Protected'] == 'YES':
                         output = node['connect_obj'].send_command("port show status PORT-{}".format(node['Nni_port']))
