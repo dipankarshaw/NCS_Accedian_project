@@ -552,7 +552,7 @@ class Service:
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr':
                 output = node['connect_obj'].send_command(f"show route ipv4 {node['remote_rid']}/32 | include , via")
-                print(output)
+                # print(output)
                 x = re.findall("HundredGigE\d/\d/\d/\d", output)
                 y = re.findall("Protected| Backup",output)
                 if len(x) == 1:

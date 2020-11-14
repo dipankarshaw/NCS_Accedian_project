@@ -51,9 +51,10 @@ def onnet_CC(A,B):
     # # test_result['loop_testAB'] = perform_spirent_loop_test(my_config,Spirent_L2_Gen,rfc_stream_handle[0],A,B)
     test_result['LLF_test'] = LLF_test(my_config,Spirent_L2_Gen,A,B,1)
     test_result['LLF_UNI_test'] = LLF_UNI_Test(my_config,A,B,1)
-    # # test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,1) ## lag_failover_test
-    # # test_result['frr_test'] = fast_reroute_test(my_config,Spirent_L2_Gen,A,B,1)
-    # # ###  Perform RFC test 
+    test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,1) ## lag_failover_test
+    test_result['frr_test'] = fast_reroute_test(my_config,Spirent_L2_Gen,A,B,1)
+
+    
     rfc_stream_handle = get_rfc_stream_handle(A,B,Spirent_L2_Gen,**input_dict)
     test_result['rfc_tput_test'] = Spirent_L2_Gen.rfc_2544_throughput_test(rfc_stream_handle[0],rfc_stream_handle[1])
     test_result['rfc_fl_test'] = Spirent_L2_Gen.rfc_2544_frameloss_test(rfc_stream_handle[0],rfc_stream_handle[1])
@@ -63,7 +64,7 @@ def onnet_CC(A,B):
 
     # test UC,MC,BC Traffic, with % of total BW
     
-    for tr in ['UC','BC','mc']:
+    for tr in ['UC','BC','MC']:
         UC_BC_MC_stream_handle = get_UC_BC_MC_stream_handle(A,B,tr,Spirent_L2_Gen,**input_dict)         
         Spirent_L2_Gen.Generate_Stream_Traffic(UC_BC_MC_stream_handle[0],UC_BC_MC_stream_handle[1]) # will generate Traffic on Stream level
         Spirent_L2_Gen.Traffic_Collection()
