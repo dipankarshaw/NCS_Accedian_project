@@ -51,8 +51,8 @@ def onnet_CC(A,B):
     # # test_result['loop_testAB'] = perform_spirent_loop_test(my_config,Spirent_L2_Gen,rfc_stream_handle[0],A,B)
     test_result['LLF_test'] = LLF_test(my_config,Spirent_L2_Gen,A,B,1)
     test_result['LLF_UNI_test'] = LLF_UNI_Test(my_config,A,B,1)
-    test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,1) ## lag_failover_test
-    test_result['frr_test'] = fast_reroute_test(my_config,Spirent_L2_Gen,A,B,1)
+    # test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,1) ## lag_failover_test
+    # test_result['frr_test'] = fast_reroute_test(my_config,Spirent_L2_Gen,A,B,1)
 
     
     rfc_stream_handle = get_rfc_stream_handle(A,B,Spirent_L2_Gen,**input_dict)
