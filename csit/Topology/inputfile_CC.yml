@@ -13,7 +13,7 @@ olo_eth_type: "s-vlan"
 CCM_interval: "1s"
 config_test: 15 # Duration in Seconds, for Y-1564 step test from Accedian.
 performance_test: 5 # Duration in Minutes, for Y-1564 Test from Accedian.
-STP_percentage: 100 # How much percent of service_BW, STP traffic is required?
+STP_percentage: 98 # How much percent of service_BW, STP traffic is required?
 ELAN: True # Boolean(True or False), if ELAN required Make it True, if ELINE is required, set as False
 OLO_type: "P-OLO"
 olo_vlan: 2501

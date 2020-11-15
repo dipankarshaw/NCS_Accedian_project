@@ -592,7 +592,7 @@ class Spirent_L2_Traffic_Gen:
 		if 'Outer_VLAN_Priority' in kwargs.keys():
 			self.vlan_outer_user_priority = str(int(kwargs['Outer_VLAN_Priority'], 10))
 		else:
-			self.vlan_outer_user_priority = 3
+			self.vlan_outer_user_priority = 2
 		if 'Outer_VLAN_ID' in kwargs.keys():
 			self.vlan_id_outer = str(int(kwargs['Outer_VLAN_ID'], 10))
 		else:
@@ -685,7 +685,7 @@ class Spirent_L2_Traffic_Gen:
 		if 'Outer_VLAN_Priority' in kwargs.keys():
 			self.vlan_outer_user_priority = str(int(kwargs['Outer_VLAN_Priority'], 10))
 		else:
-			self.vlan_outer_user_priority = 3
+			self.vlan_outer_user_priority = 2
 		if 'Outer_VLAN_ID' in kwargs.keys():
 			self.vlan_id_outer = str(int(kwargs['Outer_VLAN_ID'], 10))
 		else:
@@ -703,7 +703,6 @@ class Spirent_L2_Traffic_Gen:
 			self.vlan_user_priority = str(int(kwargs['Inner_VLAN_Priority'], 10))
 		else:
 			self.vlan_user_priority = '2'
-		print("Inside Init, Remove this print after testing")
 		streamblock_ret = sth.traffic_config(
 			mode='create',
 			port_handle=self.port_handle[src_port_handle_index],

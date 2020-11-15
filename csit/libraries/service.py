@@ -250,6 +250,7 @@ class Service:
                             output = node['connect_obj'].send_command("show policy-map interface {}.{} input".format(node["main_interface"],self.data['item']))
                         print(output)
                         x = re.findall("Total Dropped\s+:\s+\d+", output)
+                        # print(x)
                         dict13[node['Node_name']] = int(x[0].split(' ')[-1])
                         if node['port_type'] == 'PL-type':
                             output = node['connect_obj'].send_command("show qos interface {} input".format(node["main_interface"]))    
