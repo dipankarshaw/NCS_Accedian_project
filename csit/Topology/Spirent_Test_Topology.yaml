@@ -1,6 +1,6 @@
 Spirent_Test_Topology:
    Spirent_Chassis_ip: '10.91.113.124' #### Spirent Chassis IP.
-   traffic_duration: 60 #### seconds, this duration is used for RFC test and Traffic Test.
+   traffic_duration: 120 #### seconds, this duration is used for RFC test and Traffic Test.
    sw_test_duration: 80 #### seconds, this duration is used for traffic switchover test(LAG and FRR)
    UC_BC_MC_Frame_Size : 68 #### Frame size used for UC,BC,MC Traffic Test(Y type need 68 Bytes Min)
    rfc_frame_size : ['68','9100'] #### Specify the List of frame size required for RFC test.

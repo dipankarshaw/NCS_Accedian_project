@@ -55,27 +55,27 @@ class Service:
         dict10['Spirent_0TAG_AZ'] = {}
         dict10['Spirent_0TAG_ZA'] = {}
 
-        dict10['Spirent_2TAG_AZ']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:00:00:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_2TAG_AZ']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_2TAG_AZ']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_2TAG_ZA']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:00:00:01','MAC_Src': '00:10:94:00:00:02'}
-        dict10['Spirent_2TAG_ZA']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:00:00:02'}
-        dict10['Spirent_2TAG_ZA']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:00:00:02'}
+        dict10['Spirent_2TAG_AZ']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:02:00:01','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_2TAG_AZ']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_2TAG_AZ']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_2TAG_ZA']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:01:00:01','MAC_Src': '00:10:94:02:00:01'}
+        dict10['Spirent_2TAG_ZA']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:02:00:01'}
+        dict10['Spirent_2TAG_ZA']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:02:00:01'}
 
-        dict10['Spirent_1TAG_AZ']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:00:00:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_1TAG_AZ']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_1TAG_AZ']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_1TAG_ZA']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:00:00:01','MAC_Src': '00:10:94:00:00:02'}
-        dict10['Spirent_1TAG_ZA']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:00:00:02'}
-        dict10['Spirent_1TAG_ZA']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:00:00:02'}
+        dict10['Spirent_1TAG_AZ']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:02:00:01','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_1TAG_AZ']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_1TAG_AZ']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_1TAG_ZA']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:01:00:01','MAC_Src': '00:10:94:02:00:01'}
+        dict10['Spirent_1TAG_ZA']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:02:00:01'}
+        dict10['Spirent_1TAG_ZA']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:02:00:01'}
 
 
-        dict10['Spirent_0TAG_AZ']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'00:10:94:00:00:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_0TAG_AZ']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_0TAG_AZ']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_0TAG_ZA']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'00:10:94:00:00:01','MAC_Src': '00:10:94:00:00:02'}
-        dict10['Spirent_0TAG_ZA']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:00:00:02'}
-        dict10['Spirent_0TAG_ZA']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:00:00:02'}
+        dict10['Spirent_0TAG_AZ']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'00:10:94:02:00:01','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_0TAG_AZ']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_0TAG_AZ']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_0TAG_ZA']['UC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'00:10:94:01:00:01','MAC_Src': '00:10:94:02:00:01'}
+        dict10['Spirent_0TAG_ZA']['BC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'FF:FF:FF:FF:FF:FF','MAC_Src': '00:10:94:02:00:01'}
+        dict10['Spirent_0TAG_ZA']['MC'] = {'Rate_Mbps': (self.data['service_BW']*self.data['STP_percentage'])//100000, 'MAC_Dest':'01:00:5E:0B:01:02','MAC_Src': '00:10:94:02:00:01'}
 
         return dict10
     def create_spirent_input_dict_PPS_LAG(self,**kwargs):
@@ -90,15 +90,15 @@ class Service:
         dict10['Spirent_0TAG_AZ'] = {}
         dict10['Spirent_0TAG_ZA'] = {}
 
-        dict10['Spirent_2TAG_AZ']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 1000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:00:00:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_2TAG_ZA']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 1000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:00:00:01','MAC_Src': '00:10:94:00:00:02'}
+        dict10['Spirent_2TAG_AZ']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 20,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:02:00:01','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_2TAG_ZA']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 20,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:01:00:01','MAC_Src': '00:10:94:02:00:01'}
 
-        dict10['Spirent_1TAG_AZ']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 1000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:00:00:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_1TAG_ZA']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 1000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:00:00:01','MAC_Src': '00:10:94:00:00:02'}
+        dict10['Spirent_1TAG_AZ']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 20,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:02:00:01','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_1TAG_ZA']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 20,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:01:00:01','MAC_Src': '00:10:94:02:00:01'}
 
 
-        dict10['Spirent_0TAG_AZ']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 1000,'MAC_Dest':'00:10:94:00:00:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_0TAG_ZA']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 1000,'MAC_Dest':'00:10:94:00:00:01','MAC_Src': '00:10:94:00:00:02'}
+        dict10['Spirent_0TAG_AZ']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 20,'MAC_Dest':'00:10:94:02:00:01','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_0TAG_ZA']['UC'] = {'Rate_PPS': self.node['active_links'] * 1000,'mac_dst_count' : self.node['active_links'] * 20,'MAC_Dest':'00:10:94:01:00:01','MAC_Src': '00:10:94:02:00:01'}
 
 
         return dict10
@@ -114,15 +114,15 @@ class Service:
         dict10['Spirent_0TAG_AZ'] = {}
         dict10['Spirent_0TAG_ZA'] = {}
 
-        dict10['Spirent_2TAG_AZ']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 1000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:00:00:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_2TAG_ZA']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 1000,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:00:00:01','MAC_Src': '00:10:94:00:00:02'}
+        dict10['Spirent_2TAG_AZ']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 20,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:02:00:01','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_2TAG_ZA']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 20,'Outer_VLAN_ID': str(self.data['item'] + 100), 'Inner_VLAN_ID': str(self.data['item']),'MAC_Dest':'00:10:94:01:00:01','MAC_Src': '00:10:94:02:00:01'}
 
-        dict10['Spirent_1TAG_AZ']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 1000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:00:00:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_1TAG_ZA']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 1000,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:00:00:01','MAC_Src': '00:10:94:00:00:02'}
+        dict10['Spirent_1TAG_AZ']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 20,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:02:00:01','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_1TAG_ZA']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 20,'VLAN_ID': str(self.data['item']), 'MAC_Dest':'00:10:94:01:00:01','MAC_Src': '00:10:94:02:00:01'}
 
 
-        dict10['Spirent_0TAG_AZ']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 1000,'MAC_Dest':'00:10:94:00:00:02','MAC_Src': '00:10:94:00:00:01'}
-        dict10['Spirent_0TAG_ZA']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 1000,'MAC_Dest':'00:10:94:00:00:01','MAC_Src': '00:10:94:00:00:02'}
+        dict10['Spirent_0TAG_AZ']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 20,'MAC_Dest':'00:10:94:02:00:01','MAC_Src': '00:10:94:01:00:01'}
+        dict10['Spirent_0TAG_ZA']['UC'] = {'Rate_PPS': self.node['frr_main_links'] * 1000,'mac_dst_count' : self.node['frr_main_links'] * 20,'MAC_Dest':'00:10:94:01:00:01','MAC_Src': '00:10:94:02:00:01'}
 
 
         return dict10
@@ -378,14 +378,19 @@ class Service:
                         print("CCm did not came Up")
                         test_result[node['Node_name']] = 'fail'      
                 else:
-                    print("**** {}".format(node['Node_name']),end=' : ')
-                    output = node['connect_obj'].send_command("show ethernet cfm services domain COLT-{} service ALX_NCS_LE-{}".format(self.data['MEG_level'],mep_name))
-                    if len(re.findall("all operational, no errors", output)) == 2:
-                        print("ccm is UP")
-                        test_result[node['Node_name']] = 'pass'
+                    if self.data["ELAN"]:
+                        print("**** {}".format(node['Node_name']),end=' : ')
+                        print("ccm NA for ELAN on NCS")
+                        test_result[node['Node_name']] = 'NA'
                     else:
-                        print("CCm did not came Up")
-                        test_result[node['Node_name']] = 'fail'
+                        print("**** {}".format(node['Node_name']),end=' : ')
+                        output = node['connect_obj'].send_command("show ethernet cfm services domain COLT-{} service ALX_NCS_LE-{}".format(self.data['MEG_level'],mep_name))
+                        if len(re.findall("all operational, no errors", output)) == 2:
+                            print("ccm is UP")
+                            test_result[node['Node_name']] = 'pass'
+                        else:
+                            print("CCm did not came Up")
+                            test_result[node['Node_name']] = 'fail'
         return test_result
     def Y1564_test(self):
         list1 = []
@@ -568,15 +573,7 @@ class Service:
                             node['frr_primary'] = l
                             node['frr_main_links'] = node['frr_main_links'] + 1
                             
-            # pprint(node)
-    def count_XC_service(self):
-        for node in self.data["site_list"]:
-           output = node['connect_obj'].send_command("show l2vpn xconnect summary  | include groups",use_ttp=True, ttp_template="xc_count.j2")
-           print(f"**** no of xconnect on node {node['Node_name']} is {output[0][0]['no_of_XC']}")
-    def count_ELAN_service(self):
-        for node in self.data["site_list"]:
-           output = node['connect_obj'].send_command("show l2vpn bridge-domain summary  | include groups",use_ttp=True, ttp_template="BD_count.j2")
-           print(f"**** no of Bridge-domains on node {node['Node_name']} is {output[0][0]['no_of_BD']}")                            
+            # pprint(node)                           
 
                 
 

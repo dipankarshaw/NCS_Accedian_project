@@ -655,7 +655,7 @@ class Spirent_L2_Traffic_Gen:
 			rate_mbps=self.Rate_Mbps,
 			#mac_discovery_gw='192.85.1.1',
 			enable_stream='false');
-		print("**** {}:> DMAC:> is {} & SMAC:> {} , Traffic rate:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.Rate_Mbps))
+		print("**** {}:> DMAC:> is {} & SMAC:> {} ,VLAN_outer:> {}, VLAN_inner:> {} Traffic rate:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.vlan_id_outer,self.vlan_id,self.Rate_Mbps))
 		return(streamblock_ret)
 	def Stream_Config_Creation_Dual_Tagged_VLAN_dot1q_Mbps(self,src_port_handle_index,dest_port_handle_index,**kwargs):
 		if 'Stream_Name' in kwargs.keys():
@@ -748,7 +748,7 @@ class Spirent_L2_Traffic_Gen:
 			rate_mbps=self.Rate_Mbps,
 			# mac_discovery_gw='192.85.1.1',
 			enable_stream='false');
-		print("**** {}:> DMAC:> is {} & SMAC:> {} , Traffic rate:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.Rate_Mbps))
+		print("**** {}:> DMAC:> is {} & SMAC:> {} ,Vlan :>{} Traffic rate:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.vlan_id,self.Rate_Mbps))
 		return(streamblock_ret)
 	def Stream_Config_Creation_Single_Tagged_VLAN_Mbps(self,src_port_handle_index,dest_port_handle_index,**kwargs):
 		if 'Stream_Name' in kwargs.keys():

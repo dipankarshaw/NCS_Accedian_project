@@ -101,11 +101,10 @@ def LLF_test(service_obj,spirent_obj,A,B,iter):
             list1.append(node['login']['device_type'])
         else:
             pass
-    if list1 == ['accedian','accedian'] or list1 == ['cisco_xr','cisco_xr']:
-        print("**** Eligibile for LLF test")
+    if (list1 == ['accedian','accedian'] or list1 == ['cisco_xr','cisco_xr'])  and A =="PL" and B == "PL":
+        print("**** Eligibile for LLF (spirent break/repair) test")
     else:
-        print("**** Not Eligible for LLF Test")
-        exit() 
+        print("**** Not Eligible for LLF (spirent break/repair) Test")
     if A =="PL" and B == "PL":
         service_obj.connect_nodes()
         for port in [0,1]:
@@ -146,7 +145,7 @@ def LLF_test(service_obj,spirent_obj,A,B,iter):
                     else:
                         test_result[spirent_obj.port_list[port]][i+1][fail_repair] = 'fail'                    
         service_obj.disconnect_nodes()           
-    pprint(test_result)
+    # pprint(test_result)
     return test_result
 
 def UNI_LLF_Config(node,state): 
@@ -175,13 +174,12 @@ def LLF_UNI_Test(service_obj,A,B,iter):
     for node in service_obj.data["site_list"]: 
         if 'EP' in node['side']:
             list1.append(node['login']['device_type'])
-    if list1 == ['accedian','accedian'] or list1 == ['cisco_xr','cisco_xr']:
-        print("**** Eligibile for LLF UNI test")
+    if (list1 == ['accedian','accedian'] or list1 == ['cisco_xr','cisco_xr']) and A =="PL" and B == "PL" and service_obj.data['ELAN'] == False:
+        print("**** Eligibile for LLF UNI shut/unshut test")
     else:
-        print("**** Not Eligible for LLF UNI Test")
-        exit() 
-    service_obj.connect_nodes()
-    if A =="PL" and B == "PL":
+        print("**** Not Eligible for LLF UNI shut/unshut Test")
+    if A =="PL" and B == "PL" and service_obj.data['ELAN'] == False:
+        service_obj.connect_nodes()
         for node in service_obj.data["site_list"]:
             if 'EP' in node['side']:
                 test_result[node['Node_name']] = {}
@@ -223,5 +221,5 @@ def LLF_UNI_Test(service_obj,A,B,iter):
                         else:
                             test_result[node['Node_name']][i+1][fail_repair] = 'fail'
         service_obj.disconnect_nodes()
-        pprint(test_result)
-        return test_result
+        # pprint(test_result)
+    return test_result
