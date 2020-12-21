@@ -1,15 +1,18 @@
-[2020-09-30 07:41:08]: Started process.  Command line: 
-[2020-09-30 07:41:08]:      port number: 38257
-[2020-09-30 07:41:08]:    timeout value: 120
-[2020-09-30 07:41:08]:       log option: log
-[2020-09-30 07:41:08]: results dir path: /home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
-[2020-09-30 07:41:08]:    log file name: ACCA.hltlog
-[2020-09-30 07:41:08]: Working directory is now: /home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
-[2020-09-30 07:41:08]: Sourcing initialization file "stcinit.srv".
-[2020-09-30 07:41:08]: Connecting to port 38257 on 127.0.0.1.
-[2020-09-30 07:41:08]: Creating server socket.
-[2020-09-30 07:41:08]: Generated port number: 36101
-[2020-09-30 07:41:08]: Setting up timeout check.
-[2020-09-30 07:41:08]: Waiting for client connection.
-[2020-09-30 07:41:08]: Client connection from 127.0.0.1 port 51956.
-[2020-09-30 07:41:08]: Executing: <package require SpirentHltApi>
+[2020-12-15 11:29:46]: Started process.  Command line: 
+[2020-12-15 11:29:47]:      port number: 47505
+[2020-12-15 11:29:47]:    timeout value: 120
+[2020-12-15 11:29:47]:       log option: log
+[2020-12-15 11:29:47]: results dir path: /home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
+[2020-12-15 11:29:47]:    log file name: ACCA.hltlog
+[2020-12-15 11:29:47]: Working directory is now: /home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
+[2020-12-15 11:29:47]: Sourcing initialization file "stcinit.srv".
+[2020-12-15 11:29:47]: Connecting to port 47505 on 127.0.0.1.
+[2020-12-15 11:29:47]: Creating server socket.
+[2020-12-15 11:29:47]: Generated port number: 42999
+[2020-12-15 11:29:47]: Setting up timeout check.
+[2020-12-15 11:29:47]: Waiting for client connection.
+[2020-12-15 11:29:47]: Client connection from 127.0.0.1 port 34342.
+[2020-12-15 11:29:47]: Executing: <package require SpirentHltApi>
+[2020-12-15 11:30:03]: Return value: <4.67>
+[2020-12-15 11:30:03]: custom_path--/home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
+[2020-12-15 11:34:16]: Client connection has been broken.  Exiting.

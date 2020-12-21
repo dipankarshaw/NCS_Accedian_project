@@ -1,10 +1,10 @@
 Flat_QOS: True
 classify: DSCP
-item: 2315
-service_BW: 1000000
-CIR_percentage: 25
+item: 2316
+service_BW: 10000000 #this is service BW
+CIR_percentage: 25 # this CIR percnetage in case of STD service.
 MEG_level: 1
-QOS_type: "Business2"
+QOS_type: "Business2" # Possible values are Premium,Standard,Business2,Business1,Business3
 colt_vlan_ethType: "s-vlan"
 customer_vlan_ethtype: "c-vlan"
 olo_eth_type: "s-vlan"
@@ -13,68 +13,58 @@ config_test: 5
 performance_test: 1
 STP_percentage: 100
 ELAN: False
-SRTE: True
+SRTE: False
 OLO_type: "P-OLO"
 olo_vlan: 2501
 # site_list: 
 #  - 
-#   main_interface: "TenGigE0/0/0/5"
-#   side: "L2PE_IP"
+#   main_interface: "TenGigE0/0/1/3/2" # "Bundle-Ether400"
+#   side: "L2PE_EP"
+#   Node_name: "AR5"
 #   port_type: "P-type"
-#   Node_name: "AR18"
-#   login: 
-#    host: "10.91.126.204"
-#    username: "dshaw1"
-#    password: "N0@ught33b0y"
-#    device_type: "cisco_xr"
-#  - 
-#   main_interface: "Bundle-Ether112"
-#   side: "L2PE_IP"
-#   port_type: "P-type"
-#   Node_name: "AR11"
-#   login: 
-#    host: "10.91.126.195"
-#    username: "dshaw1"
-#    password: "N0@ught33b0y"
-#    device_type: "cisco_xr"
-#  - 
-#   side: "CPE_EP"
-#   Node_name: "LX_135"
-#   port_type: "F-type"
-#   Uni_port: 8
-#   Protected: "NO"
-#   Nni_port: 5
 #   Local_MEP: 2
 #   Remote_MEP: 1
 #   login: 
-#    host: "10.91.243.135"
-#    username: "admin"
-#    password: "admin"
-#    device_type: "accedian"
-#    port: 22
+#    host: "10.91.126.115"
+#    username: "dshaw1"
+#    password: "N0@ught33b0y"
+#    device_type: "cisco_xr"
+#  - 
+#   main_interface: "GigabitEthernet0/0/0/44"
+#   side: "L2PE_IP"
+#   port_type: "P-type"
+#   Node_name: "AR3"
+#   login: 
+#    host: "10.91.126.113"
+#    username: "dshaw1"
+#    password: "N0@ught33b0y"
+#    device_type: "cisco_xr"
 #  - 
 #   side: "CPE_EP"
-#   Node_name: "LTS_144"
+#   Node_name: "GX_103"
 #   port_type: "P-type"
-#   Uni_port: 9
-#   Protected: "YES"
-#   Nni_port: 5
+#   Uni_port: 8
+#   Protected: "NO"
+#   Nni_port: 1
 #   Local_MEP: 1
 #   Remote_MEP: 2
 #   login: 
-#    host: "10.91.243.144"
+#    host: "10.91.243.103"
 #    username: "admin"
 #    password: "admin"
 #    device_type: "accedian"
 #    port: 22
+
 site_list: 
  - 
-  main_interface: "Bundle-Ether250"
-  side: "L2PE_IP"
-  port_type: "P-type"
-  Node_name: "AR16"
+  main_interface: "TenGigE0/0/1/3/2" # "Bundle-Ether400"
+  side: "L2PE_EP"
+  Node_name: "AR5"
+  port_type: "F-type"
+  Local_MEP: 2
+  Remote_MEP: 1
   login: 
-   host: "10.91.126.202"
+   host: "10.91.126.115"
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
@@ -88,21 +78,6 @@ site_list:
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
- - 
-  side: "CPE_EP"
-  Node_name: "LX_141"
-  port_type: "F-type"
-  Uni_port: 8
-  Protected: "YES"
-  Nni_port: 5
-  Local_MEP: 2
-  Remote_MEP: 1
-  login: 
-   host: "10.91.243.141"
-   username: "admin"
-   password: "admin"
-   device_type: "accedian"
-   port: 22
  - 
   side: "CPE_EP"
   Node_name: "LTS_144"

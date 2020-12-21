@@ -8,7 +8,7 @@ commit
 exit
 exit
 {% if internal_external == 'internal'-%}
-ethernet loopback start local interface {{main_inf}}.{{sub_if}} internal destination mac-address 0010.9400.0002 timeout 1800
+ethernet loopback start local interface {{main_inf}}.{{sub_if}} internal destination mac-address 0010.9402.0001 timeout 1800
 {% else -%}
-ethernet loopback start local interface {{main_inf}}.{{sub_if}} external destination mac-address 0010.9400.0002 timeout 1800
+ethernet loopback start local interface {{main_inf}}.{{sub_if}} external destination mac-address 0010.9402.0001 timeout 1800
 {% endif -%}

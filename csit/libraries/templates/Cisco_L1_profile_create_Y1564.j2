@@ -1,0 +1,56 @@
+{% if  QOS_type == 'Business3' -%}
+    {% set green_pcp = 1 -%}
+    {% set yellow_pcp = 1 -%}
+{% elif QOS_type == 'Business1' -%}
+    {% set green_pcp = 3 -%}
+    {% set yellow_pcp = 3 -%}
+{% elif QOS_type == 'Business2' -%}
+    {% set green_pcp = 2 -%}
+    {% set yellow_pcp = 2 -%}
+{% elif QOS_type == 'Premium' -%}
+    {% set green_pcp = 5 -%}
+    {% set yellow_pcp = 5 -%}
+{% elif QOS_type == 'Standard' -%}
+    {% set green_pcp = 4 -%}
+    {% set yellow_pcp = 7 -%}
+{% else -%}
+{% endif -%}
+{% if QOS_type == 'Standard' -%}
+    {% set service_BW = ((service_BW * STP_percentage ) // 100000) -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 color-aware cir {{ service_BW // 4 }} mbps eir-color cos {{ yellow_pcp }}
+    {% if port_type == 'Y-type' -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}} inner-cos {{green_pcp}}
+    {% elif port_type == 'F-type' or port_type == 'X-type' -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}}
+    {% else -%}
+    {% endif -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 duration {{performance_test}} minutes
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 packet-size emix sequence abcdefgu u-value 9100
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 information-rate {{service_BW}} mbps
+{% else -%}
+    {% set service_BW = ((service_BW * STP_percentage ) // 100000) -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564
+    {% if port_type == 'Y-type' -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}} inner-cos {{green_pcp}}
+    {% elif port_type == 'F-type' or port_type == 'X-type' -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}}
+    {% else -%}
+    {% endif -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 duration {{performance_test}} minutes
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 packet-size emix sequence abcdefgu u-value 9100
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 information-rate {{service_BW}} mbps
+{% endif -%}
+{% if port_type == 'PL-type' -%}
+interface {{main_interface}} l2transport
+{% else -%}
+interface {{main_interface}}.{{item}} l2transport
+{% endif -%}
+ ethernet service-activation-test
+  permit internal
+commit
+end
+{% if port_type == 'PL-type' -%}
+ethernet service-activation-test start interface {{main_interface}} profile LE-{{ 100000 + item|int }}_1564 destination {{remote_mac}} direction internal
+{% else -%}
+ethernet service-activation-test start interface {{main_interface}}.{{item}} profile LE-{{ 100000 + item|int }}_1564 destination {{remote_mac}} direction internal
+{% endif -%}

@@ -1,0 +1,7 @@
+no ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564
+{% if port_type == 'PL-type' -%}
+interface {{main_interface}} l2transport
+{% else -%}
+interface {{main_interface}}.{{item}} l2transport
+{% endif -%}
+ no ethernet service-activation-test

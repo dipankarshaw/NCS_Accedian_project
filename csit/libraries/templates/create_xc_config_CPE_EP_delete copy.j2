@@ -1,22 +1,100 @@
-{# disable NNI policy -#}
-policy edit Traffic-{{ Nni_port }} {{index['del_meg'] + 10 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0 
-{# disable UNI policy -#}
-{% if port_type == 'P-type' or port_type == 'F-type' or port_type == 'X-type' or port_type == 'PL-type' -%}
-    policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 10 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0 
-{% elif port_type == 'Y-type'-%}
-    policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 10 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
-    filter delete l2 U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
+{% if Flat_QOS -%}
+    {# disable NNI policy -#}
+    policy edit Traffic-{{ Nni_port }} {{index['del_meg'] + 10 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0 
+    {# disable UNI policy -#}
+    {% if port_type == 'P-type' or port_type == 'F-type' or port_type == 'X-type' or port_type == 'PL-type' -%}
+        policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 10 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0 
+    {% elif port_type == 'Y-type'-%}
+        policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 10 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+        filter delete l2 U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
+    {% else -%}
+    {% endif -%}
+    {# delete UNI Regulator Configuration -#}
+    bandwidth-regulator delete regulator U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
+    {# delete NNI Regulator Configuration -#}
+    bandwidth-regulator delete regulator N{{ Nni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
+    {# NNI VID_set Configuration of NNI port -#}
+    vid-set delete N{{ Nni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
+    {# UNI VID_set delete Configuration of UNI port-#}
+    {% if port_type == 'F-type' or port_type == 'X-type' -%}
+        vid-set delete U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
+    {% else -%}
+    {% endif -%}
+    {# delete MEG configuration -#}
+    {% if port_type == 'P-type' or port_type == 'X-type' or port_type == 'PL-type'-%}
+        cfm delete meg {{ index['del_meg'] }}
+        sa delete service ALX/NCS/LE-{{ 100000 + item|int }}|{{MEG_level}}|{{Local_MEP}}|{{Remote_MEP}}
+    {% elif port_type == 'F-type' or port_type == 'Y-type'-%}
+        cfm delete meg {{ index['del_meg'] }}
+        sa delete service ALX/NCS/LE-{{ 100000 + item|int }}|{{MEG_level}}|{{Local_MEP}}|{{Remote_MEP}}
+        cfm unassign interface {{colt_vlan_ethType}}-{{item + 100}}
+        interface delete {{colt_vlan_ethType}}-{{item+100}}
+    {% else -%}
+    {% endif -%}
+    {# disabling fault propagation for PL EP type. -#}
+    {% if port_type == 'PL-type' -%}
+        fault-propagation edit PORT-{{ Uni_port }} state disable mode evc fp-port {{out_port}}
+    {% else -%}
+    {% endif -%}
 {% else -%}
-{% endif -%}
-{# delete UNI Regulator Configuration -#}
-bandwidth-regulator delete regulator U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
-{# delete NNI Regulator Configuration -#}
-bandwidth-regulator delete regulator N{{ Nni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
+{# disable NNI policy -#}
+policy edit Traffic-{{ Nni_port }} {{index['del_meg'] + 10 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+{# disable UNI policy -#}
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 10 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 11 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 12 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 13 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 14 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 15 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 16 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 17 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 18 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+policy edit Traffic-{{ Uni_port }} {{index['del_meg'] + 19 }} state disable action permit pre-marking green regulator disable monitor disable map1-state disable map2-state disable evc-encapsulation none evc-ethertype c-vlan evc-vlan-id 0 evc-ethertype2 c-vlan evc-vlan-id2 0 cos-mapping preserve map1-type pcp-vlan map2-type pcp-vlan map1-regulator-set disable green-cfi 0 green-pcp 0 yellow-cfi 0 yellow-pcp 0
+regulator-set delete N_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete envelope U_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator U5_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator U3_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator U2_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator U1_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator U4_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator U35_ALX/NCS/LE-{{ 100000 + item|int }}_BM
+bandwidth-regulator delete regulator U412_ALX/NCS/LE-{{ 100000 + item|int }}_BM
+bandwidth-regulator delete regulator N3_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator N0_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator N4_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator N5_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator N2_ALX/NCS/LE-{{ 100000 + item|int }}
+bandwidth-regulator delete regulator N1_ALX/NCS/LE-{{ 100000 + item|int }}
 {# NNI VID_set Configuration of NNI port -#}
-vid-set delete N{{ Nni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
+vid-set delete N15_ALX/NCS/LE-{{ 100000 + item|int }}
 {# UNI VID_set delete Configuration of UNI port-#}
-{% if port_type == 'F-type' or port_type == 'X-type' -%}
-    vid-set delete U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
+{% if port_type == 'F-type' or port_type == 'X-type' or port_type == 'P-type' or port_type == 'PL-type' or port_type == 'Y-type' -%}
+    {% if port_type == 'F-type' -%}
+vid-set delete U24_ALX/NCS/LE-{{ 100000 + item|int }}
+    {% elif port_type == 'X-type' -%}
+vid-set delete U24_ALX/NCS/LE-{{ 100000 + item|int }}
+cos-profile delete ETH-LE-102316-QoS-PCP-Egr-Mark
+    {% elif port_type == 'Y-type' -%}
+filter delete l2 U24_ALX/NCS/LE-{{ 100000 + item|int }}
+cos-profile delete ETH-LE-102316-QoS-PCP-Egr-Mark
+    {% else -%}
+    {% endif -%}
+filter delete l2 U15_ALX/NCS/LE-{{ 100000 + item|int }}_BM
+filter delete l2 U16_ALX/NCS/LE-{{ 100000 + item|int }}_BM
+filter delete l2 U17_ALX/NCS/LE-{{ 100000 + item|int }}_BM
+filter delete l2 U18_ALX/NCS/LE-{{ 100000 + item|int }}_BM
+filter delete l2 U19_ALX/NCS/LE-{{ 100000 + item|int }}_BM
+    {% if classify == 'PCP' -%}
+filter delete l2 U20_ALX/NCS/LE-{{ 100000 + item|int }}
+filter delete l2 U21_ALX/NCS/LE-{{ 100000 + item|int }}
+filter delete l2 U22_ALX/NCS/LE-{{ 100000 + item|int }}
+filter delete l2 U23_ALX/NCS/LE-{{ 100000 + item|int }}
+    {% else -%}
+filter delete ipv4 U20_ALX/NCS/LE-{{ 100000 + item|int }}
+filter delete ipv4 U21_ALX/NCS/LE-{{ 100000 + item|int }}
+filter delete ipv4 U22_ALX/NCS/LE-{{ 100000 + item|int }}
+filter delete ipv4 U23_ALX/NCS/LE-{{ 100000 + item|int }}
+    {% endif -%}
 {% else -%}
 {% endif -%}
 {# delete MEG configuration -#}
@@ -35,3 +113,6 @@ vid-set delete N{{ Nni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}
     fault-propagation edit PORT-{{ Uni_port }} state disable mode evc fp-port {{out_port}}
 {% else -%}
 {% endif -%}
+{% endif -%}
+
+

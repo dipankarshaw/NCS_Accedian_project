@@ -1,6 +1,14 @@
+{% if port_type == 'PL-type' -%}
+int {{main_interface}} l2transport
+{% else -%}
 int {{main_interface}}.{{item}} l2transport
+{% endif -%}
 ethernet loopback permit internal
 commit
 exit
 exit
+{% if port_type == 'PL-type' -%}
+ethernet loopback start local interface {{main_interface}} internal
+{% else -%}
 ethernet loopback start local interface {{main_interface}}.{{item}} internal destination mac-address 0022.0022.0022 timeout 1800
+{% endif -%}

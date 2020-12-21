@@ -304,20 +304,24 @@ class Spirent_L2_Traffic_Gen:
 			self.Rate_Mbps = kwargs['Rate_Mbps']
 		else:
 			self.Rate_Mbps = 100
+		if self.mac_dst == '01:00:5E:0B:01:02':
+			self.Dest_ip = '224.11.1.2'
+		else:
+			self.Dest_ip = '192.0.0.2{}'.format(src_port_handle_index)
 		streamblock_ret = sth.traffic_config(
 			mode='create',
 			port_handle=self.port_handle[src_port_handle_index],
-			# l3_protocol='ipv4',
-			# ip_id='0',
-			# ip_src_addr='192.85.1.2',
-			# ip_dst_addr='192.0.0.1',
-			# ip_ttl='255',
-			# ip_hdr_length='5',
-			# ip_protocol='253',
-			# ip_fragment_offset='0',
-			# ip_mbz='0',
-			# ip_precedence='0',
-			# ip_tos_field='0',
+			l3_protocol='ipv4',
+			ip_id='0',
+			ip_src_addr='192.0.0.1',
+			ip_dst_addr=self.Dest_ip,
+			ip_ttl='255',
+			ip_hdr_length='5',
+			ip_protocol='253',
+			ip_fragment_offset='0',
+			ip_mbz='0',
+			ip_precedence='0',
+			ip_tos_field='0',
 			mac_src=self.mac_src,
 			mac_dst=self.mac_dst,
 			enable_control_plane='0',
@@ -342,7 +346,7 @@ class Spirent_L2_Traffic_Gen:
 			rate_mbps=self.Rate_Mbps,
 			# mac_discovery_gw='192.85.1.1',
 			enable_stream='false');
-		print("**** {}:> DMAC:> is {} & SMAC:> {} , Traffic rate:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.Rate_Mbps))
+		print("**** {}:> DMAC:> is {} & SMAC:> {} , Traffic rate:> {} Mbps, DIP:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.Rate_Mbps,self.Dest_ip))
 		return(streamblock_ret)
 	def Stream_Config_Creation_Without_VLAN_PPS(self,src_port_handle_index,dest_port_handle_index,**kwargs):
 		if 'Stream_Name' in kwargs.keys():
@@ -610,6 +614,10 @@ class Spirent_L2_Traffic_Gen:
 			self.vlan_user_priority = str(int(kwargs['Inner_VLAN_Priority'], 10))
 		else:
 			self.vlan_user_priority = '2'
+		if self.mac_dst == '01:00:5E:0B:01:02':
+			self.Dest_ip = '224.11.1.2'
+		else:
+			self.Dest_ip = '192.0.0.2{}'.format(src_port_handle_index)
 		streamblock_ret = sth.traffic_config(
 			mode='create',
 			port_handle=self.port_handle[src_port_handle_index],
@@ -620,17 +628,17 @@ class Spirent_L2_Traffic_Gen:
 			vlan_tpid = self.vlan_tpid,
 			vlan_id = self.vlan_id,
 			vlan_user_priority = self.vlan_user_priority,
-			# l3_protocol='ipv4',
-			# ip_id='0',
-			# ip_src_addr='192.85.1.2',
-			# ip_dst_addr='192.0.0.1',
-			# ip_ttl='255',
-			# ip_hdr_length='5',
-			# ip_protocol='253',
-			# ip_fragment_offset='0',
-			# ip_mbz='0',
-			# ip_precedence='0',
-			# ip_tos_field='0',
+			l3_protocol='ipv4',
+			ip_id='0',
+			ip_src_addr='192.0.0.1',
+			ip_dst_addr=self.Dest_ip,
+			ip_ttl='255',
+			ip_hdr_length='5',
+			ip_protocol='253',
+			ip_fragment_offset='0',
+			ip_mbz='0',
+			ip_precedence='0',
+			ip_tos_field='0',
 			mac_src=self.mac_src,
 			mac_dst=self.mac_dst,
 			enable_control_plane='0',
@@ -655,7 +663,7 @@ class Spirent_L2_Traffic_Gen:
 			rate_mbps=self.Rate_Mbps,
 			#mac_discovery_gw='192.85.1.1',
 			enable_stream='false');
-		print("**** {}:> DMAC:> is {} & SMAC:> {} ,VLAN_outer:> {}, VLAN_inner:> {} Traffic rate:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.vlan_id_outer,self.vlan_id,self.Rate_Mbps))
+		print("**** {}:> DMAC:> is {} & SMAC:> {} ,VLAN_outer:> {}, VLAN_inner:> {} Traffic rate:> {} Mbps, DIP:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.vlan_id_outer,self.vlan_id,self.Rate_Mbps,self.Dest_ip))
 		return(streamblock_ret)
 	def Stream_Config_Creation_Dual_Tagged_VLAN_dot1q_Mbps(self,src_port_handle_index,dest_port_handle_index,**kwargs):
 		if 'Stream_Name' in kwargs.keys():
@@ -784,6 +792,10 @@ class Spirent_L2_Traffic_Gen:
 		else:
 			self.vlan_user_priority = '2'
 		self.l2_encap = 'ethernet_ii_vlan'
+		if self.mac_dst == '01:00:5E:0B:01:02':
+			self.Dest_ip = '224.11.1.2'
+		else:
+			self.Dest_ip = '192.0.0.2{}'.format(src_port_handle_index)
 		streamblock_ret = sth.traffic_config(
 			mode='create',
 			port_handle=self.port_handle[src_port_handle_index],
@@ -791,17 +803,17 @@ class Spirent_L2_Traffic_Gen:
 			vlan_tpid = self.vlan_tpid,
 			vlan_id = self.vlan_id,
 			vlan_user_priority = self.vlan_user_priority,
-			# l3_protocol='ipv4',
-			# ip_id='0',
-			# ip_src_addr='192.85.1.2',
-			# ip_dst_addr='192.0.0.1',
-			# ip_ttl='255',
-			# ip_hdr_length='5',
-			# ip_protocol='253',
-			# ip_fragment_offset='0',
-			# ip_mbz='0',
-			# ip_precedence='0',
-			# ip_tos_field='0',
+			l3_protocol='ipv4',
+			ip_id='0',
+			ip_src_addr='192.0.0.1',
+			ip_dst_addr=self.Dest_ip,
+			ip_ttl='255',
+			ip_hdr_length='5',
+			ip_protocol='253',
+			ip_fragment_offset='0',
+			ip_mbz='0',
+			ip_precedence='0',
+			ip_tos_field='0',
 			mac_src=self.mac_src,
 			mac_dst=self.mac_dst,
 			enable_control_plane='0',
@@ -826,21 +838,164 @@ class Spirent_L2_Traffic_Gen:
 			rate_mbps=self.Rate_Mbps,
 			# mac_discovery_gw='192.85.1.1',
 			enable_stream='false');
-		print("**** {}:> DMAC:> is {} & SMAC:> {} , Traffic rate:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.Rate_Mbps))
+		print("**** {}:> DMAC:> is {} & SMAC:> {} ,VLAN:> {}, Traffic rate:> {} Mbps, DIP:> {}".format(streamblock_ret['stream_id'],self.mac_dst,self.mac_src,self.vlan_id,self.Rate_Mbps,self.Dest_ip))
 		return(streamblock_ret)
+	def spirent_ccm_stream_2TAG(self,src_port_handle_index,dest_port_handle_index,**kwargs):
+		self.vlan_id_outer = str(int(kwargs['Outer_VLAN_ID'], 10))
+		self.vlan_id = str(int(kwargs['Inner_VLAN_ID'], 10))
+		self.vlan_user_priority = '2'
+		self.mac_src = kwargs['MAC_Src']
+		ccm_stream_handle = []
+		for looper in range(0,8):
+			self.mac_dst = '01:80:C2:00:00:3{}'.format(looper)
+			if looper == 5:
+				md_hex = 'A'
+			elif looper == 6:
+				md_hex = 'C'
+			elif looper == 7:
+				md_hex = 'E'
+			else:
+				md_hex = looper * 2
+			streamblock_ret1 = sth.traffic_config (
+				mode = 'create',
+				port_handle = self.port_handle[src_port_handle_index],
+				l2_encap = 'ethernet_ii_vlan',
+				mac_src = self.mac_src,
+				mac_dst = self.mac_dst,
+				vlan_outer_cfi = '0',
+				vlan_outer_tpid = '34984',
+				vlan_outer_user_priority = '0',
+				vlan_id_outer = self.vlan_id_outer,
+				vlan_cfi = '0',
+				vlan_tpid = '33024',
+				vlan_id = self.vlan_id,
+				ether_type = '8902',
+				vlan_user_priority = self.vlan_user_priority,
+				enable_control_plane = '0',
+				l3_length = '106',
+				name = 'StreamBlock_40',
+				fill_type = 'constant',
+				fcs_error = '0',
+				fill_value  = '0',
+				frame_size = '128',
+				traffic_state = '1',
+				high_speed_result_analysis = '1',
+				length_mode = 'fixed',
+				tx_port_sending_traffic_to_self_en = 'false',
+				disable_signature = '0',
+				enable_stream_only_gen = '1',
+				pkts_per_burst = '1',
+				inter_stream_gap_unit = 'bytes',
+				burst_loop_count = '30',
+				transmit_mode = 'continuous',
+				inter_stream_gap = '12',
+				custom_pattern = '{}0010446000000e5000101200d4c455858582d313032333039000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000053ad5e45'.format(md_hex),
+				rate_pps='100');
+			streamblock_ret1['name'] = 'ccm_MD_level{}'.format(looper)
+			print("*** stream name:>{} DMAC:> {} SMAC:>{} Outer_VLAN :> {} Inner_VLAN:> {}".format(streamblock_ret1['name'],self.mac_dst,self.mac_src,self.vlan_id_outer,self.vlan_id))
+			ccm_stream_handle.append(streamblock_ret1)
+		return(ccm_stream_handle)
+	def spirent_ccm_stream_1TAG(self,src_port_handle_index,dest_port_handle_index,**kwargs):
+		self.vlan_user_priority = '2'
+		self.vlan_id = str(int(kwargs['VLAN_ID'], 10))
+		self.mac_src = kwargs['MAC_Src']
+		ccm_stream_handle = []
+		for looper in range(0,8):
+			self.mac_dst = '01:80:C2:00:00:3{}'.format(looper)
+			if looper == 5:
+				md_hex = 'A'
+			elif looper == 6:
+				md_hex = 'C'
+			elif looper == 7:
+				md_hex = 'E'
+			else:
+				md_hex = looper * 2
+			streamblock_ret1 = sth.traffic_config (
+				mode = 'create',
+				port_handle = self.port_handle[src_port_handle_index],
+				l2_encap = 'ethernet_ii_vlan',
+				mac_src = self.mac_src,
+				mac_dst = self.mac_dst,
+				vlan_cfi = '0',
+				vlan_tpid = '33024',
+				vlan_id = self.vlan_id,
+				ether_type = '8902',
+				vlan_user_priority = self.vlan_user_priority,
+				enable_control_plane = '0',
+				l3_length = '106',
+				name = 'StreamBlock_40',
+				fill_type = 'constant',
+				fcs_error = '0',
+				fill_value  = '0',
+				frame_size = '128',
+				traffic_state = '1',
+				high_speed_result_analysis = '1',
+				length_mode = 'fixed',
+				tx_port_sending_traffic_to_self_en = 'false',
+				disable_signature = '0',
+				enable_stream_only_gen = '1',
+				pkts_per_burst = '1',
+				inter_stream_gap_unit = 'bytes',
+				burst_loop_count = '30',
+				transmit_mode = 'continuous',
+				inter_stream_gap = '12',
+				custom_pattern = '{}0010446000000e5000101200d4c455858582d313032333039000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000053ad5e45'.format(md_hex),
+				rate_pps='100');
+			streamblock_ret1['name'] = 'ccm_MD_level{}'.format(looper)
+			print("*** stream name:>{} DMAC:> {} SMAC:>{} VLAN :> {}".format(streamblock_ret1['name'],self.mac_dst,self.mac_src,self.vlan_id))
+			ccm_stream_handle.append(streamblock_ret1)
+		return(ccm_stream_handle)
+	def spirent_ccm_stream_0TAG(self,src_port_handle_index,dest_port_handle_index,**kwargs):
+		self.mac_src = kwargs['MAC_Src']
+		ccm_stream_handle = []
+		for looper in range(0,8):
+			self.mac_dst = '01:80:C2:00:00:3{}'.format(looper)
+			if looper == 5:
+				md_hex = 'A'
+			elif looper == 6:
+				md_hex = 'C'
+			elif looper == 7:
+				md_hex = 'E'
+			else:
+				md_hex = looper * 2
+			streamblock_ret1 = sth.traffic_config (
+				mode = 'create',
+				port_handle = self.port_handle[src_port_handle_index],
+				l2_encap = 'ethernet_ii',
+				mac_src = self.mac_src,
+				mac_dst = self.mac_dst,
+				# vlan_cfi = '0',
+				# vlan_tpid = '33024',
+				# vlan_id = self.vlan_id,
+				ether_type = '8902',
+				# vlan_user_priority = self.vlan_user_priority,
+				enable_control_plane = '0',
+				l3_length = '106',
+				name = 'StreamBlock_40',
+				fill_type = 'constant',
+				fcs_error = '0',
+				fill_value  = '0',
+				frame_size = '128',
+				traffic_state = '1',
+				high_speed_result_analysis = '1',
+				length_mode = 'fixed',
+				tx_port_sending_traffic_to_self_en = 'false',
+				disable_signature = '0',
+				enable_stream_only_gen = '1',
+				pkts_per_burst = '1',
+				inter_stream_gap_unit = 'bytes',
+				burst_loop_count = '30',
+				transmit_mode = 'continuous',
+				inter_stream_gap = '12',
+				custom_pattern = '{}0010446000000e5000101200d4c455858582d313032333039000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000053ad5e45'.format(md_hex),
+				rate_pps='100');
+			streamblock_ret1['name'] = 'ccm_MD_level{}'.format(looper)
+			print("*** stream name:>{} DMAC:> {} SMAC:>{}".format(streamblock_ret1['name'],self.mac_dst,self.mac_src))
+			ccm_stream_handle.append(streamblock_ret1)
+		return(ccm_stream_handle)
 	def Generate_Stream_Traffic(self,StreamBlock1,StreamBlock2):
 		self.StreamBlock1 = StreamBlock1['stream_id']
 		self.StreamBlock2 = StreamBlock2['stream_id']
-		# print("**** Traffic Started First Time for 10 sec to help mac learning")
-		# traffic_ctrl_ret = sth.traffic_control(
-		# 	stream_handle=[self.StreamBlock1,self.StreamBlock2],
-		# 	action='run', duration='8');
-		# # time.sleep(10)
-		# print("**** Clear stats of 10 seconds traffic")
-		# traffic_ctrl_ret = sth.traffic_control(
-		# 	stream_handle=[self.StreamBlock1,self.StreamBlock2],
-		# 	action='clear_stats');
-		# time.sleep(2)
 		print(f"**** Starting traffic Second Time for {self.traffic_duration} seconds")
 		traffic_ctrl_ret = sth.traffic_control(
 			stream_handle=[self.StreamBlock1,self.StreamBlock2],
@@ -849,9 +1004,18 @@ class Spirent_L2_Traffic_Gen:
 		status = traffic_ctrl_ret['status']
 		if (status == '0'):
 			print("run sth.traffic_control failed")
-		# print(traffic_ctrl_ret)
-
-		# time.sleep(self.traffic_duration + 10)
+		print("**** checking traffic statistic")
+	def Generate_Stream_Traffic_timed(self,StreamBlock1,StreamBlock2,time):
+		self.StreamBlock1 = StreamBlock1['stream_id']
+		self.StreamBlock2 = StreamBlock2['stream_id']
+		print(f"**** Starting traffic for {time} seconds")
+		traffic_ctrl_ret = sth.traffic_control(
+			stream_handle=[self.StreamBlock1,self.StreamBlock2],
+			action='run',
+			duration= time);
+		status = traffic_ctrl_ret['status']
+		if (status == '0'):
+			print("run sth.traffic_control failed")
 		print("**** checking traffic statistic")
 	def Generate_Traffic(self):
 		#############################################################
@@ -1545,7 +1709,7 @@ class Spirent_L2_Traffic_Gen:
 			print("***************** Test has Passed")
 			print(f"**** No of Tx packets on {self.port_list[0]} are: {deviceA_tx}")
 			print(f"**** No of Rx packets on {self.port_list[1]} are: {deviceB_rx}")
-			print("*****************")
+			print("*** ")
 			print(f"**** No of Tx packets on {self.port_list[1]} are: {deviceB_tx}")
 			print(f"**** No of Rx packets on {self.port_list[0]} are: {deviceA_rx}")
 			test_result1 = 'pass'
@@ -1553,7 +1717,7 @@ class Spirent_L2_Traffic_Gen:
 			print("***************** Test has failed")
 			print(f"**** No of Tx packets on {self.port_list[0]} are: {deviceA_tx}")
 			print(f"**** No of Rx packets on {self.port_list[1]} are: {deviceB_rx}")
-			print("*****************")
+			print("*** ")
 			print(f"**** No of Tx packets on {self.port_list[1]} are: {deviceB_tx}")
 			print(f"**** No of Rx packets on {self.port_list[0]} are: {deviceA_rx}")
 			print(f"**** No of packets dropped from {self.port_list[0]} to {self.port_list[1]} is : {int(deviceA_tx) - int(deviceB_rx) }")

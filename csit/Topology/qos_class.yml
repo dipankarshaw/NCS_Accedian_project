@@ -1,0 +1,71 @@
+Htool:
+  disjoint_type: Node_SRLG
+  disjoint_min: Node
+  login:
+    host: 10.91.141.19
+    port: 22
+    username: admin123
+    password: admin123
+    device_type: linux
+lab_nodes:
+  - 10.91.126.115
+  # - 10.91.126.116
+  # - 10.91.126.117
+  # - 10.91.126.118
+  # - 10.91.126.120
+  # - 10.91.126.199
+  # - 10.91.126.200
+  # - 10.91.126.203
+  # - 10.91.126.204
+  # - 10.91.126.113
+  # - 10.91.126.114
+  # - 10.91.126.111
+  # - 10.91.126.112
+  - 10.91.126.201
+  # - 10.91.126.202
+  # - 10.91.126.196
+  - 10.91.126.195
+  # - 10.91.126.119
+  - 10.91.126.125
+B3_green_pcp: 1
+B3_yellow_pcp: 1
+B1_green_pcp: 3
+B1_yellow_pcp: 3
+B2_green_pcp: 2
+B2_yellow_pcp: 2
+Pre_green_pcp: 5
+Pre_yellow_pcp: 5
+STD_green_pcp: 4
+STD_yellow_pcp: 7
+Pre_CIR: 15
+Pre_CIR_MAX: 15
+Pre_PCP_START: 5
+Pre_PCP_LAST: 7
+Pre_DSCP_START: 40
+Pre_DSCP_LAST: 63
+B1_CIR: 15
+B1_CIR_MAX: 30
+B1_PCP: 4
+B1_DSCP_START: 32
+B1_DSCP_LAST: 39
+B2_CIR: 20
+B2_CIR_MAX: 50
+B2_EIR_MAX: 50
+B2_PCP: 3
+B2_DSCP_START: 24
+B2_DSCP_LAST: 31
+B3_CIR: 20
+B3_CIR_MAX: 70
+B3_EIR_MAX: 30
+B3_PCP: 2
+B3_DSCP_START: 16
+B3_DSCP_LAST: 23
+STD_CIR: 25
+STD_CIR_MAX: 100
+STD_PCP: 1
+STD_DSCP_START: 0
+STD_DSCP_LAST: 15
+Pre_BM_CIR: 2
+Pre_BM_CIR_MAX: 2
+Nor_BM_CIR: 3
+Nor_BM_CIR_MAX: 5

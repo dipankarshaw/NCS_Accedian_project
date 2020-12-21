@@ -27,68 +27,45 @@ def onnet_CCM_Y1564_ACCA(A,B):
     print("************** Test {}{} type EP ************* ".format(A,B))
     print("!!"*3)
     dict1 = yaml.load(open(file_path + '/../Topology/inputfile_ACCA.yml'),Loader=yaml.Loader)
+    qos_dict = yaml.load(open(file_path + '/../Topology/qos_class.yml'),Loader=yaml.Loader)
+    dict1.update(qos_dict)
     dict1['site_list'][0]['port_type'] = '{}-type'.format(A)
     dict1['site_list'][1]['port_type'] = '{}-type'.format(B)
     dict1['site_list'][2]['port_type'] = '{}-type'.format(A)
     dict1['site_list'][3]['port_type'] = '{}-type'.format(B)
-    my_config = Service(**dict1)
-    my_config.connect_nodes()
-    my_config.get_Lag_Status()
-    my_config.parse_accedian()
-    my_config = Service(**dict1)
-    my_config.Command_Creation()
-    my_config.push_config()
-    time.sleep(10)
-    test_result = {}
+    my_config = Service(**dict1) ## initialize the object.
+    my_config.connect_nodes() ## connect the nodes.
+    my_config.get_Lag_Status() ## get the LAG BW, A/A links, A/S Links.
+    my_config.get_frr_status() ## get the LFA towards core.
+    my_config.parse_accedian() ## perse accedian for MEG,MEP index
+    my_config.SRTE_Config() ## do SRTE config via H-policy tool & attach the PW class to the Service.
+    my_config.Command_Creation() ## create the commands to create and Delete service
+    my_config.push_config() ## send the configs to the node.
+    test_result,input_dict  = {},{} ## create a empty dictionary to hold results.
     test_result['ccm_status'] = my_config.Validate_ccm()
-    # test_result['Loop_test'] = my_config.Y1564_test()
-    my_config.disconnect_nodes()
-    username = input("Enter username:")
-    print("Username is: " + username)
-    # input_dict = {}
+    test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
+    # my_config.disconnect_nodes() ## release netmiko connection from NCS and Accedian.
     # input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
     # Spirent_L2_Gen = Create_Spirent_L2_Gen() ## create the spirent object.
-    # Spirent_L2_Gen.Port_Init() # reserve the port
-    # test_result['LLF_test'] = LLF_test(my_config,Spirent_L2_Gen,A,B,1)
-
-    # test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,5)
-    # ####  Perform RFC test 
-    # rfc_stream_handle = get_rfc_stream_handle(A,B,Spirent_L2_Gen,**input_dict)
-    # # test_result['rfc_tput_test'] = Spirent_L2_Gen.rfc_2544_throughput_test(rfc_stream_handle[0],rfc_stream_handle[1])
-    # test_result['rfc_fl_test'] = Spirent_L2_Gen.rfc_2544_frameloss_test(rfc_stream_handle[0],rfc_stream_handle[1])
+    # Spirent_L2_Gen.Port_Init() # reserve the port.
+    # test_result['ccm_transparency'] = ccm_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict) # perform ccm transparency test(same level and lower should not pass)
+    # test_result['l2CP'] = l2CP_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict) # perform L2CP test for P,PL EP's
+    # test_result['UC_traffic'] = UC_BC_MC_test(A,B,'UC',Spirent_L2_Gen,**input_dict) # test Known Unicast Traffic.
+    # test_result['BC_traffic'] = UC_BC_MC_test(A,B,'BC',Spirent_L2_Gen,**input_dict) # test Broadcast Traffic.
+    # test_result['MC_traffic'] = UC_BC_MC_test(A,B,'MC',Spirent_L2_Gen,**input_dict) # test Multicast Traffic.
+    # test_result['LLF_Spi_test'] = LLF_test(my_config,Spirent_L2_Gen,A,B,1) # do LLF test by breaking from spirent side.
+    # test_result['LLF_UNI_test'] = LLF_UNI_Test(my_config,A,B,1) # do LLF test by shutting UNI
+    # test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,1) # perfrom LAG test with UNI LAG and NNI LAG with Accedian.
+    # test_result['frr_test'] = fast_reroute_test(my_config,Spirent_L2_Gen,A,B,1) # perform FRR test ( Local shut)
+    # rfc_stream_handle = get_rfc_stream_handle(A,B,Spirent_L2_Gen,**input_dict) 
+    # test_result['rfc_fl_test'] = Spirent_L2_Gen.rfc_2544_frameloss_test(rfc_stream_handle[0],rfc_stream_handle[1]) # perform rfc Framelost Test.
+    # #test_result['rfc_tput_test'] = Spirent_L2_Gen.rfc_2544_throughput_test(rfc_stream_handle[0],rfc_stream_handle[1])
     # # test_result['rfc_b2b_test'] = Spirent_L2_Gen.rfc_2544_backtoback_test(rfc_stream_handle[0],rfc_stream_handle[1])
     # # test_result['rfc_latency_test'] = Spirent_L2_Gen.rfc_2544_latency_test(rfc_stream_handle[0],rfc_stream_handle[1])
-    # Spirent_L2_Gen.delete_streams_clear_counters()
-
-    # #### test UC,MC,BC Traffic, with % of total BW
-    # for tr in ['UC','BC']:
-    #     UC_BC_MC_stream_handle = get_UC_BC_MC_stream_handle(A,B,tr,Spirent_L2_Gen,**input_dict)         
-    #     Spirent_L2_Gen.Generate_Stream_Traffic(UC_BC_MC_stream_handle[0],UC_BC_MC_stream_handle[1]) # will generate Traffic on Stream level
-    #     Spirent_L2_Gen.Traffic_Collection()
-    #     test_result['Spirent_{}_traffic'.format(tr)] = Spirent_L2_Gen.Validate_Traffic_Result2()
-    #     Spirent_L2_Gen.delete_streams_clear_counters()
-
-    # # if A == 'P' and B == 'P':
-    # #     for mt_vt in ['MT','VT','L2CP']:
-    # #         print("**** {} traffic is going to run".format(mt_vt))
-    # #         if mt_vt == 'MT':
-    # #             StreamHandleMT1 = Spirent_L2_Gen.Spirent_MAC_Transperancy_Traffic_Testing_For_P2P_Service(0,1,**input_dict['Spirent_0TAG_AZ']['UC'])
-    # #             StreamHandleMT2 = Spirent_L2_Gen.Spirent_MAC_Transperancy_Traffic_Testing_For_P2P_Service(1,0,**input_dict['Spirent_0TAG_ZA']['UC'])
-    # #         elif mt_vt == 'VT':
-    # #             StreamHandleVT1 = Spirent_L2_Gen.Spirent_VLAN_Transperancy_Traffic_Testing_For_P2P_Service(0,1,**input_dict['Spirent_1TAG_AZ']['UC'])
-    # #             StreamHandleVT2 = Spirent_L2_Gen.Spirent_VLAN_Transperancy_Traffic_Testing_For_P2P_Service(1,0,**input_dict['Spirent_1TAG_ZA']['UC'])                    
-    # #         else:
-    # #             StreamHandlel2CP1 = Spirent_L2_Gen.Spirent_L2CP_Transperancy_Traffic_Testing_For_P2P_Service(0,1,**input_dict['Spirent_0TAG_AZ']['UC'])
-    # #             StreamHandleL2CP2 = Spirent_L2_Gen.Spirent_L2CP_Transperancy_Traffic_Testing_For_P2P_Service(1,0,**input_dict['Spirent_0TAG_ZA']['UC'])
-    # #         Spirent_L2_Gen.Generate_Traffic()
-    # #         Spirent_L2_Gen.Traffic_Collection()
-    # #         test_result['Spirent_{}_traffic'.format(mt_vt)] = Spirent_L2_Gen.Validate_Traffic_Result2()
-    # #         Spirent_L2_Gen.delete_streams_clear_counters()
-   
-
-    # Spirent_L2_Gen.Clean_Up_Spirent()
-    my_config.connect_nodes()
-    my_config.check_Mac_table()
+    # Spirent_L2_Gen.delete_streams_clear_counters() # delete all the spirent streams and clear all counters.
+    # Spirent_L2_Gen.Clean_Up_Spirent() ## Clean UP Spirent.
+    # my_config.connect_nodes()
+    # my_config.check_Mac_table()
     test_result['CFM_Stats_ACC'] = my_config.mep_statistic_accedian()
     my_config.check_QOS_counters_config()
     my_config.delete_config()

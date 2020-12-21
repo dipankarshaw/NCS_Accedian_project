@@ -1,5 +1,13 @@
 exit
+{% if port_type == 'PL-type' -%}
+ethernet loopback stop local interface {{main_interface}} id {{loop_ID}}
+{% else -%}
 ethernet loopback stop local interface {{main_interface}}.{{item}} id {{loop_ID}}
+{% endif -%}
 configure terminal
+{% if port_type == 'PL-type' -%}
+interface {{main_interface}} l2transport
+{% else -%}
 interface {{main_interface}}.{{item}} l2transport
+{% endif -%}
 no ethernet loopback

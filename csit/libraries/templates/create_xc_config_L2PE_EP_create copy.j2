@@ -70,21 +70,24 @@
     {% endif -%}
 {% else -%}
     l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} neighbor evpn evi {{ 50000 + item|int }} target {{ 50000 + item|int }} source {{ 50000 + item|int }}
+    {% if SRTE -%}
+    pw-class {{pw_class}}
+    {% endif -%}
     evpn evi {{ 50000 + item|int }}
-    ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }}
-    ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} continuity-check interval {{ CCM_interval }}
-    ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} mep crosscheck mep-id {{ Remote_MEP }}
-    ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} log continuity-check errors
-    ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} log crosscheck errors
-    ethernet cfm domain COLT-1 level 1 id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} log continuity-check mep changes
+    ethernet cfm domain COLT-{{MEG_level}} level {{MEG_level}} id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }}
+    ethernet cfm domain COLT-{{MEG_level}} level {{MEG_level}} id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} continuity-check interval {{ CCM_interval }}
+    ethernet cfm domain COLT-{{MEG_level}} level {{MEG_level}} id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} mep crosscheck mep-id {{ Remote_MEP }}
+    ethernet cfm domain COLT-{{MEG_level}} level {{MEG_level}} id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} log continuity-check errors
+    ethernet cfm domain COLT-{{MEG_level}} level {{MEG_level}} id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} log crosscheck errors
+    ethernet cfm domain COLT-{{MEG_level}} level {{MEG_level}} id null service ALX_NCS_LE-{{ 100000 + item|int }} xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} id icc-based LE XXX-{{ 100000 + item|int }} log continuity-check mep changes
     {% if port_type == 'PL-type'-%}
         l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}
-        interface {{ main_interface }}  ethernet cfm mep domain COLT-1 service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{ Local_MEP}} cos {{ EXP }}
+        interface {{ main_interface }}  ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{ Local_MEP}} cos {{ EXP }}
         interface {{ main_interface }}  ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile DMM{{ EXP }} target mep-id {{ Remote_MEP }}
         interface {{ main_interface }}  ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile SLM{{ EXP }} target mep-id {{ Remote_MEP }}
     {% else -%}
         l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }}
-        interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-1 service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{ Local_MEP}} cos {{ EXP }}
+        interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{ Local_MEP}} cos {{ EXP }}
         interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile DMM{{ EXP }} target mep-id {{ Remote_MEP }}
         interface {{ main_interface }}.{{ item }} l2transport ethernet cfm mep domain COLT-{{MEG_level}} service ALX_NCS_LE-{{ 100000 + item|int }} mep-id {{Local_MEP}} sla operation profile SLM{{ EXP }} target mep-id {{ Remote_MEP }}
     {% endif -%}
@@ -123,41 +126,46 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     {% endif -%}
     end-policy-map
     policy-map P2P_CHILD_HQOS_INGRESS_{{ item }}_DIP
-    class PREMIUM-PCP-5-7_{{ item }}_DIP
-    police rate percent 15 burst 50 kbytes
+    class PREMIUM-PCP-{{Pre_PCP_START}}-{{Pre_PCP_LAST}}_{{ item }}_DIP
+    police rate percent {{Pre_CIR_MAX}} burst 50 kbytes
     set qos-group 5
     set traffic-class 6
-    class BUSINESS2-PCP-2_{{ item }}_DIP
-    police rate percent 20 burst 200 kbytes peak-rate percent 100 peak-burst 400 kbytes
+    class BUSINESS2-PCP-{{B2_PCP}}_{{ item }}_DIP
+    police rate percent {{B2_CIR}} burst 200 kbytes peak-rate percent 100 peak-burst 400 kbytes
     set qos-group 2
     set traffic-class 4
-    class BUSINESS3-PCP-1_{{ item }}_DIP
-    police rate percent 20 burst 500 kbytes peak-rate percent 100 peak-burst 1000 kbytes
+    class BUSINESS3-PCP-{{B3_PCP}}_{{ item }}_DIP
+    police rate percent {{B3_CIR}} burst 500 kbytes peak-rate percent 100 peak-burst 1000 kbytes
     set qos-group 1
     set traffic-class 3
-    class BUSINESS1-PCP-3_{{ item }}_DIP
-    police rate percent 15 burst 60 bytes peak-rate percent 30 peak-burst 100 kbytes
+    class BUSINESS1-PCP-{{B1_PCP}}_{{ item }}_DIP
+    police rate percent {{B1_CIR}} burst 60 bytes peak-rate percent {{B1_CIR_MAX}} peak-burst 100 kbytes
     set traffic-class 5
     set qos-group 3
-    class standard-PCP-4_0_{{ item }}_DIP
-    police rate percent 30 burst 500 kbytes peak-rate percent 100
+    class standard-PCP-{{STD_PCP}}_0_{{ item }}_DIP
+    police rate percent {{STD_CIR + Pre_BM_CIR + Nor_BM_CIR }} burst 500 kbytes peak-rate percent 100
     set qos-group 4
     set traffic-class 2
     end-policy-map
-    class-map match-any PREMIUM-PCP-5-7_{{ item }}_DIP
-    match cos 5 6 7
+    class-map match-any PREMIUM-PCP-{{Pre_PCP_START}}-{{Pre_PCP_LAST}}_{{ item }}_DIP
+    match cos {{Pre_PCP_START}} 6 {{Pre_PCP_LAST}}
+    match dscp {{Pre_DSCP_START}}-{{Pre_DSCP_LAST}}
     end-class-map
-    class-map match-any BUSINESS1-PCP-3_{{ item }}_DIP
-    match cos 3
+    class-map match-any BUSINESS1-PCP-{{B1_PCP}}_{{ item }}_DIP
+    match cos {{B1_PCP}}
+    match dscp {{B1_DSCP_START}}-{{B1_DSCP_LAST}}
     end-class-map
-    class-map match-any BUSINESS2-PCP-2_{{ item }}_DIP
-    match cos 2
+    class-map match-any BUSINESS2-PCP-{{B2_PCP}}_{{ item }}_DIP
+    match cos {{B2_PCP}}
+    match dscp {{B2_DSCP_START}}-{{B2_DSCP_LAST}}    
     end-class-map
-    class-map match-any BUSINESS3-PCP-1_{{ item }}_DIP
-    match cos 1
+    class-map match-any BUSINESS3-PCP-{{B3_PCP}}_{{ item }}_DIP
+    match cos {{B3_PCP}}
+    match dscp {{B3_DSCP_START}}-{{B3_DSCP_LAST}}    
     end-class-map
-    class-map match-any standard-PCP-4_0_{{ item }}_DIP
-    match cos 4 0
+    class-map match-any standard-PCP-{{STD_PCP}}_0_{{ item }}_DIP
+    match cos {{STD_PCP}} 0
+    match dscp {{STD_DSCP_START}}-{{STD_DSCP_LAST}}    
     end-class-map
     policy-map P2P_PARENT_HQOS_EGGRESS_{{ item }}_DIP
     class class-default
