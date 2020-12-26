@@ -36,6 +36,7 @@ def onnet_CC(A,B,*var_args):
     my_config.Command_Creation() ## create the commands to create and Delete service
     my_config.push_config() ## send the configs to the node.
     test_result,input_dict  = {},{} ## create a empty dictionary to hold results.
+    test_result['XC_status'] = my_config.get_netconf_XC_status() # use netconf to see XC status
     test_result['ccm_status'] = my_config.Validate_ccm()  ## store CCM Test results.
     # test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
     # my_config.disconnect_nodes() ## release netmiko connection from NCS and Accedian.
@@ -63,7 +64,7 @@ def onnet_CC(A,B,*var_args):
     # Spirent_L2_Gen.Clean_Up_Spirent() ## Clean UP Spirent.
     # test_result['CFM_Stats_cisco'] = my_config.mep_statistic_cisco() # Check CCM,DM,SL statistics on NCS
     # test_result['Polier_drop'] = my_config.check_QOS_counters_config() # Check drops on the input Policy.
-    # my_config.delete_config() # delete the config from NCS and Accedian.
+    my_config.delete_config() # delete the config from NCS and Accedian.
     my_config.disconnect_nodes() # release netmiko connection from NCS and Accedian.
     return test_result
 
@@ -85,7 +86,7 @@ def onnet_CC_delete(A,B):
     my_config.disconnect_nodes()
     return test_result
 
-# result['FF'] = onnet_CC('F','F')
+result['FF'] = onnet_CC('F','F')
 # result['XX'] = onnet_CC('X','X')
 # result['PP'] = onnet_CC('P','P')
 # result['XP'] = onnet_CC('X','P')
@@ -93,7 +94,7 @@ def onnet_CC_delete(A,B):
 # result['FY'] = onnet_CC('F','Y')
 # result['YF'] = onnet_CC('Y','F')
 # result['YY'] = onnet_CC('Y','Y')
-result['LL'] = onnet_CC('PL','PL')  ## not applicable for bundle & ELAN
+# result['LL'] = onnet_CC('PL','PL')  ## not applicable for bundle & ELAN
 # result['FF_ELAN_HQOS'] = onnet_CC('F','F',True,False)
 # result['FF_ELAN_FlatQ'] = onnet_CC('F','F',True,True)
 # result['FF_ELINE_FlatQ'] = onnet_CC('F','F',False,True)

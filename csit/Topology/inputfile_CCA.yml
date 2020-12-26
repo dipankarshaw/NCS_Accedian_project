@@ -1,7 +1,7 @@
-Flat_QOS: True
-classify: DSCP
+Flat_QOS: False
+classify: PCP
 item: 2316
-service_BW: 10000000 #this is service BW
+service_BW: 100000 #this is service BW
 CIR_percentage: 25 # this CIR percnetage in case of STD service.
 MEG_level: 1
 QOS_type: "Business2" # Possible values are Premium,Standard,Business2,Business1,Business3

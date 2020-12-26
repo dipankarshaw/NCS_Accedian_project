@@ -16,6 +16,9 @@ from multiprocessing import Pool
 from ttp import ttp
 import concurrent.futures as cf
 from os import listdir
+from ncclient import manager
+import xmltodict
+from collections import OrderedDict
 
 create_delete_list = ['create','delete']
 Loop_list = ['L1','L2']
@@ -34,17 +37,25 @@ class Service:
     def connect_nodes(self):
         for node in self.data["site_list"]:
             node['connect_obj'] = Netmiko(keepalive = 40, **node['login'])
-            print("**** connection established with node {}".format(node['Node_name']))
+            print("**** Netmiko connection established with {}".format(node['Node_name']))
         if self.data['SRTE']:
             self.data['Htool']['connect_obj'] = Netmiko(**self.data['Htool']['login'])
-            print("**** connection established with node {}".format(self.data['Htool']['login']['host']))
+            print("**** Netmiko connection established with {}".format(self.data['Htool']['login']['host']))
+        for node in self.data["site_list"]:
+            if node['login']['device_type'] == 'cisco_xr':
+                node['net_conf_obj'] = manager.connect(host = node['login']['host'], port = 830 , username = node['login']['username'], password = node['login']['password'],device_params={'name':'iosxr'}, hostkey_verify=False )
+                print(f"**** Netconf connection established with {node['Node_name']}")
     def disconnect_nodes(self):
         for node in self.data["site_list"]:
             node['connect_obj'].disconnect()
-            print("**** disconnected successfully from node {}".format(node['Node_name']))
+            print("**** Netmiko connection released from {}".format(node['Node_name']))
         if self.data['SRTE']:
             self.data['Htool']['connect_obj'].disconnect()
-            print("**** disconnected successfully from node {}".format(self.data['Htool']['login']['host']))            
+            print("**** Netmiko connection released from {}".format(self.data['Htool']['login']['host']))
+        for node in self.data["site_list"]:
+            if node['login']['device_type'] == 'cisco_xr':
+                node['net_conf_obj'].close_session()
+                print(f"**** Netconf connection released from {node['Node_name']}")           
     def connect_OLO_nodes(self):
         for olo in self.data["OLO_site_list"]:
             olo['connect_obj'] = Netmiko(**olo['login'])
@@ -230,7 +241,7 @@ class Service:
                     file_open.close()
     def push_config(self):
         for node in self.data["site_list"]:  
-            print("****  Logged in node : {}".format(node['Node_name']))
+            print("**** Logged in node : {}".format(node['Node_name']))
             with open(file_path + '/commands/XC_command_{}_create.txt'.format(node["Node_name"]),'r') as f:
                 f2 = f.readlines()
                 # output = node['connect_obj'].send_config_set(f2,cmd_verify=False)
@@ -243,27 +254,24 @@ class Service:
                 else:
                     output = node['connect_obj'].send_config_set(f2,cmd_verify=False)
                     print(output)
-            print("****  Configration completed on {}".format(node['Node_name']))
-        print("**** wait for 10 seconds")
-        time.sleep(10)
-    # def push_config(self):
-    #     def configure(node): 
-    #         print("****  Logged in node : {}".format(node['Node_name']))
-    #         with open(file_path + '/commands/XC_command_{}_create.txt'.format(node["Node_name"]),'r') as f:
-    #             f2 = f.readlines()
-    #             # output = node['connect_obj'].send_config_set(f2,cmd_verify=False)
-    #             # print(output)    
-    #             if node['login']['device_type'] == 'cisco_xr':
-    #                 node['connect_obj'].send_config_set(f2)
-    #                 # print(output)
-    #                 node['connect_obj'].commit()
-    #                 node['connect_obj'].exit_config_mode()
-    #             else:
-    #                 node['connect_obj'].send_config_set(f2,cmd_verify=False)
-    #                 # print(output)
-    #         print("****  Configration completed on {}".format(node['Node_name']))
-    #     with cf.ThreadPoolExecutor(max_workers=5) as ex:
-    #         ex.map(configure, self.data["site_list"])
+            print("**** Configration completed on {}".format(node['Node_name']))
+        print("**** wait for 2 seconds")
+        time.sleep(2)
+    def push_config_multithread(self):
+        def configure(node): 
+            print("**** Logged in node {}".format(node['Node_name']))
+            with open(file_path + '/commands/XC_command_{}_create.txt'.format(node["Node_name"]),'r') as f:
+                f2 = f.readlines()   
+            if node['login']['device_type'] == 'cisco_xr':
+                node['connect_obj'].send_config_set(f2)
+                node['connect_obj'].commit()
+                node['connect_obj'].exit_config_mode()
+            else:
+                node['connect_obj'].send_config_set(f2,cmd_verify=False)
+            print("**** Configration completed on {}".format(node['Node_name']))
+        with cf.ThreadPoolExecutor(max_workers=5) as ex:
+            ex.map(configure, self.data["site_list"])
+        time.sleep(3)
     def check_QOS_counters_config(self):
         dict13 = {}
         for node in self.data["site_list"]:
@@ -776,7 +784,26 @@ class Service:
                                     print("**** Match found, {} {} {}".format(item1,item2,x))
                                 else:
                                     pass
-
+    def get_netconf_XC_status(self):
+        result = {}
+        with open(file_path + '/netconf_filters/filter_Xconnect_state.j2') as f:
+            xml_structure = Template(f.read()).render(**self.data)
+        for node in self.data["site_list"]:
+            if node['login']['device_type'] == 'cisco_xr':
+                try:                   
+                    reply_xml = node['net_conf_obj'].get(xml_structure)
+                    reply_dict = xmltodict.parse(reply_xml.xml)["rpc-reply"]["data"]["l2vpnv2"]["nodes"]["node"]["xconnects"]["xconnect"]
+                    output_dict = json.loads(json.dumps(reply_dict))
+                    pprint(output_dict)
+                    if 'down' not in output_dict['segment1']['attachment-circuit']['state'] and 'down' not in output_dict['segment2']['pseudo-wire']['state']:
+                        print(f"**** service is UP at {node['Node_name']}")
+                        result[node['Node_name']] = 'pass'
+                    else:
+                        print(f"**** service is down at {node['Node_name']}")
+                        result[node['Node_name']] = 'fail'
+                except:
+                    print("*** Something wrong")
+        return result
 
 
 

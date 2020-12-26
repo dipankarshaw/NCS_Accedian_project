@@ -43,7 +43,7 @@
     {% if port_type == 'PL-type' -%}
     interface {{ main_interface }} l2transport service-policy input {{service_BW}}-{{QOS_type}}_{{ item }}_DIP
     {% else -%}       
-    interface {{ main_interface }}.{{ item }} l2transport service-policy input {{service_BW}}-{{QOS_type}}_{{ item }}_DIP
+    interface {{ main_interface }}.{{ item }} l2transport {# service-policy input {{service_BW}}-{{QOS_type}}_{{ item }}_DIP #}
     {% endif -%}
 {% else -%}
     {% if port_type == 'PL-type' -%}

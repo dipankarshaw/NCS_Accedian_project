@@ -46,6 +46,7 @@ def onnet_CCA(A,B):
     my_config.push_config() ## send the configs to the node.
     test_result,input_dict  = {},{} ## create a empty dictionary to hold results.
     test_result['ccm_status'] = my_config.Validate_ccm()
+    my_config.disconnect_nodes()
     # test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
     # my_config.disconnect_nodes() ## release netmiko connection from NCS and Accedian.
     # input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
@@ -72,6 +73,7 @@ def onnet_CCA(A,B):
     # test_result['CFM_Stats_Acc'] = my_config.mep_statistic_accedian()
     # test_result['CFM_Stats_cisco'] = my_config.mep_statistic_cisco()
     # my_config.check_QOS_counters_config()
+    my_config.connect_nodes()
     my_config.delete_config()
     my_config.disconnect_nodes()
     return test_result
