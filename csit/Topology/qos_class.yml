@@ -27,6 +27,9 @@ lab_nodes:
   - 10.91.126.195
   # - 10.91.126.119
   - 10.91.126.125
+
+CCM_interval: "1s"
+CIR_percentage: 25 # applicable only for standard.
 B3_green_pcp: 1
 B3_yellow_pcp: 1
 B1_green_pcp: 3

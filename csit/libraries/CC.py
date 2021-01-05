@@ -95,11 +95,11 @@ def onnet_CC_delete(A,B):
 # result['YF'] = onnet_CC('Y','F')
 # result['YY'] = onnet_CC('Y','Y')
 # result['LL'] = onnet_CC('PL','PL')  ## not applicable for bundle & ELAN
-result['FF'] = onnet_CC('F','F',**{"QOS_type": 'Premium'})
-result['FF'] = onnet_CC('F','F',**{"QOS_type": 'Standard'})
-result['FF'] = onnet_CC('F','F',**{"QOS_type": 'Business2'})
-result['FF'] = onnet_CC('F','F',**{"QOS_type": 'Business1'})
-result['FF'] = onnet_CC('F','F',**{"QOS_type": 'Business3'})
+result['FFP'] = onnet_CC('F','F',**{"QOS_type": 'Premium'})
+result['FFS'] = onnet_CC('F','F',**{"QOS_type": 'Standard'})
+result['FFB2'] = onnet_CC('F','F',**{"QOS_type": 'Business2'})
+result['FFB1'] = onnet_CC('F','F',**{"QOS_type": 'Business1'})
+result['FFB3'] = onnet_CC('F','F',**{"QOS_type": 'Business3'})
 
 
 pprint(result)

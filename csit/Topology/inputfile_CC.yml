@@ -2,16 +2,14 @@ Flat_QOS: True # Boolean(True or False), if HQOS required Make it False, if Flat
 classify: DSCP
 item: 2315
 service_BW: 10000000 # this is in Kbps.
-CIR_percentage: 25 # applicable only for standard.
 MEG_level: 3
 QOS_type: "Business2" # Possible values are Premium,Standard,Business2,Business1,Business3
 colt_vlan_ethType: "s-vlan"
 customer_vlan_ethtype: "c-vlan"
 olo_eth_type: "s-vlan"
-CCM_interval: "1s"
 config_test: 15 # Duration in Seconds, for Y-1564 step test from Accedian.
 performance_test: 1 # Duration in Minutes, for Y-1564 Test from Accedian.
-STP_percentage: 80 # How much percent of service_BW, STP traffic is required?
+STP_percentage: 100 # How much percent of service_BW, STP traffic is required?
 ELAN: False # Boolean(True or False), if ELAN required Make it True, if ELINE is required, set as False
 OLO_type: "P-OLO"
 olo_vlan: 2501
