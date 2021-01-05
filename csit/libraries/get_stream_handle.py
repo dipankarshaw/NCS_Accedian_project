@@ -121,3 +121,18 @@ def l2CP_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict):
             Spirent_L2_Gen.Clear_counters_port_based()
         Spirent_L2_Gen.delete_streams_clear_counters()   
     return l2cp_result
+def mtu_modification_test(my_config):
+    temp_result = {}
+    my_config.netconf_set_random_MTU('random')
+    temp_result['random_mtu'] = my_config.get_netconf_XC_status()
+    my_config.netconf_set_random_MTU('9186')
+    temp_result['fix_mtu'] = my_config.get_netconf_XC_status()
+    return temp_result
+def bgp_shut_unshut_test(my_config):
+    my_config.get_netconf_BGP_status() ### Check BGP Status and obtain all BGP neighbors.
+    my_config.netconf_shut_bgp_neighbor('true') ### Shut down all BGP Neighbors.
+    my_config.get_netconf_BGP_status() ### Check BGP Status and obtain all BGP neighbors.
+    my_config.netconf_shut_bgp_neighbor('false') ### No shut down all BGP Neighbors.
+    my_config.get_netconf_BGP_status() ### Check BGP Status and obtain all BGP neighbors.
+
+

@@ -19,6 +19,10 @@ from os import listdir
 from ncclient import manager
 import xmltodict
 from collections import OrderedDict
+from pygnmi.client import gNMIclient
+import requests
+import sys
+import random
 
 create_delete_list = ['create','delete']
 Loop_list = ['L1','L2']
@@ -786,25 +790,89 @@ class Service:
                                     pass
     def get_netconf_XC_status(self):
         result = {}
-        with open(file_path + '/netconf_filters/filter_Xconnect_state.j2') as f:
+        if not self.data['ELAN']:
+            ### template the jinja file with EVI ID(item) & store the xml file in variable named xml_structure.
+            with open(file_path + '/netconf_filters/filter_Xconnect_state.j2') as f:
+                xml_structure = Template(f.read()).render(**self.data)
+            ### now if device is cisco_xr, then send the xml to get xconnect status via netconf connection object
+            for node in self.data["site_list"]:
+                if node['login']['device_type'] == 'cisco_xr':
+                    try:                   
+                        reply_xml = node['net_conf_obj'].get(xml_structure)
+                        ### convert the reply xml into dictionary
+                        reply_dict = xmltodict.parse(reply_xml.xml)["rpc-reply"]["data"]["l2vpnv2"]["nodes"]["node"]["xconnects"]["xconnect"]
+                        ### convert ordered dict to a regular dictionary, for easy view
+                        output_dict = json.loads(json.dumps(reply_dict))
+                        ### print the Regular Dictionary
+                        # pprint(output_dict)
+                        ### do validation of the status of AC and Pseudowire
+                        if 'down' not in output_dict['segment1']['attachment-circuit']['state'] and 'down' not in output_dict['segment2']['pseudo-wire']['state']:
+                            print(f"**** service is UP at {node['Node_name']}")
+                            result[node['Node_name']] = 'pass'
+                        else:
+                            print(f"**** service is down at {node['Node_name']}")
+                            result[node['Node_name']] = 'fail'
+                    except:
+                        print("*** Something went wrong")
+        return result
+    def netconf_set_random_MTU(self,flag):
+        for node in self.data["site_list"]:
+            if node['login']['device_type'] == 'cisco_xr':
+                if flag == 'random':
+                    node['rand_mtu'] = random.randrange(2000,9186,2)
+                else:
+                    node['rand_mtu'] = 9186
+                print(f"**** {node['rand_mtu']} MTU confgiured on {node['Node_name']}")
+                with open(file_path + '/netconf_filters/config_MTU_interface.j2') as f:
+                    xml_structure = Template(f.read()).render(**self.data,**node)
+                # print(xml_structure)       
+                node['net_conf_obj'].edit_config(xml_structure,target='candidate',default_operation='merge')
+                node['net_conf_obj'].commit()
+        time.sleep(3)
+    def get_netconf_BGP_status(self):
+        result = {}
+        with open(file_path + '/netconf_filters/filter_bgp_neighbor.j2') as f:
             xml_structure = Template(f.read()).render(**self.data)
+        ### now if device is cisco_xr, then send the xml to get xconnect status via netconf connection object
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr':
                 try:                   
                     reply_xml = node['net_conf_obj'].get(xml_structure)
-                    reply_dict = xmltodict.parse(reply_xml.xml)["rpc-reply"]["data"]["l2vpnv2"]["nodes"]["node"]["xconnects"]["xconnect"]
+                    ### convert the reply xml into dictionary
+                    reply_dict = xmltodict.parse(reply_xml.xml)["rpc-reply"]["data"]['bgp']['instances']['instance']['instance-active']['default-vrf']['neighbors']['neighbor']
+                    ### convert ordered dict to a regular dictionary, for easy view
                     output_dict = json.loads(json.dumps(reply_dict))
-                    pprint(output_dict)
-                    if 'down' not in output_dict['segment1']['attachment-circuit']['state'] and 'down' not in output_dict['segment2']['pseudo-wire']['state']:
-                        print(f"**** service is UP at {node['Node_name']}")
-                        result[node['Node_name']] = 'pass'
+                    ### print the Regular Dictionary
+                    # pprint(output_dict)
+                    if type(output_dict) is list:
+                        node['bgp'] = output_dict
                     else:
-                        print(f"**** service is down at {node['Node_name']}")
-                        result[node['Node_name']] = 'fail'
+                        node['bgp'] = []
+                        node['bgp'].append(output_dict)
                 except:
-                    print("*** Something wrong")
+                    print("*** Something went wrong")
         return result
+    def netconf_shut_bgp_neighbor(self,flag):
+        for node in self.data["site_list"]:
+            if node['login']['device_type'] == 'cisco_xr':
+                ###  set the bgp action flag(true or false)
+                node['bgp_action'] = flag
+                ### render the jinja file to get the edit_config xml structure.
+                with open(file_path + '/netconf_filters/shut_bgp_neighbor.j2') as f:
+                    xml_structure = Template(f.read()).render(**self.data,**node)
+                try:                   
+                    ### Merge xml_structure in the Candiate DB store & verify rpc_reply contains <ok/> or not.
+                    response = node['net_conf_obj'].edit_config(xml_structure,target='candidate')
+                    if '<ok/>' in response.xml:
+                        print(f"**** Candidate config merged Correctly on {node['Node_name']}")
+                    ### commit Candidate DB store as Running config & verify rpc_reply contains <ok/> or not.
+                    response = node['net_conf_obj'].commit()
+                    if '<ok/>' in response.xml:                    
+                        print(f"**** bgp neighbor shut = {flag} completed on {node['Node_name']}")
+                    time.sleep(2)
+                except:
+                    print("something went Wrong")
+        print("**** wait for 10 seconds")
+        time.sleep(10)
 
-
-
-
+          

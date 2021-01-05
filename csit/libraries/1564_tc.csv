@@ -1,0 +1,82 @@
+Device Type,port_type,End_point_Type
+5501,LAG,P-P
+55A1,LAG,P-P
+540,LAG,P-P
+5501,10 G_non_lag,P-P
+55A1,10 G_non_lag,P-P
+540,10 G_non_lag,P-P
+5501,1 G_non_lag,P-P
+55A1,1 G_non_lag,P-P
+540,1 G_non_lag,P-P
+5501,LAG,PL-PL
+55A1,LAG,PL-PL
+540,LAG,PL-PL
+5501,10 G_non_lag,PL-PL
+55A1,10 G_non_lag,PL-PL
+540,10 G_non_lag,PL-PL
+5501,1 G_non_lag,PL-PL
+55A1,1 G_non_lag,PL-PL
+540,1 G_non_lag,PL-PL
+5501,LAG,F-F
+55A1,LAG,F-F
+540,LAG,F-F
+5501,10 G_non_lag,F-F
+55A1,10 G_non_lag,F-F
+540,10 G_non_lag,F-F
+5501,1 G_non_lag,F-F
+55A1,1 G_non_lag,F-F
+540,1 G_non_lag,F-F
+5501,LAG,X-X
+55A1,LAG,X-X
+540,LAG,X-X
+5501,10 G_non_lag,X-X
+55A1,10 G_non_lag,X-X
+540,10 G_non_lag,X-X
+5501,1 G_non_lag,X-X
+55A1,1 G_non_lag,X-X
+540,1 G_non_lag,X-X
+5501,LAG,X-P
+55A1,LAG,X-P
+540,LAG,X-P
+5501,10 G_non_lag,X-P
+55A1,10 G_non_lag,X-P
+540,10 G_non_lag,X-P
+5501,1 G_non_lag,X-P
+55A1,1 G_non_lag,X-P
+540,1 G_non_lag,X-P
+5501,LAG,Y-Y
+55A1,LAG,Y-Y
+540,LAG,Y-Y
+5501,10 G_non_lag,Y-Y
+55A1,10 G_non_lag,Y-Y
+540,10 G_non_lag,Y-Y
+5501,1 G_non_lag,Y-Y
+55A1,1 G_non_lag,Y-Y
+540,1 G_non_lag,Y-Y
+5501,LAG,P-X
+55A1,LAG,P-X
+540,LAG,P-X
+5501,10 G_non_lag,P-X
+55A1,10 G_non_lag,P-X
+540,10 G_non_lag,P-X
+5501,1 G_non_lag,P-X
+55A1,1 G_non_lag,P-X
+540,1 G_non_lag,P-X
+5501,LAG,F-Y
+55A1,LAG,F-Y
+540,LAG,F-Y
+5501,10 G_non_lag,F-Y
+55A1,10 G_non_lag,F-Y
+540,10 G_non_lag,F-Y
+5501,1 G_non_lag,F-Y
+55A1,1 G_non_lag,F-Y
+540,1 G_non_lag,F-Y
+5501,LAG,Y-F
+55A1,LAG,Y-F
+540,LAG,Y-F
+5501,10 G_non_lag,Y-F
+55A1,10 G_non_lag,Y-F
+540,10 G_non_lag,Y-F
+5501,1 G_non_lag,Y-F
+55A1,1 G_non_lag,Y-F
+540,1 G_non_lag,Y-F
