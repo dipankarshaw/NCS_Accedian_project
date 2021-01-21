@@ -52,7 +52,7 @@ def onnet_CC(A,B,**kwargs):
     # test_result['lag_test'] = lag_test(my_config,Spirent_L2_Gen,A,B,1) # perfrom LAG test with UNI LAG and NNI LAG with Accedian.
     # test_result['frr_test'] = fast_reroute_test(my_config,Spirent_L2_Gen,A,B,1) # perform FRR test ( Local shut)
     # rfc_stream_handle = get_rfc_stream_handle(A,B,Spirent_L2_Gen,**input_dict) # Create the RFC stream handles.
-    # test_result['loop_testAB'] = perform_spirent_loop_test(my_config,Spirent_L2_Gen,rfc_stream_handle[0],A,B)
+
     # test_result['rfc_fl_test'] = Spirent_L2_Gen.rfc_2544_frameloss_test(rfc_stream_handle[0],rfc_stream_handle[1]) # perform rfc Framelost Test.
     #test_result['rfc_tput_test'] = Spirent_L2_Gen.rfc_2544_throughput_test(rfc_stream_handle[0],rfc_stream_handle[1])
     # test_result['rfc_b2b_test'] = Spirent_L2_Gen.rfc_2544_backtoback_test(rfc_stream_handle[0],rfc_stream_handle[1])
@@ -96,20 +96,12 @@ result['FF'] = onnet_CC('F','F')
 # result['YF'] = onnet_CC('Y','F')
 # result['YY'] = onnet_CC('Y','Y')
 # result['LL'] = onnet_CC('PL','PL')  ## not applicable for bundle & ELAN
-# result['FF-HQOS'] = onnet_CC('F','F',**{"Flat_QOS": False,'ELAN': True})
-# result['FF-FQOS'] = onnet_CC('F','F',**{"Flat_QOS": True})
-# result['XX-Prem'] = onnet_CC('X','X',**{"QOS_type": 'Premium'})
-# result['PP-Prem'] = onnet_CC('P','P',**{"QOS_type": 'Premium'})
-# result['XP-Prem'] = onnet_CC('X','P',**{"QOS_type": 'Premium'})
-# result['PX-Prem'] = onnet_CC('P','X',**{"QOS_type": 'Premium'})
-# result['FY-Prem'] = onnet_CC('F','Y',**{"QOS_type": 'Premium'})
-# result['YF-Prem'] = onnet_CC('Y','F',**{"QOS_type": 'Premium'})
-# result['YY-Prem'] = onnet_CC('Y','Y',**{"QOS_type": 'Premium'})
-# result['LLPrem'] = onnet_CC('PL','PL',**{"QOS_type": 'Premium'})  ## not applicable for bundle & ELAN
+
 # STP_percentage_list = [100]
 # QOS_type_list = ['Premium','Standard','Business2','Business1','Business3']
 # for item1 in range(10000000,11000000,1000000):
 #     for item2 in QOS_type_list:
 #         result[f'FF_{item1//1000}_Mbps_{item2}_Percent'] = onnet_CC('F','F',**{"service_BW": item1 , "QOS_type": item2 })
 pprint(result)
-#print(json.dumps(result,indent=4))
+# print(json.dumps(result,indent=4))
+# test_result['loop_testAB'] = perform_spirent_loop_test(my_config,Spirent_L2_Gen,rfc_stream_handle[0],A,B)
