@@ -35,8 +35,7 @@ def onnet_CCM_Y1564_ACCA(A,B):
     dict1['site_list'][3]['port_type'] = '{}-type'.format(B)
     my_config = Service(**dict1) ## initialize the object.
     my_config.connect_nodes() ## connect the nodes.
-    my_config.get_Lag_Status() ## get the LAG BW, A/A links, A/S Links.
-    my_config.get_frr_status() ## get the LFA towards core.
+    my_config.gather_facts() ## Update the dictionary with info from Nodes.
     my_config.parse_accedian() ## perse accedian for MEG,MEP index
     my_config.SRTE_Config() ## do SRTE config via H-policy tool & attach the PW class to the Service.
     my_config.Command_Creation() ## create the commands to create and Delete service

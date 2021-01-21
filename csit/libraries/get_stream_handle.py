@@ -107,12 +107,12 @@ def ccm_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict):
     return ccm_result
 def l2CP_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict):
     l2cp_result = {}
-    StreamHandle1 = Spirent_L2_Gen.Spirent_L2CP_Transperancy_Traffic_Testing_For_P2P_Service(0,1,**input_dict['Spirent_0TAG_AZ']['UC'])
-    StreamHandle2 = Spirent_L2_Gen.Spirent_L2CP_Transperancy_Traffic_Testing_For_P2P_Service(1,0,**input_dict['Spirent_0TAG_ZA']['UC'])
-    l2CP_stream_handle = []
-    l2CP_stream_handle.append(StreamHandle1)
-    l2CP_stream_handle.append(StreamHandle2)
     if (A == 'P' and B == 'P') or (A == 'PL' and B == 'PL'):
+        StreamHandle1 = Spirent_L2_Gen.Spirent_L2CP_Transperancy_Traffic_Testing_For_P2P_Service(0,1,**input_dict['Spirent_0TAG_AZ']['UC'])
+        StreamHandle2 = Spirent_L2_Gen.Spirent_L2CP_Transperancy_Traffic_Testing_For_P2P_Service(1,0,**input_dict['Spirent_0TAG_ZA']['UC'])
+        l2CP_stream_handle = []
+        l2CP_stream_handle.append(StreamHandle1)
+        l2CP_stream_handle.append(StreamHandle2)
         for i in range(len(l2CP_stream_handle[0])):
             print(f"*** verify ccm transparancy for {l2CP_stream_handle[0][i]['name']} ***")
             Spirent_L2_Gen.Generate_Stream_Traffic_timed(l2CP_stream_handle[0][i],l2CP_stream_handle[1][i],1)

@@ -1,18 +1,18 @@
-[2020-12-15 11:48:11]: Started process.  Command line: 
-[2020-12-15 11:48:11]:      port number: 44173
-[2020-12-15 11:48:11]:    timeout value: 120
-[2020-12-15 11:48:11]:       log option: log
-[2020-12-15 11:48:11]: results dir path: /home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
-[2020-12-15 11:48:11]:    log file name: CCA.hltlog
-[2020-12-15 11:48:11]: Working directory is now: /home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
-[2020-12-15 11:48:11]: Sourcing initialization file "stcinit.srv".
-[2020-12-15 11:48:11]: Connecting to port 44173 on 127.0.0.1.
-[2020-12-15 11:48:11]: Creating server socket.
-[2020-12-15 11:48:11]: Generated port number: 42585
-[2020-12-15 11:48:11]: Setting up timeout check.
-[2020-12-15 11:48:11]: Waiting for client connection.
-[2020-12-15 11:48:11]: Client connection from 127.0.0.1 port 36646.
-[2020-12-15 11:48:11]: Executing: <package require SpirentHltApi>
-[2020-12-15 11:48:27]: Return value: <4.67>
-[2020-12-15 11:48:27]: custom_path--/home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
-[2020-12-15 11:54:38]: Client connection has been broken.  Exiting.
+[2021-01-06 12:10:43]: Started process.  Command line: 
+[2021-01-06 12:10:43]:      port number: 48521
+[2021-01-06 12:10:43]:    timeout value: 120
+[2021-01-06 12:10:43]:       log option: log
+[2021-01-06 12:10:43]: results dir path: /home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
+[2021-01-06 12:10:43]:    log file name: CCA.hltlog
+[2021-01-06 12:10:43]: Working directory is now: /home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
+[2021-01-06 12:10:43]: Sourcing initialization file "stcinit.srv".
+[2021-01-06 12:10:43]: Connecting to port 48521 on 127.0.0.1.
+[2021-01-06 12:10:43]: Creating server socket.
+[2021-01-06 12:10:43]: Generated port number: 33193
+[2021-01-06 12:10:43]: Setting up timeout check.
+[2021-01-06 12:10:43]: Waiting for client connection.
+[2021-01-06 12:10:43]: Client connection from 127.0.0.1 port 36274.
+[2021-01-06 12:10:43]: Executing: <package require SpirentHltApi>
+[2021-01-06 12:10:59]: Return value: <4.67>
+[2021-01-06 12:10:59]: custom_path--/home/colt123/Dipankar/NCS_Accedian_project/csit/libraries
+[2021-01-06 12:11:29]: Client connection has been broken.  Exiting.

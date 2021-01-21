@@ -99,13 +99,13 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     policy-map {{service_BW}}-{{QOS_type}}_{{ item }}_DIP
     class class-default
     {% if 'Bundle' in main_interface and QOS_type!= 'Standard' -%}
-        police rate percent {{  service_BW * 100 // Lag_bw }} burst 1100 kbytes
+        police rate percent {{  jinja_func.lag_peak_percent_calc(service_BW,Lag_bw) }} burst {{cbs}} kbytes
     {% elif 'Bundle' in main_interface and QOS_type== 'Standard' -%}
-        police rate percent {{ service_BW * CIR_percentage// Lag_bw }} burst 1200 kbytes peak-rate percent {{ service_BW * 100// Lag_bw }} peak-burst 1000 kbytes
+        police rate percent {{ jinja_func.lag_CIR_percent_calc(service_BW,CIR_percentage,Lag_bw) }} burst {{cbs}} kbytes peak-rate percent {{ jinja_func.lag_peak_percent_calc(service_BW,Lag_bw) }} peak-burst {{ebs}} kbytes
     {% elif  QOS_type== 'Standard' -%}
-        police rate {{ service_BW* CIR_percentage //100 }} kbps burst 1200 kbytes peak-rate {{ service_BW }} kbps peak-burst 1000 kbytes
+        police rate {{ service_BW * CIR_percentage // 100 }} kbps burst {{cbs}} kbytes peak-rate {{ jinja_func.add_2_percent(service_BW,main_interface_bw) }} kbps peak-burst {{ebs}} kbytes
     {% else -%}
-        police rate {{ service_BW }} kbps burst 1100 kbytes
+        police rate {{ jinja_func.add_2_percent(service_BW,main_interface_bw) }} kbps burst {{cbs}} kbytes
     {% endif -%}
     !
     set traffic-class {{TC}}
@@ -118,32 +118,30 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     class class-default
     service-policy P2P_CHILD_HQOS_INGRESS_{{ item }}_DIP
     {% if 'Bundle' in main_interface -%}
-        police rate percent {{  service_BW * 100 // Lag_bw }}
-    {% elif 'Gigabit' in main_interface -%}
-        police rate percent {{  service_BW * 100 // 1000000 }}
+        police rate percent {{ jinja_func.lag_peak_percent_calc(service_BW,Lag_bw) }}
     {% else -%}
-        police rate percent {{  service_BW * 100 // 10000000 }} 
+        police rate percent {{ jinja_func.peak_percent_calc(service_BW,main_interface_bw) }} 
     {% endif -%}
     end-policy-map
     policy-map P2P_CHILD_HQOS_INGRESS_{{ item }}_DIP
     class PREMIUM-PCP-{{Pre_PCP_START}}-{{Pre_PCP_LAST}}_{{ item }}_DIP
-    police rate percent {{Pre_CIR_MAX}} burst 50 kbytes
+    police rate percent {{Pre_CIR_MAX}} burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Premium',Pre_CIR_MAX,wb)}} kbytes
     set qos-group 5
     set traffic-class 6
     class BUSINESS2-PCP-{{B2_PCP}}_{{ item }}_DIP
-    police rate percent {{B2_CIR}} burst 200 kbytes peak-rate percent 100 peak-burst 400 kbytes
+    police rate percent {{B2_CIR}} burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Business2',B2_CIR,wb)}} kbytes peak-rate percent {{B2_EIR_MAX_NCS}} peak-burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Business2',B2_EIR_MAX_NCS,wb)}} kbytes
     set qos-group 2
     set traffic-class 4
     class BUSINESS3-PCP-{{B3_PCP}}_{{ item }}_DIP
-    police rate percent {{B3_CIR}} burst 500 kbytes peak-rate percent 100 peak-burst 1000 kbytes
+    police rate percent {{B3_CIR}} burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Business3',B3_CIR,wb)}} kbytes peak-rate percent {{B3_EIR_MAX_NCS}} peak-burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Business3',B3_EIR_MAX_NCS,wb)}} kbytes
     set qos-group 1
     set traffic-class 3
     class BUSINESS1-PCP-{{B1_PCP}}_{{ item }}_DIP
-    police rate percent {{B1_CIR}} burst 60 bytes peak-rate percent {{B1_CIR_MAX}} peak-burst 100 kbytes
+    police rate percent {{B1_CIR}} burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Business1',B1_CIR,wb)}} bytes peak-rate percent {{B1_CIR_MAX}} peak-burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Business1',B1_CIR_MAX,wb)}} kbytes
     set traffic-class 5
     set qos-group 3
     class standard-PCP-{{STD_PCP}}_0_{{ item }}_DIP
-    police rate percent {{STD_CIR + Pre_BM_CIR + Nor_BM_CIR }} burst 500 kbytes peak-rate percent 100
+    police rate percent {{STD_CIR + Pre_BM_CIR + Nor_BM_CIR }} burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Standard',(STD_CIR + Pre_BM_CIR + Nor_BM_CIR),wb)}} kbytes peak-rate percent {{STD_CIR_MAX}} peak-burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Standard',STD_CIR_MAX,wb)}} kbytes
     set qos-group 4
     set traffic-class 2
     end-policy-map
@@ -171,11 +169,9 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     class class-default
     service-policy P2P_CHILD_HQOS_EGGRESS_{{ item }}_DIP
     {% if 'Bundle' in main_interface -%}
-        shape average percent {{  service_BW * 100 // Lag_bw }}
-    {% elif 'Gigabit' in main_interface -%}
-        shape average percent {{  service_BW * 100 // 1000000 }}
+        shape average percent {{ jinja_func.lag_peak_percent_calc(service_BW,Lag_bw) }}
     {% else -%}
-        shape average percent {{  service_BW * 100 // 10000000 }}  
+        shape average percent {{  jinja_func.peak_percent_calc(service_BW,main_interface_bw) }} 
     {% endif -%}
     end-policy-map
     policy-map P2P_CHILD_HQOS_EGGRESS_{{ item }}_DIP

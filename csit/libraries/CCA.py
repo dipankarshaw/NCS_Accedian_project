@@ -38,15 +38,14 @@ def onnet_CCA(A,B):
     dict1['site_list'][2]['port_type'] = '{}-type'.format(B)
     my_config = Service(**dict1) ## initialize the object.
     my_config.connect_nodes() ## connect the nodes.
-    my_config.get_Lag_Status() ## get the LAG BW, A/A links, A/S Links.
-    my_config.get_frr_status() ## get the LFA towards core.
+    my_config.gather_facts() ## Update the dictionary with info from Nodes.
     my_config.parse_accedian() ## perse accedian for MEG,MEP index
     my_config.SRTE_Config() ## do SRTE config via H-policy tool & attach the PW class to the Service.
     my_config.Command_Creation() ## create the commands to create and Delete service
     my_config.push_config() ## send the configs to the node.
     test_result,input_dict  = {},{} ## create a empty dictionary to hold results.
     test_result['ccm_status'] = my_config.Validate_ccm()
-    my_config.disconnect_nodes()
+    # my_config.disconnect_nodes()
     # test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
     # my_config.disconnect_nodes() ## release netmiko connection from NCS and Accedian.
     # input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
@@ -72,8 +71,8 @@ def onnet_CCA(A,B):
     # Spirent_L2_Gen.Clean_Up_Spirent() ## Clean UP Spirent.
     # test_result['CFM_Stats_Acc'] = my_config.mep_statistic_accedian()
     # test_result['CFM_Stats_cisco'] = my_config.mep_statistic_cisco()
-    # my_config.check_QOS_counters_config()
-    my_config.connect_nodes()
+    my_config.check_QOS_counters_config()
+    # my_config.connect_nodes()
     my_config.delete_config()
     my_config.disconnect_nodes()
     return test_result

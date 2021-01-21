@@ -12,32 +12,44 @@
     {% set yellow_pcp = 5 -%}
 {% elif QOS_type == 'Standard' -%}
     {% set green_pcp = 4 -%}
-    {% set yellow_pcp = 7 -%}
+    {% set yellow_pcp = 0 -%}
 {% else -%}
 {% endif -%}
-{% if QOS_type == 'Standard' -%}
+{% if QOS_type == '1_Standard' -%}
     {% set service_BW = ((service_BW * STP_percentage ) // 100000) -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 color-aware cir {{ service_BW // 4 }} mbps eir-color cos {{ yellow_pcp }}
     {% if port_type == 'Y-type' -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}} inner-cos {{green_pcp}}
-    {% elif port_type == 'F-type' or port_type == 'X-type' -%}
+    {% elif port_type == 'F-type' -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}}
+    {% elif port_type == 'X-type' -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos 0
     {% else -%}
     {% endif -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 duration {{performance_test}} minutes
+    {% if Y1564_cisco_emix -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 packet-size emix sequence abcdefgu u-value 9100
+    {% else -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 packet-size {{ Y1564_frame_size }}
+    {% endif -%}    
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 information-rate {{service_BW}} mbps
 {% else -%}
     {% set service_BW = ((service_BW * STP_percentage ) // 100000) -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564
     {% if port_type == 'Y-type' -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}} inner-cos {{green_pcp}}
-    {% elif port_type == 'F-type' or port_type == 'X-type' -%}
+    {% elif port_type == 'F-type' -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}}
+    {% elif port_type == 'X-type' -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos 0
     {% else -%}
     {% endif -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 duration {{performance_test}} minutes
+    {% if Y1564_cisco_emix -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 packet-size emix sequence abcdefgu u-value 9100
+    {% else -%}
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 packet-size {{ Y1564_frame_size }}
+    {% endif -%} 
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 information-rate {{service_BW}} mbps
 {% endif -%}
 {% if port_type == 'PL-type' -%}

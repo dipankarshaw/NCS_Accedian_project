@@ -1,0 +1,34 @@
+{% if  port_type == 'PL-type' -%}
+<filter>
+    <service-activation-test xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-ethernet-sat-oper">
+      <test-statuses>
+        <test-status>
+          <phase>
+            <results>
+              <cir/>
+              <eir/>
+            </results>
+          </phase>
+          <interface-name>{{main_interface}}</interface-name>
+        </test-status>
+      </test-statuses>
+    </service-activation-test>
+</filter>
+{% else -%}
+<filter>
+    <service-activation-test xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-ethernet-sat-oper">
+      <test-statuses>
+        <test-status>
+          <phase>
+            <results>
+              <cir/>
+              <eir/>
+            </results>
+          </phase>
+          <interface-name>{{main_interface}}.{{item}}</interface-name>
+        </test-status>
+      </test-statuses>
+    </service-activation-test>
+</filter>
+{% endif -%}
+

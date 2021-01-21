@@ -23,6 +23,7 @@ from pygnmi.client import gNMIclient
 import requests
 import sys
 import random
+from openpyxl import load_workbook
 
 create_delete_list = ['create','delete']
 Loop_list = ['L1','L2']
@@ -33,12 +34,55 @@ file_path = os.path.dirname(os.path.realpath(__file__))
 test_result = {}
 dict3 = {}
 
+class Jinja_user_func:
+    def __init__(self):
+        self
+    def add_2_percent(self,service_BW,main_interface_bw):
+        '''add 2 % extra bw in the Policy when 102 % of service BW is less than Main interface BW'''
+        if service_BW * 102 //100 >= main_interface_bw:
+            return main_interface_bw
+        else:
+            return service_BW * 102 // 100
+    def lag_peak_percent_calc(self,service_BW,Lag_bw):
+        ''' if percentage calculation of service BW w.r.t lag BW, comes in fraction then add move to next integer '''
+        if service_BW * 100 % Lag_bw > 0:
+            return service_BW * 100 // Lag_bw + 1
+        else:
+            return service_BW * 100 // Lag_bw
+    def lag_CIR_percent_calc(self,service_BW,CIR_percentage,Lag_bw):
+        ''' if CIR percentage calculation of service BW w.r.t lag BW, comes in fraction then add move to next integer '''
+        if service_BW * CIR_percentage % Lag_bw > 0:
+            return service_BW * CIR_percentage // Lag_bw + 1
+        else:
+            return service_BW * CIR_percentage// Lag_bw
+    def peak_percent_calc(self,service_BW,main_interface_bw):
+        ''' if percentage calculation of service BW w.r.t main interface BW, comes in fraction then add move to next integer '''
+        if service_BW * 100 % main_interface_bw > 0:
+            return service_BW * 100 // main_interface_bw + 1
+        else:
+            return service_BW * 100 // main_interface_bw
+    def HQOS_Burst_calc(self,distributed_service_BW,main_interface_bw,QOS_type,percent,wb):
+        ''' calculte the CBS value for differnt HQOS classes'''
+        for row in wb[QOS_type].rows:
+            if main_interface_bw == row[0].value and distributed_service_BW * percent // 100 == row[1].value:
+                return row[2].value
+            elif main_interface_bw == row[0].value and distributed_service_BW * percent // 100 > row[1].value and distributed_service_BW * percent // 100 < row[4].value:
+                return row[2].value       
+        
+
+
+
 class Service:
 
     def __init__(self,**kwargs):
         self.data = kwargs
 
     def connect_nodes(self):
+        ''' Purpose:
+        - Connect all cisco/accedian nodes via netmiko and stores an netmiko connection object in the Dictionary
+        - Connect all Cisco nodes with Netconf & stores an netconf connection object in the dictionary
+        - connects to H-Tool if SRTE is True
+        '''
         for node in self.data["site_list"]:
             node['connect_obj'] = Netmiko(keepalive = 40, **node['login'])
             print("**** Netmiko connection established with {}".format(node['Node_name']))
@@ -50,6 +94,11 @@ class Service:
                 node['net_conf_obj'] = manager.connect(host = node['login']['host'], port = 830 , username = node['login']['username'], password = node['login']['password'],device_params={'name':'iosxr'}, hostkey_verify=False )
                 print(f"**** Netconf connection established with {node['Node_name']}")
     def disconnect_nodes(self):
+        ''' Purpose:
+        - release netmiko Connections.
+        - release netconf connections.
+        - release the H-Tool connection if SRTE is True.
+        '''        
         for node in self.data["site_list"]:
             node['connect_obj'].disconnect()
             print("**** Netmiko connection released from {}".format(node['Node_name']))
@@ -69,6 +118,10 @@ class Service:
             olo['connect_obj'].disconnect()
             print("**** disconnected successfully from node {}".format(olo['Node_name']))
     def create_spirent_input_dict(self):
+        '''
+        purpose:
+        - to create the dictionary to be fed to Spirent code
+        '''
 
         dict10 = {}
         dict10['Spirent_2TAG_AZ'] = {}
@@ -231,6 +284,7 @@ class Service:
                 olo['connect_obj'].commit()
                 olo['connect_obj'].exit_config_mode()               
     def Command_Creation(self):
+        self.data['wb'] = load_workbook(filename = 'QOS.xlsx',read_only=True)
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr':
                 node['UID'] = int(node['login']['host'].split('.')[-1])                        
@@ -238,11 +292,11 @@ class Service:
             for node in self.data["site_list"]:
                 with open(file_path + '/templates/create_xc_config_{}_{} copy.j2'.format(node["side"],create_delete),'r') as f:
                     Temp = f.read()
-                    failure_command = Template(Temp).render(**self.data,**node)
+                    failure_command = Template(Temp).render(**self.data,**node,jinja_func = Jinja_user_func())
                     file_open = open(file_path + '/commands/XC_command_{}_{}.txt'.format(node["Node_name"],create_delete), 'w+')
                     file_open.write(failure_command)
-                    file_open.write('\n')
-                    file_open.close()
+                    # file_open.close()
+        self.data['wb'].close()
     def push_config(self):
         for node in self.data["site_list"]:  
             print("**** Logged in node : {}".format(node['Node_name']))
@@ -310,57 +364,43 @@ class Service:
                 print(output)
             else:
                 pass
-    def get_Lag_Status(self):
+    def gather_facts(self):
+        self.get_lag_status()
+        self.get_frr_status()
+        self.set_CBS_EBS_for_flatQOS()
+    def get_lag_status(self):
+        ''' if main interface is LAG/Non LAG, then this function tries to derive
+        - how many active links/standby links are there in the LAG
+        - if LAG test Can be done
+        - what is the distributed service BW per link of LAG.
+        - what is LAG total BW or what is main interface BW
+        '''
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr' and 'Bundle' in node['main_interface']:
-                # print(node['Node_name'])
-                output = node['connect_obj'].send_command("show interface {} | utility egrep 'Active\|Configured\|Standby'".format(node['main_interface']))
-                x = re.findall("TenGigE0/0/\d+/\d+|GigabitEthernet0/0/\d+/\d+", output)
-                y = re.findall("Active|Standby|Configured", output)
-                # print(output)
-                node['lag'] = {}
-                node['active_links'] = 0
-                node['Standby_links'] = 0
-                node['Configured_links'] = 0                
-                for l,n in zip(x,y):
-                    node['lag'][l] = n
-                    if n == 'Active':
-                        node['link_to_shut'] = l
-                        node['active_links'] = node['active_links'] + 1
-                    elif n == 'Standby':
-                        node['Standby_links'] = node['Standby_links'] + 1
-                    elif n == 'Configured':
-                        node['Configured_links'] = node['Configured_links'] + 1
-                    else:
-                        pass
-                node['failure_command'] = ['int {}'.format(node['link_to_shut']),'shut']
-                node['repair_command'] = ['int {}'.format(node['link_to_shut']),'no shut']
-                if node['active_links'] > 1:
+                output = node['connect_obj'].send_command(f"show interface {node['main_interface']}",use_genie=True)
+                node['Standby_links'],node['active_links']  = 0,0
+                node['Lag_bw'] = output[node['main_interface']]['bandwidth']
+                for interfaces,status in output[node['main_interface']]['port_channel']['members'].items():
+                    if status['state'] == 'Active':
+                        node['active_links'] += 1
+                        node['failure_command'] = [f'int {interfaces}','shut']
+                        node['repair_command'] = [f'int {interfaces}','no shut'] 
+                    elif status['state'] == 'Standby':
+                        node['Standby_links'] += 1
+                if node['active_links'] >= 2 or (node['active_links'] == 1 and node['Standby_links'] == 1):
                     node['Lag_test_eligible'] = True
-                    if "Te" in node['link_to_shut']:
-                        node['Lag_bw'] = 10000000 * node['active_links']
-                    elif "Gi" in node['link_to_shut']:
-                        node['Lag_bw'] = 1000000 * node['active_links']
-                elif node['active_links'] == 1 and node['Standby_links'] == 1:
-                    node['Lag_test_eligible'] = True
-                    if "Te" in node['link_to_shut']:
-                        node['Lag_bw'] = 10000000 * node['active_links']
-                    elif "Gi" in node['link_to_shut']:
-                        node['Lag_bw'] = 1000000 * node['active_links']
                 else:
                     node['Lag_test_eligible'] = False
-                    if "Te" in node['link_to_shut']:
-                        node['Lag_bw'] = 10000000 * node['active_links']
-                    elif "Gi" in node['link_to_shut']:
-                        node['Lag_bw'] = 1000000 * node['active_links']                   
-            else:
-                pass 
+                node['main_interface_bw'] = node['Lag_bw'] // node['active_links']
+                node['distributed_service_BW'] = self.data['service_BW'] // node['active_links']
+            elif node['login']['device_type'] == 'cisco_xr' and 'Bundle' not in node['main_interface']:
+                output = node['connect_obj'].send_command(f"show interface {node['main_interface']}",use_genie=True)
+                node['distributed_service_BW'] = self.data['service_BW']
+                node['main_interface_bw'] = output[node['main_interface']]['bandwidth']
     def delete_config(self):
         for node in self.data["site_list"]:
             with open(file_path + '/commands/XC_command_{}_delete.txt'.format(node["Node_name"]),'r') as f:
                 f2 = f.readlines()
-                # output = node['connect_obj'].send_config_set(f2)
-                # print(output)
                 if node['login']['device_type'] == 'cisco_xr':
                     output = node['connect_obj'].send_config_set(f2)
                     print(output)
@@ -415,23 +455,27 @@ class Service:
 
         return node['index']
     def Validate_ccm(self):
+        ''' Purpose:
+        - to Check CCM status on Accedian
+        - to Check ccm status on NCS if not ELAN.
+        '''
         test_result = {}
         for node in self.data["site_list"]:
             mep_name = 100000 + self.data['item']
             if 'EP' in node['side']:
                 if node['login']['device_type'] == 'accedian':
-                    print(node['Node_name'],end=' : ')
+                    print(f"**** {node['Node_name']}",end=' : ')
                     output = node['connect_obj'].send_command("cfm show mep status LEXXX-{}|{}|{}".format(mep_name,self.data['MEG_level'],node['Remote_MEP']))
                     if len(re.findall("Inactive", output)) == 14:
                         print("ccm is UP")
                         test_result[node['Node_name']] = 'pass'
                     else:
-                        print("CCm did not came Up")
+                        print("ccm did not came Up")
                         test_result[node['Node_name']] = 'fail'      
                 else:
                     if self.data["ELAN"]:
                         print("**** {}".format(node['Node_name']),end=' : ')
-                        print("ccm NA for ELAN on NCS")
+                        print("ccm not applicable for ELAN on NCS")
                         test_result[node['Node_name']] = 'NA'
                     else:
                         print("**** {}".format(node['Node_name']),end=' : ')
@@ -440,7 +484,7 @@ class Service:
                             print("ccm is UP")
                             test_result[node['Node_name']] = 'pass'
                         else:
-                            print("CCm did not came Up")
+                            print("ccm did not came Up")
                             test_result[node['Node_name']] = 'fail'
         return test_result
     def Y1564_test(self):
@@ -502,103 +546,134 @@ class Service:
                                     
                                                                 
         elif list1 == ['cisco_xr','cisco_xr']:
-            Loop_list = ['L1','L2']
-            ''' perse the Jinja files to Create the commands for Looping remote end traffic generation at Local End'''
-            for node in self.data["site_list"]:
-                node['loop_ID'] = 1
-                node['delete_L1_loop'] = True
-                output = node['connect_obj'].send_command("show run int {}".format(node['main_interface']))
-                x = re.findall("loopback internal",output)
-                if len(x) == 1:
-                    node['delete_L1_loop'] = False
-                for looptype in Loop_list:
-                    if looptype == 'L1':
-                        node['remote_mac'] = node['connect_obj'].send_command("show interface {}".format(node['main_interface']),use_genie=True)[node['main_interface']]['mac_address']
-                    else:
-                        node['remote_mac'] = '0022.0022.0022'
-                    for pro_loop in ['profile','loop']:
-                        for create_delete in create_delete_list:
-                            with open(file_path + '/templates/Cisco_{}_{}_{}_Y1564.j2'.format(looptype,pro_loop,create_delete),'r') as f:
-                                Temp = f.read()       
-                                command = Template(Temp).render(**self.data,**node)
-                                file_open = open(file_path + '/commands/Cisco_{}_{}_{}_{}_Y1564.txt'.format(node["Node_name"],looptype,pro_loop,create_delete), 'w+')
-                                file_open.write(command)
-                                file_open.write('\n')
-                                file_open.close()
-                                print("*** {} {} {} commands are templated for {}".format(looptype,pro_loop,create_delete,node['Node_name']))
-            ''' perse completed and txt files are generated '''
-            ''' now loop over 2 times on the same site list, and if local node == remote node, pass that case '''
-            for node in self.data["site_list"]:
-                for remote_node in self.data["site_list"]:
-                    if node['Node_name'] == remote_node['Node_name']:
-                        pass
-                    else:
-                        ''' Check if the node is capable of generating Y-1564 Traffic '''
-                        output = node['connect_obj'].send_command("show version",use_genie=True)
-                        node['version'] = output['software_version']
-                        if node['version'] == '7.1.2':
-                            ''' if node is capable, perform loop on the other end & parse the loop ID '''
-                            test_result[node["Node_name"]] = {}
-                            for looptype in Loop_list:
-                                if 'Bundle' in remote_node['main_interface'] and looptype == 'L1':
-                                    test_result[node["Node_name"]][looptype] = 'NA_LAG'
-                                    pass
-                                else:
-                                    for create_delete in create_delete_list:
-                                        if create_delete == 'delete' and looptype == 'L1' and not remote_node['delete_L1_loop']:
-                                            print(remote_node['delete_L1_loop'])
-                                            pass
-                                        else:
-                                            with open(file_path + '/commands/Cisco_{}_{}_loop_{}_Y1564.txt'.format(remote_node['Node_name'],looptype,create_delete),'r') as f:
-                                                f2 = f.readlines()
-                                                output = remote_node['connect_obj'].send_config_set(f2)
-                                                remote_node['connect_obj'].commit()
-                                                remote_node['connect_obj'].exit_config_mode()
-                                                print(output)
-                                                ''' perse the loop id if L2 Loop is configured '''
-                                                if create_delete == 'create' and looptype == 'L2':
-                                                    output = remote_node['connect_obj'].send_command("show ethernet loopback active | in ID")
-                                                    remote_node['loop_ID'] = int(re.split("\s", output)[-1])
-                                                    if remote_node['loop_ID'] != 1:
-                                                        ''' if Loop id not equals 1 then create the delete loop commands with the new ID '''
-                                                        with open(file_path + '/templates/Cisco_L2_loop_delete_Y1564.j2','r') as f:
-                                                            Temp = f.read()
-                                                            failure_command = Template(Temp).render(**self.data,**remote_node)
-                                                            file_open = open(file_path + '/commands/Cisco_{}_{}_loop_delete_Y1564.txt'.format(remote_node["Node_name"],looptype), 'w+')
-                                                            file_open.write(failure_command)
-                                                            file_open.write('\n')
-                                                            file_open.close()                                    
-                                        ''' configure 1564 profile at local end & start the Test'''
-                                        with open(file_path + '/commands/Cisco_{}_{}_profile_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete),'r') as f:
-                                            f2 = f.readlines()
-                                            output = node['connect_obj'].send_config_set(f2)
-                                            node['connect_obj'].commit()
-                                            node['connect_obj'].exit_config_mode()
-                                            print(output)
-                                        ''' if loop is under create then check if the test is not aborted, else wait for performance test duration & parse Frame loss'''
-                                        if create_delete == 'create':
-                                            time.sleep(2)
-                                            output = node['connect_obj'].send_command("show ethernet service-activation-test")
-                                            x = re.findall("aborted",output)
-                                            if len(x) == 1:
-                                                test_result[node["Node_name"]][looptype] = 'aborted'
-                                                print(output)
-                                            else:
-                                                print("*** {} loop, Hold your breath for {} seconds, packets are on the wire".format(looptype,self.data['performance_test']*60 + 20))
-                                                time.sleep(self.data['performance_test']*60 + 20)                                    
-                                                output = node['connect_obj'].send_command("show ethernet service-activation-test")
-                                                print(output)
-                                                ''' parse the Output and see FL == 0 '''
-                                                x = re.findall("FL: \d+",output)
-                                                try: 
-                                                    if int(x[0].split()[1]) == 0 and int(x[1].split()[1]) == 0 :
-                                                        test_result[node["Node_name"]][looptype] = 'pass'
-                                                    else:
-                                                        test_result[node["Node_name"]][looptype] = 'fail'
-                                                except:
-                                                    test_result[node["Node_name"]][looptype] = 'fail'
+            if self.data['ELAN']:
+                pass
+            else:                
+                Loop_list = ['L2']
+                ''' perse the Jinja files to Create the commands for Looping remote end traffic generation at Local End'''
+                for node in self.data["site_list"]:
+                    node['loop_ID'] = 1
+                    node['delete_L1_loop'] = True
+                    ''' try to find if Loopback internal is given at the other end.'''
+                    output = node['connect_obj'].send_command("show run int {}".format(node['main_interface']))
+                    x = re.findall("loopback internal",output)
+                    if len(x) == 1:
+                        node['delete_L1_loop'] = False
+                    ''' Y1564 remote mac is = local mac, in case of L1 Loop'''
+                    for looptype in Loop_list:
+                        if looptype == 'L1':
+                            node['remote_mac'] = node['connect_obj'].send_command("show interface {}".format(node['main_interface']),use_genie=True)[node['main_interface']]['mac_address']
                         else:
-                            test_result[node["Node_name"]] = 'Not_supported'
+                            node['remote_mac'] = '0022.0022.0022'
+                        ''' Create the templates '''
+                        for pro_loop in ['profile','loop']:
+                            for create_delete in create_delete_list:
+                                with open(file_path + '/templates/Cisco_{}_{}_{}_Y1564.j2'.format(looptype,pro_loop,create_delete),'r') as f:
+                                    Temp = f.read()       
+                                    command = Template(Temp).render(**self.data,**node)
+                                    file_open = open(file_path + '/commands/Cisco_{}_{}_{}_{}_Y1564.txt'.format(node["Node_name"],looptype,pro_loop,create_delete), 'w+')
+                                    file_open.write(command)
+                                    file_open.write('\n')
+                                    file_open.close()
+                                    print("*** {} {} {} commands are templated for {}".format(looptype,pro_loop,create_delete,node['Node_name']))
+                ''' perse completed and txt files are generated '''
+                ''' now loop over 2 times on the same site list, and if local node == remote node, pass that case '''
+                for node in self.data["site_list"]:
+                    for remote_node in self.data["site_list"]:
+                        if node['Node_name'] == remote_node['Node_name']:
+                            pass
+                        else:
+                            ''' Check if the node is capable of generating Y-1564 Traffic '''
+                            output = node['connect_obj'].send_command("show version",use_genie=True)
+                            node['version'] = output['software_version']
+                            ## added and node["Node_name"] == 'AR15'
+                            if node['version'] == '7.1.2' and node["Node_name"] == 'AR3':
+                                ''' if node is capable, perform loop on the other end & parse the loop ID '''
+                                test_result[node["Node_name"]] = {}
+                                for looptype in Loop_list:
+                                    if 'Bundle' in remote_node['main_interface'] and looptype == 'L1':
+                                        test_result[node["Node_name"]][looptype] = 'NA_LAG'
+                                        pass
+                                    else:
+                                        for create_delete in create_delete_list:
+                                            if create_delete == 'delete' and looptype == 'L1' and not remote_node['delete_L1_loop']:
+                                                print(remote_node['delete_L1_loop'])
+                                                pass
+                                            else:
+                                                with open(file_path + '/commands/Cisco_{}_{}_loop_{}_Y1564.txt'.format(remote_node['Node_name'],looptype,create_delete),'r') as f:
+                                                    f2 = f.readlines()
+                                                    output = remote_node['connect_obj'].send_config_set(f2)
+                                                    remote_node['connect_obj'].commit()
+                                                    remote_node['connect_obj'].exit_config_mode()
+                                                    print(output)
+                                                    ''' perse the loop id if L2 Loop is configured '''
+                                                    if create_delete == 'create' and looptype == 'L2':
+                                                        output = remote_node['connect_obj'].send_command("show ethernet loopback active | in ID")
+                                                        remote_node['loop_ID'] = int(re.split("\s", output)[-1])
+                                                        if remote_node['loop_ID'] != 1:
+                                                            ''' if Loop id not equals 1 then create the delete loop commands with the new ID '''
+                                                            with open(file_path + '/templates/Cisco_L2_loop_delete_Y1564.j2','r') as f:
+                                                                Temp = f.read()
+                                                                failure_command = Template(Temp).render(**self.data,**remote_node)
+                                                                file_open = open(file_path + '/commands/Cisco_{}_{}_loop_delete_Y1564.txt'.format(remote_node["Node_name"],looptype), 'w+')
+                                                                file_open.write(failure_command)
+                                                                file_open.write('\n')
+                                                                file_open.close()                                    
+                                            ''' configure 1564 profile at local end & start the Test'''
+                                            with open(file_path + '/commands/Cisco_{}_{}_profile_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete),'r') as f:
+                                                f2 = f.readlines()
+                                                output = node['connect_obj'].send_config_set(f2)
+                                                node['connect_obj'].commit()
+                                                node['connect_obj'].exit_config_mode()
+                                                print(output)
+                                            ''' if loop is under create then check if the test is not aborted, else wait for performance test duration & parse Frame loss'''
+                                            if create_delete == 'create':
+                                                time.sleep(2)
+                                                if node['port_type'] == 'PL-type':
+                                                    command = f"show ethernet service-activation-test {node['main_interface']}"
+                                                else:
+                                                    command = f"show ethernet service-activation-test {node['main_interface']}.{self.data['item']}"
+                                                output = node['connect_obj'].send_command(command)
+                                                x = re.findall("aborted",output)
+                                                if len(x) == 1:
+                                                    test_result[node["Node_name"]][looptype] = 'aborted'
+                                                    print(output)
+                                                else:
+                                                    print("*** {} loop, Hold your breath for {} seconds, packets are on the wire".format(looptype,self.data['performance_test']*60 + 20))
+                                                    ''' if duration is more than 2 Mnts then disconnect the SSH connection & connect after the specified duration'''
+                                                    if self.data['performance_test'] > 2:
+                                                        self.disconnect_nodes()
+                                                        time.sleep(self.data['performance_test']*60 + 20)
+                                                        self.connect_nodes()
+                                                    else:
+                                                        time.sleep(self.data['performance_test']*60 + 20)
+                                                    with open(file_path + '/netconf_filters/filter_ethernet_service_test_state.j2') as f:
+                                                        xml_structure = Template(f.read()).render(**self.data,**node)                                                  
+                                                    reply_xml = node['net_conf_obj'].get(xml_structure)
+                                                    reply_dict = xmltodict.parse(reply_xml.xml)["rpc-reply"]["data"]["service-activation-test"]["test-statuses"]["test-status"]["phase"]["results"]
+                                                    output_dict = json.loads(json.dumps(reply_dict))
+                                                    # pprint(output_dict)                                    
+                                                    output = node['connect_obj'].send_command("show ethernet service-activation-test")
+                                                    print(output)
+                                                    ''' parse the Output and see FL == 0 '''
+                                                    x = re.findall("FL: \d+",output)
+                                                    try: 
+                                                        if int(x[0].split()[1]) == 0 and int(x[1].split()[1]) == 0 :
+                                                            test_result[node["Node_name"]][looptype]= 'pass'
+                                                            test_result[node["Node_name"]][f"{looptype}_CIR_TX"] = output_dict['cir']['tx-packets']
+                                                            test_result[node["Node_name"]][f"{looptype}_CIR_FL"] = output_dict['cir']['frames-lost']
+                                                            test_result[node["Node_name"]][f"{looptype}_EIR_TX"] = output_dict['eir']['tx-packets']
+                                                            test_result[node["Node_name"]][f"{looptype}_EIR_FL"] = output_dict['eir']['frames-lost']
+                                                        else:
+                                                            test_result[node["Node_name"]][looptype] = 'fail'
+                                                            test_result[node["Node_name"]][f"{looptype}_CIR_TX"] = output_dict['cir']['tx-packets']
+                                                            test_result[node["Node_name"]][f"{looptype}_CIR_FL"] = output_dict['cir']['frames-lost']
+                                                            test_result[node["Node_name"]][f"{looptype}_EIR_TX"] = output_dict['eir']['tx-packets']
+                                                            test_result[node["Node_name"]][f"{looptype}_EIR_FL"] = output_dict['eir']['frames-lost']
+                                                    except:
+                                                        test_result[node["Node_name"]][looptype] = 'exception'
+                            else:
+                                test_result[node["Node_name"]] = 'Not_supported'
             return test_result                                                      
 
         elif list1 == ['cisco_xr','accedian'] or list1 == ['accedian','cisco_xr']:
@@ -759,35 +834,6 @@ class Service:
                         time.sleep(2)
         except:
             print("*** some error is there")        
-    def SRTE_finder(self):
-        for item1 in self.data['lab_nodes']:
-            for item2 in self.data['lab_nodes']:
-                if item1 == item2:
-                    pass
-                else:
-                    self.data['Htool']['src1'] = item1
-                    self.data['Htool']['src2'] = item1
-                    self.data['Htool']['dst1'] = item2
-                    self.data['Htool']['dst2'] = item2
-                    for P_C_G_D in ['preview']:
-                        with open(file_path + '/templates/htool-{}.j2'.format(P_C_G_D),'r') as f:
-                            Temp = f.read()
-                            failure_command = Template(Temp).render(**self.data['Htool'])
-                            file_open = open(file_path + '/commands/htool-{}.txt'.format(P_C_G_D), 'w+')
-                            file_open.write(failure_command)
-                            file_open.write('\n')
-                            file_open.close()
-                    for P_C_G_D in ['preview']:
-                        with open(file_path + '/commands/htool-{}.txt'.format(format(P_C_G_D),'r')) as f:
-                            for f2 in f:
-                                # print(f2)
-                                output = self.data['Htool']['connect_obj'].send_command(f2)
-                                # print(output)
-                                x = re.findall("106105|106102|106106", output)
-                                if len(x)!= 0:
-                                    print("**** Match found, {} {} {}".format(item1,item2,x))
-                                else:
-                                    pass
     def get_netconf_XC_status(self):
         result = {}
         if not self.data['ELAN']:
@@ -874,5 +920,21 @@ class Service:
                     print("something went Wrong")
         print("**** wait for 10 seconds")
         time.sleep(10)
+    def set_CBS_EBS_for_flatQOS(self):
+        if self.data["Flat_QOS"]:
+            ''' load the QOS xlsx file in readonly mode '''
+            wb = load_workbook(filename = 'QOS.xlsx',read_only=True)
+            ''' identify main interface BW, like 1G,10G,100G or 25G, if Uni is Bundle then its handled in Other Function'''    
+            for node in self.data["site_list"]:
+                if node['login']['device_type'] == 'cisco_xr':
+                    ''' Now try to find the CBS EBS Value from sheet for Flat QOS and HQOS'''
+                    for row in wb[self.data["QOS_type"]].rows:                        
+                        if node['main_interface_bw'] == row[0].value and node['distributed_service_BW'] == row[1].value:
+                            node['cbs'],node['ebs'] = row[2].value,row[3].value
+                        elif node['main_interface_bw'] == row[0].value and node['distributed_service_BW'] > row[1].value and node['distributed_service_BW'] < row[4].value:
+                            node['cbs'],node['ebs'] = row[2].value,row[3].value
+            wb.close()
+
+                
 
           

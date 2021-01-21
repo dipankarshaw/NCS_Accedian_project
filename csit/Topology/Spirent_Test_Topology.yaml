@@ -10,7 +10,7 @@ Spirent_Test_Topology:
    Number_of_ports: 2
    Port_Values:
       Port1: 7/8 #### Port conneted to 'A' side.
-      Port2: 7/7 #### Port connected to 'B' side.
+      Port2: 5/4 #### Port connected to 'B' side.
    Port_Speed:
       Port1_Speed: 'ether10000' #### ether1000 or ether10000
       Port2_Speed: 'ether10000' #### ether1000 or ether10000
