@@ -34,10 +34,10 @@ def onnet_CC(A,B,**kwargs):
     my_config.Command_Creation() ## create the commands to create and Delete service
     my_config.push_config() ## send the configs to the node.
     test_result,input_dict  = {},{} ## create a empty dictionary to hold results.
-    test_result['XC_status'] = my_config.get_netconf_XC_status() # use netconf to see XC status
-    test_result['mtu_mod_test'] = mtu_modification_test(my_config) # set Random MTU at Both End and then Revert back to 9186 MTU
+    #test_result['XC_status'] = my_config.get_netconf_XC_status() # use netconf to see XC status
+    #test_result['mtu_mod_test'] = mtu_modification_test(my_config) # set Random MTU at Both End and then Revert back to 9186 MTU
     test_result['ccm_status'] = my_config.Validate_ccm()  ## store CCM Test results.  
-    # test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
+    test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
     # my_config.disconnect_nodes() ## release netmiko connection from NCS and Accedian.
     # input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
     # Spirent_L2_Gen = Create_Spirent_L2_Gen() ## create the spirent object.
@@ -88,13 +88,13 @@ def onnet_CC_delete(A,B,**kwargs):
     return test_result
 
 result['FF'] = onnet_CC('F','F')
-# result['XX'] = onnet_CC('X','X')
-# result['PP'] = onnet_CC('P','P')
-# result['XP'] = onnet_CC('X','P')
-# result['PX'] = onnet_CC('P','X')
-# result['FY'] = onnet_CC('F','Y')
-# result['YF'] = onnet_CC('Y','F')
-# result['YY'] = onnet_CC('Y','Y')
+result['XX'] = onnet_CC('X','X')
+result['PP'] = onnet_CC('P','P')
+result['XP'] = onnet_CC('X','P')
+result['PX'] = onnet_CC('P','X')
+result['FY'] = onnet_CC('F','Y')
+result['YF'] = onnet_CC('Y','F')
+result['YY'] = onnet_CC('Y','Y')
 # result['LL'] = onnet_CC('PL','PL')  ## not applicable for bundle & ELAN
 
 # STP_percentage_list = [100]

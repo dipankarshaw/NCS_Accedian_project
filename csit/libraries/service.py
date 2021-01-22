@@ -284,7 +284,7 @@ class Service:
                 olo['connect_obj'].commit()
                 olo['connect_obj'].exit_config_mode()               
     def Command_Creation(self):
-        self.data['wb'] = load_workbook(filename = 'QOS.xlsx',read_only=True)
+        self.data['wb'] = load_workbook(filename = file_path + '/QOS.xlsx',read_only=True)
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr':
                 node['UID'] = int(node['login']['host'].split('.')[-1])                        
@@ -587,7 +587,7 @@ class Service:
                             output = node['connect_obj'].send_command("show version",use_genie=True)
                             node['version'] = output['software_version']
                             ## added and node["Node_name"] == 'AR15'
-                            if node['version'] == '7.1.2' and node["Node_name"] == 'AR3':
+                            if node['version'] == '7.1.2':
                                 ''' if node is capable, perform loop on the other end & parse the loop ID '''
                                 test_result[node["Node_name"]] = {}
                                 for looptype in Loop_list:
@@ -864,16 +864,19 @@ class Service:
     def netconf_set_random_MTU(self,flag):
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr':
-                if flag == 'random':
-                    node['rand_mtu'] = random.randrange(2000,9186,2)
-                else:
-                    node['rand_mtu'] = 9186
-                print(f"**** {node['rand_mtu']} MTU confgiured on {node['Node_name']}")
-                with open(file_path + '/netconf_filters/config_MTU_interface.j2') as f:
-                    xml_structure = Template(f.read()).render(**self.data,**node)
-                # print(xml_structure)       
-                node['net_conf_obj'].edit_config(xml_structure,target='candidate',default_operation='merge')
-                node['net_conf_obj'].commit()
+                try:
+                    if flag == 'random':
+                        node['rand_mtu'] = random.randrange(2000,9186,2)
+                    else:
+                        node['rand_mtu'] = 9186                    
+                    with open(file_path + '/netconf_filters/config_MTU_interface.j2') as f:
+                        xml_structure = Template(f.read()).render(**self.data,**node)
+                    # print(xml_structure)       
+                    node['net_conf_obj'].edit_config(xml_structure,target='candidate',default_operation='merge')
+                    node['net_conf_obj'].commit()
+                    print(f"**** {node['rand_mtu']} MTU confgiured on {node['Node_name']}")
+                except:
+                    print("**** something went Wrong while setting MTU")
         time.sleep(3)
     def get_netconf_BGP_status(self):
         result = {}
@@ -923,7 +926,7 @@ class Service:
     def set_CBS_EBS_for_flatQOS(self):
         if self.data["Flat_QOS"]:
             ''' load the QOS xlsx file in readonly mode '''
-            wb = load_workbook(filename = 'QOS.xlsx',read_only=True)
+            wb = load_workbook(filename = file_path +'/QOS.xlsx',read_only=True)
             ''' identify main interface BW, like 1G,10G,100G or 25G, if Uni is Bundle then its handled in Other Function'''    
             for node in self.data["site_list"]:
                 if node['login']['device_type'] == 'cisco_xr':
