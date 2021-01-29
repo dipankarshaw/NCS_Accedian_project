@@ -1,7 +1,7 @@
 Flat_QOS: True
 classify: PCP
 item: 2316
-service_BW: 100000 #this is service BW
+service_BW: 1000000 #this is service BW
 MEG_level: 1
 QOS_type: "Business2" # Possible values are Premium,Standard,Business2,Business1,Business3
 colt_vlan_ethType: "s-vlan"
@@ -14,6 +14,8 @@ ELAN: False
 SRTE: False
 OLO_type: "P-OLO"
 olo_vlan: 2501
+Y1564_cisco_emix: True # this is Boolean, if FIX Frame size test Required, then Make it False.
+Y1564_frame_size: 1518 # IF Y1564_cisco_emix == False, then this Frame size will be used for Y1564 Test.
 # site_list: 
 #  - 
 #   main_interface: "TenGigE0/0/1/3/2" # "Bundle-Ether400"
@@ -55,14 +57,14 @@ olo_vlan: 2501
 
 site_list: 
  - 
-  main_interface: "TenGigE0/0/0/41" # "Bundle-Ether400"
+  main_interface: "TenGigE0/0/0/5" # "Bundle-Ether400"
   side: "L2PE_EP"
-  Node_name: "AR5"
+  Node_name: "AR15"
   port_type: "F-type"
   Local_MEP: 2
   Remote_MEP: 1
   login: 
-   host: "10.91.126.115"
+   host: "10.91.126.201"
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
@@ -80,7 +82,7 @@ site_list:
   side: "CPE_EP"
   Node_name: "LTS_144"
   port_type: "P-type"
-  Uni_port: 9
+  Uni_port: 1
   Protected: "YES"
   Nni_port: 5
   Local_MEP: 1

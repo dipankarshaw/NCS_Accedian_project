@@ -337,25 +337,66 @@ class Service:
                 if node['login']['device_type'] == 'cisco_xr':
                     try:
                         if node['port_type'] == 'PL-type':
+                            print(f"!\n!!\n**** {node['Node_name']} # show policy-map interface {node['main_interface']} input")
                             output = node['connect_obj'].send_command("show policy-map interface {} input".format(node["main_interface"]))
                         else:
+                            print(f"!\n!!\n**** {node['Node_name']} # show policy-map interface {node['main_interface']}.{self.data['item']} input")
                             output = node['connect_obj'].send_command("show policy-map interface {}.{} input".format(node["main_interface"],self.data['item']))
                         print(output)
                         x = re.findall("Total Dropped\s+:\s+\d+", output)
                         # print(x)
                         dict13[node['Node_name']] = int(x[0].split(' ')[-1])
                         if node['port_type'] == 'PL-type':
+                            print(f"!\n!!\n**** {node['Node_name']} # show qos interface {node['main_interface']} input")                          
                             output = node['connect_obj'].send_command("show qos interface {} input".format(node["main_interface"]))    
                         else:
+                            print(f"!\n!!\n**** {node['Node_name']} # show qos interface {node['main_interface']}.{self.data['item']} input")
                             output = node['connect_obj'].send_command("show qos interface {}.{} input".format(node["main_interface"],self.data['item']))
-                        print(output)
+                        print(output) 
                     except:
                         print("*** something went Wrong, input Policy drops can not be checked")                    
                 else:
                     pass
             else:
                 pass
-        return dict13             
+        return dict13
+    def check_voq_stats(self):
+
+        '''
+        try to get the traffic class details through which packets are actually passing
+        if bundle, then try to get the stats of all Active interface
+        if non LAG, then fire the command directly.
+        '''
+        dict10 = {}
+        for node in self.data["site_list"]:
+            if 'EP' in node['side']:
+                if node['login']['device_type'] == 'cisco_xr':
+                    dict10[f"{node['Node_name']}"] = {}
+                    try:
+                        if 'Bundle' in node['main_interface']:
+                            for interface,status in node['lag_members'].items():
+                                if status['state'] == 'Active':
+                                    print(f"!\n!!\n**** {node['Node_name']} # show controllers npu stats voq ingress interface {interface} instance all location all")
+                                    output = node['connect_obj'].send_command(f"show controllers npu stats voq ingress interface {interface} instance all location all")
+                                    print(output)
+                                    with open(file_path + '/TEXTFSM/cisco_show_voq.textfsm','r') as f:
+                                        re_table = textfsm.TextFSM(f)
+                                    fsm_results = re_table.ParseText(output)                                                                
+                                    dict_fsm = {f"TC_{items[0]}":{'rx_pkts': items[1]} for items in fsm_results if int(items[1]) != 0 }
+                                    dict10[f"{node['Node_name']}"][interface] = dict_fsm
+
+                        else:
+                            print(f"!\n!!\n**** {node['Node_name']} # show controllers npu stats voq ingress interface {node['main_interface']} instance all location all")                        
+                            output = node['connect_obj'].send_command(f"show controllers npu stats voq ingress interface {node['main_interface']} instance all location all")
+                            print(output)
+                            with open(file_path + '/TEXTFSM/cisco_show_voq.textfsm','r') as f:
+                                re_table = textfsm.TextFSM(f)
+                            fsm_results = re_table.ParseText(output)                                                                        
+                            dict_fsm = {f"TC_{items[0]}":{'rx_pkts': items[1]} for items in fsm_results if int(items[1]) != 0 }
+                            dict10[f"{node['Node_name']}"][node['main_interface']] = dict_fsm
+                    except:
+                        print("**** something went wrong while getting VOQ stats")
+        return dict10
     def check_Mac_table(self):
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr':
@@ -365,9 +406,46 @@ class Service:
             else:
                 pass
     def gather_facts(self):
+        self.get_version()
         self.get_lag_status()
         self.get_frr_status()
         self.set_CBS_EBS_for_flatQOS()
+        self.get_UNI_NNI_port_speed()
+        self.clear_voq_counters()
+    def get_version(self):
+        for node in self.data["site_list"]:
+            if node['login']['device_type'] == 'cisco_xr':
+                output = node['connect_obj'].send_command("show version",use_genie=True)
+                node['version'] = output['software_version']
+    def clear_voq_counters(self):
+        '''
+        purpose is to clear the voq counters before the test.
+        if bundle then clear the voq counters of all active interfaces
+        if not lag, then directly fire the command.
+        '''
+        for node in self.data["site_list"]:
+            if node['login']['device_type'] == 'cisco_xr' and 'Bundle' in node['main_interface']:
+                for interface,status in node['lag_members'].items():
+                    if status['state'] == 'Active':
+                        node['connect_obj'].send_command(f"clear controller npu stats voq ingress interface {interface} instance all location 0/0/CPU0")
+            else:
+                node['connect_obj'].send_command(f"clear controller npu stats voq ingress interface {node['main_interface']} instance all location 0/0/CPU0")
+    def get_UNI_NNI_port_speed(self):
+        for node in self.data["site_list"]:
+            if node['login']['device_type'] == 'accedian':
+                try:
+                    output = node['connect_obj'].send_command("board show info")
+                    x = re.findall("GX|LX|LT", output)
+                    if x[0] == 'GX':
+                        node['Uni_port_speed'] = 1000000
+                        node['Nni_port_speed'] = 1000000
+                    else:
+                        node['Uni_port_speed'] = 10000000
+                        node['Nni_port_speed'] = 10000000
+                except:
+                    print("**** excepction happened, hence setting Port BW to 10G")
+                    node['Uni_port_speed'] = 10000000
+                    node['Nni_port_speed'] = 10000000         
     def get_lag_status(self):
         ''' if main interface is LAG/Non LAG, then this function tries to derive
         - how many active links/standby links are there in the LAG
@@ -393,6 +471,7 @@ class Service:
                     node['Lag_test_eligible'] = False
                 node['main_interface_bw'] = node['Lag_bw'] // node['active_links']
                 node['distributed_service_BW'] = self.data['service_BW'] // node['active_links']
+                node['lag_members'] = output[node['main_interface']]['port_channel']['members']
             elif node['login']['device_type'] == 'cisco_xr' and 'Bundle' not in node['main_interface']:
                 output = node['connect_obj'].send_command(f"show interface {node['main_interface']}",use_genie=True)
                 node['distributed_service_BW'] = self.data['service_BW']
@@ -549,7 +628,7 @@ class Service:
             if self.data['ELAN']:
                 pass
             else:                
-                Loop_list = ['L2']
+                Loop_list = ['L1','L2']
                 ''' perse the Jinja files to Create the commands for Looping remote end traffic generation at Local End'''
                 for node in self.data["site_list"]:
                     node['loop_ID'] = 1
@@ -583,9 +662,6 @@ class Service:
                         if node['Node_name'] == remote_node['Node_name']:
                             pass
                         else:
-                            ''' Check if the node is capable of generating Y-1564 Traffic '''
-                            output = node['connect_obj'].send_command("show version",use_genie=True)
-                            node['version'] = output['software_version']
                             ## added and node["Node_name"] == 'AR15'
                             if node['version'] == '7.1.2':
                                 ''' if node is capable, perform loop on the other end & parse the loop ID '''
@@ -689,10 +765,6 @@ class Service:
                         output = node['connect_obj'].send_command("port show status PORT-{}".format(node['Nni_port']))
                         if re.findall("Down|Up", output)[0] == 'Down':
                             node['Nni_port'] = node['Nni_port'] + 1
-                        else:
-                            pass
-                    else:
-                        pass
                     output = node['connect_obj'].send_command("port show configuration PORT-{}".format(node['Nni_port']))
                     node['remote_mac'] = re.findall("\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w", output)[0]                       
                     node['packet_type'] = 'l2-generic'
@@ -700,8 +772,6 @@ class Service:
                         for looptype in Loop_list:
                             if looptype == 'L2':
                                 node['remote_mac'] = '00:22:00:22:00:22'
-                            else:
-                                pass
                             with open(file_path + '/templates/Accedian_{}_{}_Y1564.j2'.format(node["side"],create_delete),'r') as f:
                                 Temp = f.read()
                                 failure_command = Template(Temp).render(**self.data,**node)
@@ -720,8 +790,6 @@ class Service:
                                 file_open.write(failure_command)
                                 file_open.write('\n')
                                 print("*** {} Loop {} commands are templated for {}".format(looptype,create_delete,node['Node_name']))
-                else:
-                    pass
             for looptype in Loop_list:
                 for create_delete in create_delete_list:
                     for node in self.data["site_list"]:
@@ -767,6 +835,102 @@ class Service:
                                             test_result[looptype] = 'fail'
                                         else:
                                             test_result[looptype] = 'something Wrong,still in progress'            
+            '''
+            Template the configurations
+            set L1 Loop on Accedian
+            Start Y1564 on Cisco
+            Set L2 on Accdian NNI Port
+            Start Y1564 on cisco
+            '''
+            for node in self.data["site_list"]:
+                if node['login']['device_type'] == 'cisco_xr' and 'EP' in node['side']:
+                    if node['version'] == '7.1.2' and node["Node_name"] == 'AR15':
+                        test_result[node["Node_name"]] = {}
+                        for node in self.data["site_list"]:
+                            if node['login']['device_type'] == 'accedian' and 'EP' in node['side']:
+                                for looptype in ['L1','L2']:
+                                    for create_delete in ['create','delete']:
+                                        with open(file_path + f"/templates/Accedian_{looptype}_loop_{create_delete}_Y1564.j2",'r') as f:
+                                            templated_command = Template(f.read()).render(**self.data,**node)
+                                            file_open = open(file_path + f"/commands/Accedian_{node['Node_name']}_{looptype}_loop_{create_delete}_Y1564.txt", 'w+')
+                                            file_open.write(templated_command)
+                                            file_open.close()
+                                            print(f"**** {looptype} loop {create_delete} commands templated for {node['Node_name']}")
+                        for node in self.data["site_list"]:
+                            if node['login']['device_type'] == 'cisco_xr' and 'EP' in node['side']:
+                                for looptype in ['L1','L2']:
+                                    if looptype == 'L1':
+                                        node['remote_mac'] = node['connect_obj'].send_command("show interface {}".format(node['main_interface']),use_genie=True)[node['main_interface']]['mac_address']
+                                    else:
+                                        node['remote_mac'] = '0022.0022.0022'    
+                                    for create_delete in ['create','delete']:
+                                        with open(file_path + f"/templates/Cisco_{looptype}_profile_{create_delete}_Y1564.j2",'r') as f:
+                                            templated_command = Template(f.read()).render(**self.data,**node)
+                                            file_open = open(file_path + f"/commands/Cisco_{node['Node_name']}_{looptype}_profile_{create_delete}_Y1564.txt", 'w+')
+                                            file_open.write(templated_command)
+                                            file_open.close()
+                                            print(f"**** {looptype} profile {create_delete} commands templated for {node['Node_name']}")
+                        for looptype in ['L2']:
+                            for create_delete in ['create','delete']:
+                                for node in self.data["site_list"]:
+                                    if node['login']['device_type'] == 'accedian' and 'EP' in node['side']:
+                                        with open(file_path + '/commands/Accedian_{}_{}_loop_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete),'r') as f:
+                                            output = node['connect_obj'].send_config_set(f.readlines(),cmd_verify=False)
+                                            print(output)                        
+                                for node in self.data["site_list"]:
+                                    if node['login']['device_type'] == 'cisco_xr' and 'EP' in node['side']:
+                                        with open(file_path + '/commands/Cisco_{}_{}_profile_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete),'r') as f:
+                                            output = node['connect_obj'].send_config_set(f.readlines())
+                                            node['connect_obj'].commit()
+                                            node['connect_obj'].exit_config_mode()
+                                            print(output)
+                                        if create_delete == 'create':
+                                            time.sleep(2)
+                                            command = f"show ethernet service-activation-test {node['main_interface']}.{self.data['item']}"
+                                            output = node['connect_obj'].send_command(command)
+                                            x = re.findall("aborted",output)
+                                            if len(x) == 1:
+                                                test_result[node["Node_name"]][looptype] = 'aborted'
+                                                print(output)
+                                            else:
+                                                print("*** {} loop, Hold your breath for {} seconds, packets are on the wire".format(looptype,self.data['performance_test']*60 + 20))
+                                                ''' if duration is more than 2 Mnts then disconnect the SSH connection & connect after the specified duration'''
+                                                if self.data['performance_test'] > 2:
+                                                    self.disconnect_nodes()
+                                                    time.sleep(self.data['performance_test']*60 + 20)
+                                                    self.connect_nodes()
+                                                else:
+                                                    time.sleep(self.data['performance_test']*60 + 20)
+                                                with open(file_path + '/netconf_filters/filter_ethernet_service_test_state.j2') as f:
+                                                    xml_structure = Template(f.read()).render(**self.data,**node)                                                  
+                                                reply_xml = node['net_conf_obj'].get(xml_structure)
+                                                reply_dict = xmltodict.parse(reply_xml.xml)["rpc-reply"]["data"]["service-activation-test"]["test-statuses"]["test-status"]["phase"]["results"]
+                                                output_dict = json.loads(json.dumps(reply_dict))
+                                                # pprint(output_dict)                                    
+                                                output = node['connect_obj'].send_command("show ethernet service-activation-test")
+                                                print(output)
+                                                ''' parse the Output and see FL == 0 '''
+                                                x = re.findall("FL: \d+",output)
+                                                try: 
+                                                    if int(x[0].split()[1]) == 0 and int(x[1].split()[1]) == 0 :
+                                                        test_result[node["Node_name"]][looptype]= 'pass'
+                                                        test_result[node["Node_name"]][f"{looptype}_CIR_TX"] = output_dict['cir']['tx-packets']
+                                                        test_result[node["Node_name"]][f"{looptype}_CIR_FL"] = output_dict['cir']['frames-lost']
+                                                        test_result[node["Node_name"]][f"{looptype}_EIR_TX"] = output_dict['eir']['tx-packets']
+                                                        test_result[node["Node_name"]][f"{looptype}_EIR_FL"] = output_dict['eir']['frames-lost']
+                                                    else:
+                                                        test_result[node["Node_name"]][looptype] = 'fail'
+                                                        test_result[node["Node_name"]][f"{looptype}_CIR_TX"] = output_dict['cir']['tx-packets']
+                                                        test_result[node["Node_name"]][f"{looptype}_CIR_FL"] = output_dict['cir']['frames-lost']
+                                                        test_result[node["Node_name"]][f"{looptype}_EIR_TX"] = output_dict['eir']['tx-packets']
+                                                        test_result[node["Node_name"]][f"{looptype}_EIR_FL"] = output_dict['eir']['frames-lost']
+                                                except:
+                                                    test_result[node["Node_name"]][looptype] = 'exception'
+                    else:
+                        test_result[node["Node_name"]] = 'Not_suported'
+
+
+
         else:
             pass
         return test_result

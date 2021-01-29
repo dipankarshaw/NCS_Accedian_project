@@ -1,0 +1,9 @@
+Value tc (\d)
+Value rx_pkts (\d+)
+Value rx_bytes (\d+)
+Value drop_pkts (\d+)
+Value drop_bytes (\d+)
+
+
+Start
+  ^TC_${tc}\s=\s${rx_pkts}\s+${rx_bytes}\s+${drop_pkts}\s+${drop_bytes} -> Record

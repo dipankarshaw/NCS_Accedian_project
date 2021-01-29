@@ -146,24 +146,39 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     set traffic-class 2
     end-policy-map
     class-map match-any PREMIUM-PCP-{{Pre_PCP_START}}-{{Pre_PCP_LAST}}_{{ item }}_DIP
-    match cos {{Pre_PCP_START}} 6 {{Pre_PCP_LAST}}
-    match dscp {{Pre_DSCP_START}}-{{Pre_DSCP_LAST}}
+        {% if classify == 'PCP' -%}
+        match cos {{Pre_PCP_START}} 6 {{Pre_PCP_LAST}}
+        {% else -%}
+        match dscp {{Pre_DSCP_START}}-{{Pre_DSCP_LAST}}
+        {% endif -%}
     end-class-map
     class-map match-any BUSINESS1-PCP-{{B1_PCP}}_{{ item }}_DIP
-    match cos {{B1_PCP}}
-    match dscp {{B1_DSCP_START}}-{{B1_DSCP_LAST}}
+        {% if classify == 'PCP' -%}
+        match cos {{B1_PCP}}
+        {% else -%}
+        match dscp {{B1_DSCP_START}}-{{B1_DSCP_LAST}}
+        {% endif -%}
     end-class-map
     class-map match-any BUSINESS2-PCP-{{B2_PCP}}_{{ item }}_DIP
-    match cos {{B2_PCP}}
-    match dscp {{B2_DSCP_START}}-{{B2_DSCP_LAST}}    
+        {% if classify == 'PCP' -%}
+        match cos {{B2_PCP}}
+        {% else -%}
+        match dscp {{B2_DSCP_START}}-{{B2_DSCP_LAST}}
+        {% endif -%}    
     end-class-map
     class-map match-any BUSINESS3-PCP-{{B3_PCP}}_{{ item }}_DIP
-    match cos {{B3_PCP}}
-    match dscp {{B3_DSCP_START}}-{{B3_DSCP_LAST}}    
+        {% if classify == 'PCP' -%}
+        match cos {{B3_PCP}}
+        {% else -%}
+        match dscp {{B3_DSCP_START}}-{{B3_DSCP_LAST}}
+        {% endif -%}     
     end-class-map
     class-map match-any standard-PCP-{{STD_PCP}}_0_{{ item }}_DIP
-    match cos {{STD_PCP}} 0
-    match dscp {{STD_DSCP_START}}-{{STD_DSCP_LAST}}    
+        {% if classify == 'PCP' -%}    
+        match cos {{STD_PCP}} 0
+        {% else -%}
+        match dscp {{STD_DSCP_START}}-{{STD_DSCP_LAST}}
+        {% endif -%}    
     end-class-map
     policy-map P2P_PARENT_HQOS_EGGRESS_{{ item }}_DIP
     class class-default

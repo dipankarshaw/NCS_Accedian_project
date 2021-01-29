@@ -18,12 +18,12 @@
 {% if Flat_QOS -%}
     {# UNI Regulator Configuration -#}
     {% if QOS_type == 'Standard' -%}
-        bandwidth-regulator add regulator U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }} cir {{ service_BW * CIR_percentage // 100 }} cir-max {{ service_BW * CIR_percentage // 100 }} cbs 100 eir {{ service_BW }} eir-max {{ service_BW }} ebs 10 color-mode blind coupling-flag false
+        bandwidth-regulator add regulator U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }} cir {{ service_BW * CIR_percentage // 100 }} cir-max {{ service_BW * CIR_percentage // 100 }} cbs {{jinja_func.HQOS_Burst_calc(service_BW,Uni_port_speed,QOS_type,CIR_percentage,wb)}} eir {{ service_BW }} eir-max {{ service_BW }} ebs {{jinja_func.HQOS_Burst_calc(service_BW,Uni_port_speed,QOS_type,100,wb)}} color-mode blind coupling-flag false
     {% else -%}
-        bandwidth-regulator add regulator U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }} cir {{ service_BW }} cir-max {{ service_BW }} cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+        bandwidth-regulator add regulator U{{ Uni_port }}_ALX/NCS/LE-{{ 100000 + item|int }} cir {{ service_BW }} cir-max {{ service_BW }} cbs {{jinja_func.HQOS_Burst_calc(service_BW,Uni_port_speed,QOS_type,100,wb)}} eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
     {% endif -%}
     {# NNI Regulator Configuration -#}
-    bandwidth-regulator add regulator N{{ Nni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}  cir {{ service_BW }} cir-max {{ service_BW }} cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
+    bandwidth-regulator add regulator N{{ Nni_port }}_ALX/NCS/LE-{{ 100000 + item|int }}  cir {{ Nni_port_speed }} cir-max {{ Nni_port_speed }} cbs 100 eir 0 eir-max 0 ebs 10 color-mode blind coupling-flag false
     {# NNI policy required to pop the VLAN coming from Cisco Side -#}
     {% if port_type == 'P-type' or port_type == 'F-type' or port_type == 'PL-type'  -%}
         vid-set add N{{ Nni_port }}_ALX/NCS/LE-{{ 100000 + item|int }} policy-list Traffic-{{ Nni_port }} vlan-type {{colt_vlan_ethType}} vid-list {{ item + 100 }}

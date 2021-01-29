@@ -1,0 +1,3 @@
+loopback edit LE-{{ 100000 + item|int }}_1564 state disable
+oam delete LE-{{ 100000 + item|int }}_1564
+filter delete l2 LE-{{ 100000 + item|int }}_1564

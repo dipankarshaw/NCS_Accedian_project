@@ -1,0 +1,7 @@
+filter add l2 LE-{{ 100000 + item|int }}_1564 dst-mac-addr 00:22:00:22:00:22 enable
+{% if Protected -%}
+oam add LE-{{ 100000 + item|int }}_1564 port LAG-{{(Nni_port + 1)// 2}}
+{% else -%}
+oam add LE-{{ 100000 + item|int }}_1564 port PORT-{{Nni_port}}
+{% endif -%}
+loopback edit LE-{{ 100000 + item|int }}_1564 state enable type custom filter l2 LE-{{ 100000 + item|int }}_1564 swap-mac enable
