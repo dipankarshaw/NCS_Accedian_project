@@ -1,6 +1,0 @@
-exit
-ethernet loopback stop local interface TenGigE0/0/0/41.2315 id 1
-configure terminal
-interface TenGigE0/0/0/41.2315 l2transport
-no ethernet loopback
-

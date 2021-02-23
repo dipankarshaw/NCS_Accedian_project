@@ -9,6 +9,7 @@ import re
 from pprint import pprint
 from netmiko import Netmiko,ConnectHandler
 import datetime
+from tqdm import tqdm
 from jinja2 import Template
 import csv
 import textfsm
@@ -43,6 +44,12 @@ class Jinja_user_func:
             return main_interface_bw
         else:
             return service_BW * 102 // 100
+    def add_13_percent(self,service_BW,main_interface_bw):
+        '''add 2 % extra bw in the Policy when 102 % of service BW is less than Main interface BW'''
+        if service_BW * 113 //100 >= main_interface_bw:
+            return main_interface_bw
+        else:
+            return service_BW * 113 // 100
     def lag_peak_percent_calc(self,service_BW,Lag_bw):
         ''' if percentage calculation of service BW w.r.t lag BW, comes in fraction then add move to next integer '''
         if service_BW * 100 % Lag_bw > 0:
@@ -84,7 +91,7 @@ class Service:
         - connects to H-Tool if SRTE is True
         '''
         for node in self.data["site_list"]:
-            node['connect_obj'] = Netmiko(keepalive = 40, **node['login'])
+            node['connect_obj'] = Netmiko(keepalive = 40, banner_timeout = 60, **node['login'])
             print("**** Netmiko connection established with {}".format(node['Node_name']))
         if self.data['SRTE']:
             self.data['Htool']['connect_obj'] = Netmiko(**self.data['Htool']['login'])
@@ -369,7 +376,7 @@ class Service:
         '''
         dict10 = {}
         for node in self.data["site_list"]:
-            if 'EP' in node['side']:
+            if 'EP' in node['side'] or 'IP' in node['side']:
                 if node['login']['device_type'] == 'cisco_xr':
                     dict10[f"{node['Node_name']}"] = {}
                     try:
@@ -400,8 +407,11 @@ class Service:
     def check_Mac_table(self):
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr':
-                print(node['Node_name'])
+                print(f"*** {node['Node_name']} :> show evpn evi mac | include {self.data['item'] + 50000}")
                 output = node['connect_obj'].send_command("show evpn evi mac | include {}".format(self.data['item'] + 50000))
+                print(output)
+                print(f"*** {node['Node_name']} :> show evpn evi neighbor | include {self.data['item'] + 50000}")
+                output = node['connect_obj'].send_command("show evpn evi neighbor | include {}".format(self.data['item'] + 50000))
                 print(output)
             else:
                 pass
@@ -428,8 +438,10 @@ class Service:
                 for interface,status in node['lag_members'].items():
                     if status['state'] == 'Active':
                         node['connect_obj'].send_command(f"clear controller npu stats voq ingress interface {interface} instance all location 0/0/CPU0")
-            else:
+            elif node['login']['device_type'] == 'cisco_xr' and 'Bundle' not in node['main_interface']:
                 node['connect_obj'].send_command(f"clear controller npu stats voq ingress interface {node['main_interface']} instance all location 0/0/CPU0")
+            else:
+                pass
     def get_UNI_NNI_port_speed(self):
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'accedian':
@@ -569,6 +581,7 @@ class Service:
     def Y1564_test(self):
         list1 = []
         test_result = {}
+        self.data["loop_ext_int"] = 'internal'
         mep_name = 100000 + self.data['item']
         for node in self.data["site_list"]:
             if 'EP' in node['side']:
@@ -628,7 +641,7 @@ class Service:
             if self.data['ELAN']:
                 pass
             else:                
-                Loop_list = ['L1','L2']
+                Loop_list = ['L2'] # valid lists are ['L1','L2']
                 ''' perse the Jinja files to Create the commands for Looping remote end traffic generation at Local End'''
                 for node in self.data["site_list"]:
                     node['loop_ID'] = 1
@@ -663,7 +676,7 @@ class Service:
                             pass
                         else:
                             ## added and node["Node_name"] == 'AR15'
-                            if node['version'] == '7.1.2':
+                            if node['version'] == '7.1.2' and node["Node_name"] == 'AR15':
                                 ''' if node is capable, perform loop on the other end & parse the loop ID '''
                                 test_result[node["Node_name"]] = {}
                                 for looptype in Loop_list:
@@ -715,14 +728,16 @@ class Service:
                                                     test_result[node["Node_name"]][looptype] = 'aborted'
                                                     print(output)
                                                 else:
-                                                    print("*** {} loop, Hold your breath for {} seconds, packets are on the wire".format(looptype,self.data['performance_test']*60 + 20))
+                                                    print("*** {} loop, Hold your breath for {} seconds, packets are on the wire".format(looptype,self.data['performance_test']*60 + 20))                                                        
                                                     ''' if duration is more than 2 Mnts then disconnect the SSH connection & connect after the specified duration'''
                                                     if self.data['performance_test'] > 2:
                                                         self.disconnect_nodes()
-                                                        time.sleep(self.data['performance_test']*60 + 20)
+                                                        for i in tqdm(range(self.data['performance_test']*60 + 20),ncols=100,desc='Y1564 Progress'):
+                                                            time.sleep(1)
                                                         self.connect_nodes()
                                                     else:
-                                                        time.sleep(self.data['performance_test']*60 + 20)
+                                                        for i in tqdm(range(self.data['performance_test']*60 + 20),ncols=100,desc='Y1564 Progress'):
+                                                            time.sleep(1)
                                                     with open(file_path + '/netconf_filters/filter_ethernet_service_test_state.j2') as f:
                                                         xml_structure = Template(f.read()).render(**self.data,**node)                                                  
                                                     reply_xml = node['net_conf_obj'].get(xml_structure)
@@ -753,50 +768,50 @@ class Service:
             return test_result                                                      
 
         elif list1 == ['cisco_xr','accedian'] or list1 == ['accedian','cisco_xr']:
+            ''' identify the other end to decide the loop List'''
             for node in self.data["site_list"]:
                 if node['login']['device_type'] == 'cisco_xr' and 'EP' in node['side']:
                     if "Bundle" in node['main_interface']:
                         Loop_list = ['L2']
                     else:
                         Loop_list = ['L1','L2']
+            ''' prepare the templates '''
             for node in self.data["site_list"]:
                 if node['login']['device_type'] == 'accedian' and 'EP' in node['side']:
+                    test_result[node["Node_name"]] = {}
                     if node['Protected'] == 'YES':
                         output = node['connect_obj'].send_command("port show status PORT-{}".format(node['Nni_port']))
                         if re.findall("Down|Up", output)[0] == 'Down':
                             node['Nni_port'] = node['Nni_port'] + 1
                     output = node['connect_obj'].send_command("port show configuration PORT-{}".format(node['Nni_port']))
                     node['remote_mac'] = re.findall("\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w", output)[0]                       
-                    node['packet_type'] = 'l2-generic'
+                    node['packet_type'] = 'l2-generic'                    
                     for create_delete in create_delete_list:
                         for looptype in Loop_list:
                             if looptype == 'L2':
                                 node['remote_mac'] = '00:22:00:22:00:22'
                             with open(file_path + '/templates/Accedian_{}_{}_Y1564.j2'.format(node["side"],create_delete),'r') as f:
-                                Temp = f.read()
-                                failure_command = Template(Temp).render(**self.data,**node)
+                                failure_command = Template(f.read()).render(**self.data,**node)
                                 file_open = open(file_path + '/commands/Accedian_{}_{}_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete), 'w+')
                                 file_open.write(failure_command)
-                                file_open.write('\n')
+                                file_open.close()
                                 print("*** Loop {} commands are templated for {}".format(create_delete,node['Node_name']))
                 elif node['login']['device_type'] == 'cisco_xr' and 'EP' in node['side']:
                     node['loop_ID'] = 1
                     for create_delete in create_delete_list:
                         for looptype in Loop_list:
                             with open(file_path + '/templates/Cisco_{}_loop_{}_Y1564.j2'.format(looptype,create_delete),'r') as f:
-                                Temp = f.read()
-                                failure_command = Template(Temp).render(**self.data,**node)
+                                failure_command = Template(f.read()).render(**self.data,**node)
                                 file_open = open(file_path + '/commands/Cisco_{}_{}_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete), 'w+')
                                 file_open.write(failure_command)
-                                file_open.write('\n')
+                                file_open.close()
                                 print("*** {} Loop {} commands are templated for {}".format(looptype,create_delete,node['Node_name']))
             for looptype in Loop_list:
                 for create_delete in create_delete_list:
                     for node in self.data["site_list"]:
                         if node['login']['device_type'] == 'cisco_xr' and 'EP' in node['side']:
                             with open(file_path + '/commands/Cisco_{}_{}_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete),'r') as f:
-                                f2 = f.readlines()
-                                output = node['connect_obj'].send_config_set(f2)
+                                output = node['connect_obj'].send_config_set(f.readlines())
                                 node['connect_obj'].commit()
                                 node['connect_obj'].exit_config_mode()
                                 print(output)
@@ -804,16 +819,13 @@ class Service:
                                     output = node['connect_obj'].send_command("show ethernet loopback active | in ID")
                                     node['loop_ID'] = re.split("\s", output)[-1]
                                     with open(file_path + '/templates/Cisco_L2_loop_delete_Y1564.j2','r') as f:
-                                        Temp = f.read()
-                                        failure_command = Template(Temp).render(**self.data,**node)
+                                        failure_command = Template(f.read()).render(**self.data,**node)
                                         file_open = open(file_path + '/commands/Cisco_{}_L2_delete_Y1564.txt'.format(node["Node_name"]), 'w+')
                                         file_open.write(failure_command)
-                                        file_open.write('\n')
                                         file_open.close()
                         elif node['login']['device_type'] == 'accedian' and 'EP' in node['side']:
                             with open(file_path + '/commands/Accedian_{}_{}_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete),'r') as f:
-                                f2 = f.readlines()
-                                output = node['connect_obj'].send_config_set(f2,cmd_verify=False)
+                                output = node['connect_obj'].send_config_set(f.readlines(),cmd_verify=False)
                                 print(output)
                                 if create_delete == "create":
                                     time.sleep(10)
@@ -821,20 +833,22 @@ class Service:
                                     print(output)
                                     x = re.findall("FAILED|PROGRESS", output)
                                     if x[0] == 'FAILED':
-                                        test_result[looptype] = 'fail'
+                                        test_result[node["Node_name"]] = 'fail'
                                     else:
-                                        time_to_wait = (self.data["config_test"]*4) + (self.data["performance_test"]*60) + 30
+                                        time_to_wait = (self.data["config_test"]*4) + (self.data["performance_test"]*60) + 20
                                         print("***  Hold your breathe for {} seconds".format(time_to_wait))
-                                        time.sleep(time_to_wait)
+                                        for i in tqdm(range(time_to_wait),ncols=100,desc='Y1564 Progress'):
+                                            time.sleep(1)
                                         output = node['connect_obj'].send_command("Y1564 show activation Y1564-LE-{}".format(mep_name))
                                         print(output)                             
                                         x = re.findall("PASSED|FAILED|PROGRESS", output)
                                         if x[0] == 'PASSED':
-                                            test_result[looptype] = 'pass'
+                                            test_result[node["Node_name"]][looptype] = 'pass'
                                         elif x[0] == 'FAILED':
-                                            test_result[looptype] = 'fail'
+                                            test_result[node["Node_name"]][looptype] = 'fail'
                                         else:
-                                            test_result[looptype] = 'something Wrong,still in progress'            
+                                            test_result[node["Node_name"]][looptype] = 'something Wrong,still in progress'
+                                        pprint(test_result)            
             '''
             Template the configurations
             set L1 Loop on Accedian
@@ -844,7 +858,7 @@ class Service:
             '''
             for node in self.data["site_list"]:
                 if node['login']['device_type'] == 'cisco_xr' and 'EP' in node['side']:
-                    if node['version'] == '7.1.2' and node["Node_name"] == 'AR15':
+                    if node['version'] == '7.1.2':
                         test_result[node["Node_name"]] = {}
                         for node in self.data["site_list"]:
                             if node['login']['device_type'] == 'accedian' and 'EP' in node['side']:
@@ -870,7 +884,7 @@ class Service:
                                             file_open.write(templated_command)
                                             file_open.close()
                                             print(f"**** {looptype} profile {create_delete} commands templated for {node['Node_name']}")
-                        for looptype in ['L2']:
+                        for looptype in ['L1','L2']:
                             for create_delete in ['create','delete']:
                                 for node in self.data["site_list"]:
                                     if node['login']['device_type'] == 'accedian' and 'EP' in node['side']:
@@ -897,10 +911,12 @@ class Service:
                                                 ''' if duration is more than 2 Mnts then disconnect the SSH connection & connect after the specified duration'''
                                                 if self.data['performance_test'] > 2:
                                                     self.disconnect_nodes()
-                                                    time.sleep(self.data['performance_test']*60 + 20)
+                                                    for i in tqdm(range(self.data['performance_test']*60 + 20),ncols=100,desc='Y1564 Progress'):
+                                                        time.sleep(1)
                                                     self.connect_nodes()
                                                 else:
-                                                    time.sleep(self.data['performance_test']*60 + 20)
+                                                    for i in tqdm(range(self.data['performance_test']*60 + 20),ncols=100,desc='Y1564 Progress'):
+                                                        time.sleep(1)
                                                 with open(file_path + '/netconf_filters/filter_ethernet_service_test_state.j2') as f:
                                                     xml_structure = Template(f.read()).render(**self.data,**node)                                                  
                                                 reply_xml = node['net_conf_obj'].get(xml_structure)
@@ -1101,7 +1117,127 @@ class Service:
                         elif node['main_interface_bw'] == row[0].value and node['distributed_service_BW'] > row[1].value and node['distributed_service_BW'] < row[4].value:
                             node['cbs'],node['ebs'] = row[2].value,row[3].value
             wb.close()
-
+    def Y1564_test_external(self,NCS_node,acc_node):
+        ''' set the loop type parameter'''
+        test_result = {}
+        for node in self.data["site_list"]:
+            if node['Node_name'] == NCS_node:
+                if node['version'] == '7.1.2' and not self.data['ELAN']:
+                    test_result[node["Node_name"]] = {}
+                    self.data["loop_ext_int"] = 'external'
+                    ''' template the files'''
+                    Loop_list = ['L1'] # valid lists are ['L1','L2']
+                    ''' perse the Jinja files to Create the commands for Looping remote end traffic generation at Local End'''
+                    for node in self.data["site_list"]:
+                        if node['Node_name'] == NCS_node or node['Node_name'] == acc_node:
+                            if node['login']['device_type'] == 'cisco_xr':
+                                ''' preapre the Cisco templates '''
+                                for create_delete in ['create','delete']:
+                                    for looptype in Loop_list:
+                                        if looptype == 'L1':
+                                            node['remote_mac'] = node['connect_obj'].send_command("show interface {}".format(node['main_interface']),use_genie=True)[node['main_interface']]['mac_address']
+                                        else:
+                                            node['remote_mac'] = '0022.0022.0022' 
+                                        with open(file_path + f"/templates/Cisco_{looptype}_profile_{create_delete}_Y1564.j2",'r') as f:
+                                            templated_command = Template(f.read()).render(**self.data,**node)
+                                            file_open = open(file_path + f"/commands/Cisco_{node['Node_name']}_{looptype}_profile_{create_delete}_Y1564.txt", 'w+')
+                                            file_open.write(templated_command)
+                                            file_open.close()
+                                            print(f"**** {looptype} profile {create_delete} commands templated for {node['Node_name']}")                   
+                            elif node['login']['device_type'] == 'accedian':
+                                ''' prepare the accedian templates'''
+                                for create_delete in ['create','delete']:
+                                    for looptype in Loop_list:
+                                        with open(file_path + f"/templates/Accedian_{looptype}_loop_{create_delete}_Y1564.j2",'r') as f:
+                                            templated_command = Template(f.read()).render(**self.data,**node)
+                                            file_open = open(file_path + f"/commands/Accedian_{node['Node_name']}_{looptype}_loop_{create_delete}_Y1564.txt", 'w+')
+                                            file_open.write(templated_command)
+                                            file_open.close()
+                                            print(f"**** {looptype} loop {create_delete} commands templated for {node['Node_name']}")
+                    ''' configure Accedian'''
+                    ''' Start Y1564 traffic from Cisco'''
+                    for looptype in Loop_list:
+                        for create_delete in ['create','delete']:
+                            for node in self.data["site_list"]:
+                                if node['login']['device_type'] == 'accedian' and node['Node_name'] == acc_node:
+                                    with open(file_path + '/commands/Accedian_{}_{}_loop_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete),'r') as f:
+                                        output = node['connect_obj'].send_config_set(f.readlines(),cmd_verify=False)
+                                        print(output)                        
+                            for node in self.data["site_list"]:
+                                if node['login']['device_type'] == 'cisco_xr' and node['Node_name'] == NCS_node:
+                                    with open(file_path + '/commands/Cisco_{}_{}_profile_{}_Y1564.txt'.format(node["Node_name"],looptype,create_delete),'r') as f:
+                                        output = node['connect_obj'].send_config_set(f.readlines())
+                                        node['connect_obj'].commit()
+                                        node['connect_obj'].exit_config_mode()
+                                        print(output)
+                                    if create_delete == 'create':
+                                        time.sleep(2)
+                                        command = f"show ethernet service-activation-test {node['main_interface']}.{self.data['item']}"
+                                        output = node['connect_obj'].send_command(command)
+                                        x = re.findall("aborted",output)
+                                        if len(x) == 1:
+                                            test_result[node["Node_name"]][looptype] = 'aborted'
+                                            print(output)
+                                        else:
+                                            print("*** {} loop, Hold your breath for {} seconds, packets are on the wire".format(looptype,self.data['performance_test']*60 + 20))
+                                            ''' if duration is more than 2 Mnts then disconnect the SSH connection & connect after the specified duration'''
+                                            if self.data['performance_test'] > 2:
+                                                self.disconnect_nodes()
+                                                for i in tqdm(range(self.data['performance_test']*60 + 20),ncols=100,desc='Y1564 Progress'):
+                                                    time.sleep(1)
+                                                self.connect_nodes()
+                                            else:
+                                                for i in tqdm(range(self.data['performance_test']*60 + 20),ncols=100,desc='Y1564 Progress'):
+                                                    time.sleep(1)
+                                            with open(file_path + '/netconf_filters/filter_ethernet_service_test_state.j2') as f:
+                                                xml_structure = Template(f.read()).render(**self.data,**node)                                                  
+                                            reply_xml = node['net_conf_obj'].get(xml_structure)
+                                            reply_dict = xmltodict.parse(reply_xml.xml)["rpc-reply"]["data"]["service-activation-test"]["test-statuses"]["test-status"]["phase"]["results"]
+                                            output_dict = json.loads(json.dumps(reply_dict))
+                                            # pprint(output_dict)                                    
+                                            output = node['connect_obj'].send_command("show ethernet service-activation-test")
+                                            print(output)
+                                            ''' parse the Output and see FL == 0 '''
+                                            x = re.findall("FL: \d+",output)
+                                            try: 
+                                                if int(x[0].split()[1]) == 0 and int(x[1].split()[1]) == 0 :
+                                                    test_result[node["Node_name"]][looptype]= 'pass'
+                                                    test_result[node["Node_name"]][f"{looptype}_CIR_TX"] = output_dict['cir']['tx-packets']
+                                                    test_result[node["Node_name"]][f"{looptype}_CIR_FL"] = output_dict['cir']['frames-lost']
+                                                    test_result[node["Node_name"]][f"{looptype}_EIR_TX"] = output_dict['eir']['tx-packets']
+                                                    test_result[node["Node_name"]][f"{looptype}_EIR_FL"] = output_dict['eir']['frames-lost']
+                                                else:
+                                                    test_result[node["Node_name"]][looptype] = 'fail'
+                                                    test_result[node["Node_name"]][f"{looptype}_CIR_TX"] = output_dict['cir']['tx-packets']
+                                                    test_result[node["Node_name"]][f"{looptype}_CIR_FL"] = output_dict['cir']['frames-lost']
+                                                    test_result[node["Node_name"]][f"{looptype}_EIR_TX"] = output_dict['eir']['tx-packets']
+                                                    test_result[node["Node_name"]][f"{looptype}_EIR_FL"] = output_dict['eir']['frames-lost']
+                                            except:
+                                                test_result[node["Node_name"]][looptype] = 'exception'
+                else:
+                    test_result[node["Node_name"]] = 'not_supported'
+        return test_result
+    def check_QOS_configured_CIR(self):
+        dict13 = {}
+        for node in self.data["site_list"]:
+            if 'EP' in node['side']:
+                if node['login']['device_type'] == 'cisco_xr':
+                    try:
+                        if node['port_type'] == 'PL-type':
+                            # print(f"!\n!!\n**** {node['Node_name']} # show qos interface {node['main_interface']} input")                          
+                            output = node['connect_obj'].send_command("show qos interface {} input".format(node["main_interface"]))    
+                        else:
+                            # print(f"!\n!!\n**** {node['Node_name']} # show qos interface {node['main_interface']}.{self.data['item']} input")
+                            output = node['connect_obj'].send_command("show qos interface {}.{} input".format(node["main_interface"],self.data['item']))
+                        configured_cir = re.findall("Policer committed rate\s+=\s+\d+", output)
+                        dict13[node['Node_name']] = configured_cir[0].split()[-1]
+                    except:
+                        print("*** something went Wrong, input Policy drops can not be checked")                    
+                else:
+                    pass
+            else:
+                pass
+        return dict13
                 
 
           

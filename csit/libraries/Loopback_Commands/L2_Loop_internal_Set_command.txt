@@ -1,7 +1,0 @@
-int gi 0/0/0/11.50 l2transport
-ethernet loopback permit internal
-commit
-exit
-exit
-ethernet loopback start local interface gi 0/0/0/11.50 internal destination mac-address 0010.9400.0113 timeout 1800
-

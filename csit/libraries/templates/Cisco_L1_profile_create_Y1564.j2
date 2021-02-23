@@ -35,7 +35,7 @@
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 information-rate {{service_BW}} mbps
 {% else -%}
     {% set service_BW = ((service_BW * STP_percentage ) // 100000) -%}
-    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564
+    ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}}
     {% if port_type == 'Y-type' -%}
     ethernet service-activation-test profile LE-{{ 100000 + item|int }}_1564 outer-cos {{green_pcp}} inner-cos {{green_pcp}}
     {% elif port_type == 'F-type' -%}
@@ -58,11 +58,11 @@ interface {{main_interface}} l2transport
 interface {{main_interface}}.{{item}} l2transport
 {% endif -%}
  ethernet service-activation-test
-  permit internal
+  permit {{loop_ext_int}}
 commit
 end
 {% if port_type == 'PL-type' -%}
-ethernet service-activation-test start interface {{main_interface}} profile LE-{{ 100000 + item|int }}_1564 destination {{remote_mac}} direction internal
+ethernet service-activation-test start interface {{main_interface}} profile LE-{{ 100000 + item|int }}_1564 destination {{remote_mac}} direction {{loop_ext_int}}
 {% else -%}
-ethernet service-activation-test start interface {{main_interface}}.{{item}} profile LE-{{ 100000 + item|int }}_1564 destination {{remote_mac}} direction internal
+ethernet service-activation-test start interface {{main_interface}}.{{item}} profile LE-{{ 100000 + item|int }}_1564 destination {{remote_mac}} direction {{loop_ext_int}}
 {% endif -%}

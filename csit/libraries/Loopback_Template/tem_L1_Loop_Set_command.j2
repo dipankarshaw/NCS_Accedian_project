@@ -1,8 +1,0 @@
-int {{main_inf}}
-{% if internal_external == 'internal'-%}
-loopback internal
-{% elif internal_external == 'line' -%}
-loopback line
-{% else -%}
-loopback external
-{% endif %}

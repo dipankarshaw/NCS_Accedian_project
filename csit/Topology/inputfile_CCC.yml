@@ -1,7 +1,7 @@
-Flat_QOS: True # Boolean(True or False), if HQOS required Make it False, if Flat QOS is required, set as True.
+Flat_QOS: False # Boolean(True or False), if HQOS required Make it False, if Flat QOS is required, set as True.
 classify: PCP
-item: 2312 # item is used for VLAN, subinterface and many Other topics.
-service_BW: 3000000 # this is in Kbps.
+item: 2311 # item is used for VLAN, subinterface and many Other topics.
+service_BW: 1000000 # this is in Kbps.
 MEG_level: 5 # SET MD level of the service.
 QOS_type: "Business2" # Possible values are Premium,Standard,Business2,Business1,Business3
 colt_vlan_ethType: "s-vlan"
@@ -10,7 +10,7 @@ olo_eth_type: "s-vlan"
 config_test: 1 # Duration in Seconds, for Y-1564 step test from Accedian.
 performance_test: 1 # Duration in Minutes, for Y-1564 Test from Accedian.
 STP_percentage: 100 # How much percent of service_BW, STP traffic is required?
-ELAN: False # Boolean(True or False), if ELAN required Make it True, if ELINE is required, set as False
+ELAN: True # Boolean(True or False), if ELAN required Make it True, if ELINE is required, set as False
 OLO_type: "P-OLO"
 olo_vlan: 2501
 SRTE: False # This is Boolean, set True if u need an SRTE Policy.
@@ -18,7 +18,7 @@ Y1564_cisco_emix: True # this is Boolean, if FIX Frame size test Required, then 
 Y1564_frame_size: 64 # IF Y1564_cisco_emix == False, then this Frame size will be used for Y1564 Test.
 site_list: 
  - 
-  main_interface: "Bundle-Ether581"
+  main_interface: "TenGigE0/0/0/5"
   side: "L2PE_EP"
   Node_name: "AR15"
   port_type: "F-type"
@@ -30,7 +30,7 @@ site_list:
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
  - 
-  main_interface: "Bundle-Ether100"
+  main_interface: "TenGigE0/0/0/41"
   side: "L2PE_EP"
   Node_name: "AR5"
   port_type: "F-type"
@@ -38,6 +38,18 @@ site_list:
   Remote_MEP: 2
   login: 
    host: "10.91.126.115"
+   username: "dshaw1"
+   password: "N0@ught33b0y"
+   device_type: "cisco_xr"
+ - 
+  main_interface: "Bundle-Ether112"
+  side: "L2PE_EP"
+  Node_name: "AR11"
+  port_type: "F-type"
+  Local_MEP: 1
+  Remote_MEP: 2
+  login: 
+   host: "10.91.126.195"
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"

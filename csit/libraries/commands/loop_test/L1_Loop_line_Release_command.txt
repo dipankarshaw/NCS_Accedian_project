@@ -1,3 +1,0 @@
-int TenGigE0/0/0/5
-no loopback line
-

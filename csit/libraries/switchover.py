@@ -15,7 +15,7 @@ import textfsm
 from service import Service
 import yaml
 import ast
-from Class_Based_Spirent_Code_Generation import Spirent_L2_Traffic_Gen,Get_Spirent_Config,Create_Spirent_L2_Gen
+from Class_Based_Spirent_Code_Generation import *
 from get_stream_handle import *
 file_path = os.path.dirname(os.path.realpath(__file__))
 result = {}

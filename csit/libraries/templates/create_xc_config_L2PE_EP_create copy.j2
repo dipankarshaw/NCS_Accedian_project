@@ -60,13 +60,19 @@
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }}
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit maximum 100
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit action no-flood
-    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mtu 1500
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mtu 9208
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} evi {{ 50000 + item|int }}
     evpn evi {{ 50000 + item|int }} advertise-mac
     {% if port_type == 'PL-type'-%}
-        l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }} storm-control unknown-unicast kbps 20000
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }} storm-control multicast kbps 20000
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }} storm-control broadcast kbps 20000
     {% else -%}
-        l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }} storm-control unknown-unicast kbps 20000
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }} storm-control multicast kbps 20000
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }} storm-control broadcast kbps 20000
     {% endif -%}
 {% else -%}
     l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} neighbor evpn evi {{ 50000 + item|int }} target {{ 50000 + item|int }} source {{ 50000 + item|int }}
@@ -105,7 +111,7 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     {% elif  QOS_type== 'Standard' -%}
         police rate {{ service_BW * CIR_percentage // 100 }} kbps burst {{cbs}} kbytes peak-rate {{ jinja_func.add_2_percent(service_BW,main_interface_bw) }} kbps peak-burst {{ebs}} kbytes
     {% else -%}
-        police rate {{ jinja_func.add_2_percent(service_BW,main_interface_bw) }} kbps burst {{cbs}} kbytes
+        police rate {{ jinja_func.add_2_percent(service_BW,main_interface_bw) }} kbps burst {{cbs}} kbytes  {#burst 1200 kbytes#}
     {% endif -%}
     !
     set traffic-class {{TC}}
@@ -120,7 +126,7 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     {% if 'Bundle' in main_interface -%}
         police rate percent {{ jinja_func.lag_peak_percent_calc(service_BW,Lag_bw) }}
     {% else -%}
-        police rate percent {{ jinja_func.peak_percent_calc(service_BW,main_interface_bw) }} 
+        police rate {{ jinja_func.add_2_percent(service_BW,main_interface_bw) }} kbps
     {% endif -%}
     end-policy-map
     policy-map P2P_CHILD_HQOS_INGRESS_{{ item }}_DIP
@@ -140,7 +146,7 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     police rate percent {{B1_CIR}} burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Business1',B1_CIR,wb)}} bytes peak-rate percent {{B1_CIR_MAX}} peak-burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Business1',B1_CIR_MAX,wb)}} kbytes
     set traffic-class 5
     set qos-group 3
-    class standard-PCP-{{STD_PCP}}_0_{{ item }}_DIP
+    class class-default
     police rate percent {{STD_CIR + Pre_BM_CIR + Nor_BM_CIR }} burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Standard',(STD_CIR + Pre_BM_CIR + Nor_BM_CIR),wb)}} kbytes peak-rate percent {{STD_CIR_MAX}} peak-burst {{jinja_func.HQOS_Burst_calc(distributed_service_BW,main_interface_bw,'Standard',STD_CIR_MAX,wb)}} kbytes
     set qos-group 4
     set traffic-class 2
@@ -186,7 +192,7 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     {% if 'Bundle' in main_interface -%}
         shape average percent {{ jinja_func.lag_peak_percent_calc(service_BW,Lag_bw) }}
     {% else -%}
-        shape average percent {{  jinja_func.peak_percent_calc(service_BW,main_interface_bw) }} 
+        shape average {{jinja_func.add_13_percent(service_BW,main_interface_bw)}} kbps
     {% endif -%}
     end-policy-map
     policy-map P2P_CHILD_HQOS_EGGRESS_{{ item }}_DIP
@@ -196,7 +202,7 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     queue-limit 500 kbytes
     class Business1-TC5-{{ item }}_Egress
     priority level 2
-    shape average percent 15
+    shape average percent 30
     queue-limit 500 kbytes
     class Business2-TC4-{{ item }}_Egress
     bandwidth percent 20
@@ -208,6 +214,7 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     bandwidth percent 30
     random-detect 3500 kbytes 5000 kbytes
     class class-default
+    bandwidth percent 1
     end-policy-map
     class-map match-any Premium-TC6-{{ item }}_Egress
     match traffic-class 6

@@ -17,7 +17,7 @@ import yaml
 import ast
 from get_stream_handle import *
 from switchover import *
-from Class_Based_Spirent_Code_Generation import Spirent_L2_Traffic_Gen,Get_Spirent_Config,Create_Spirent_L2_Gen
+from Class_Based_Spirent_Code_Generation import *
 
 
 file_path = os.path.dirname(os.path.realpath(__file__))
@@ -48,7 +48,8 @@ def onnet_CCA(A,B,**kwargs):
     my_config.push_config() ## send the configs to the node.
     test_result,input_dict  = {},{} ## create a empty dictionary to hold results.
     test_result['ccm_status'] = my_config.Validate_ccm()
-    test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
+    # test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
+    test_result['Y1564_ext'] = my_config.Y1564_test_external('AR11','LTS_144')
     # my_config.disconnect_nodes() ## release netmiko connection from NCS and Accedian.
     # input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
     # Spirent_L2_Gen = Create_Spirent_L2_Gen() ## create the spirent object.
@@ -74,6 +75,7 @@ def onnet_CCA(A,B,**kwargs):
     # test_result['CFM_Stats_Acc'] = my_config.mep_statistic_accedian()
     # test_result['CFM_Stats_cisco'] = my_config.mep_statistic_cisco()
     my_config.check_QOS_counters_config()
+    test_result['voq_stat'] = my_config.check_voq_stats()
     my_config.delete_config()
     my_config.disconnect_nodes()
     return test_result
@@ -99,14 +101,14 @@ def onnet_CCA_delete(A,B,**kwargs):
     my_config.disconnect_nodes()
     return test_result
 
-result['FF'] = onnet_CCA('F','F')
-result['XX'] = onnet_CCA('X','X')
+# result['FF'] = onnet_CCA('F','F')
+# result['XX'] = onnet_CCA('X','X')
 result['PP'] = onnet_CCA('P','P')
-result['XP'] = onnet_CCA('X','P')
-result['PX'] = onnet_CCA('P','X')
-result['FY'] = onnet_CCA('F','Y')
-result['YF'] = onnet_CCA('Y','F')
-result['YY'] = onnet_CCA('Y','Y')
+# result['XP'] = onnet_CCA('X','P')
+# result['PX'] = onnet_CCA('P','X')
+# result['FY'] = onnet_CCA('F','Y')
+# result['YF'] = onnet_CCA('Y','F')
+# result['YY'] = onnet_CCA('Y','Y')
 # for item1 in [10000000]:
 #     for item2 in range(10,15,5):
 #         result[f'FF_{item1//1000}_Mbps_{item2}_Percent'] = onnet_CCA('F','F',**{"service_BW": item1 , "STP_percentage": item2 })

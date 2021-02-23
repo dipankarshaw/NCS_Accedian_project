@@ -996,7 +996,7 @@ class Spirent_L2_Traffic_Gen:
 	def Generate_Stream_Traffic(self,StreamBlock1,StreamBlock2):
 		self.StreamBlock1 = StreamBlock1['stream_id']
 		self.StreamBlock2 = StreamBlock2['stream_id']
-		print(f"**** Starting traffic Second Time for {self.traffic_duration} seconds")
+		print(f"**** Starting traffic for {self.traffic_duration} seconds")
 		traffic_ctrl_ret = sth.traffic_control(
 			stream_handle=[self.StreamBlock1,self.StreamBlock2],
 			action='run',
@@ -1130,533 +1130,569 @@ class Spirent_L2_Traffic_Gen:
 			streamblock_ret1['name'] = 'LACP_Stream_/Slow_Protocol'
 			l2CP_stream_handle.append(streamblock_ret1)
 
-		streamblock_ret2 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_src='00:10:94:00:00:02',
-			ether_type='888E',
-			mac_dst='01:80:C2:00:00:03',
-			enable_control_plane='0',
-			l3_length='537',
-			name='Port_Authentication',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='555',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9164');
+		# streamblock_ret2 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	ether_type='888E',
+		# 	mac_dst='01:80:C2:00:00:03',
+		# 	enable_control_plane='0',
+		# 	l3_length='537',
+		# 	name='Port_Authentication',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='555',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9164');
 
-		status = streamblock_ret2['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret2)
-		else:
-			print("***** run sth.traffic_config Port_Authentication successfully")
-			streamblock_ret2['name'] = 'Port_Authentication'
-			l2CP_stream_handle.append(streamblock_ret2)
+		# status = streamblock_ret2['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret2)
+		# else:
+		# 	print("***** run sth.traffic_config Port_Authentication successfully")
+		# 	streamblock_ret2['name'] = 'Port_Authentication'
+		# 	l2CP_stream_handle.append(streamblock_ret2)
 		
 
-		streamblock_ret3 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_src='00:10:94:00:00:02',
-			ether_type='88EE',
-			mac_dst='01:80:C2:00:00:07',
-			enable_control_plane='0',
-			l3_length='537',
-			name='E-LMI',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='555',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9148');
+		# streamblock_ret3 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	ether_type='88EE',
+		# 	mac_dst='01:80:C2:00:00:07',
+		# 	enable_control_plane='0',
+		# 	l3_length='537',
+		# 	name='E-LMI',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='555',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9148');
 
-		status = streamblock_ret3['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret3)
-		else:
-			print("***** run sth.traffic_config E-LMI successfully")
-			streamblock_ret3['name'] = 'E-LMI'
-			l2CP_stream_handle.append(streamblock_ret3)
+		# status = streamblock_ret3['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret3)
+		# else:
+		# 	print("***** run sth.traffic_config E-LMI successfully")
+		# 	streamblock_ret3['name'] = 'E-LMI'
+		# 	l2CP_stream_handle.append(streamblock_ret3)
 
-		streamblock_ret4 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_src='00:10:94:00:00:02',
-			mac_dst='01:80:C2:00:00:0E',
-			enable_control_plane='0',
-			l3_length='982',
-			name='LLDP',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='1000',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9199');
+		# streamblock_ret4 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_dst='01:80:C2:00:00:0E',
+		# 	enable_control_plane='0',
+		# 	l3_length='982',
+		# 	name='LLDP',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='1000',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9199');
 
-		status = streamblock_ret4['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret4)
-		else:
-			print("***** run sth.traffic_config LLDP successfully")
-			streamblock_ret4['name'] = 'LLDP'
-			l2CP_stream_handle.append(streamblock_ret4)
-		streamblock_ret5 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_dst_mode='increment',
-			mac_dst_repeat_count='0',
-			mac_dst_count='16',
-			mac_src='00:10:94:00:00:02',
-			mac_dst='01:80:C2:00:00:20',
-			enable_control_plane='0',
-			l3_length='537',
-			name='GARP/GMRP_StreamBlock',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='555',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9147',
-			enable_stream='false');
+		# status = streamblock_ret4['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret4)
+		# else:
+		# 	print("***** run sth.traffic_config LLDP successfully")
+		# 	streamblock_ret4['name'] = 'LLDP'
+		# 	l2CP_stream_handle.append(streamblock_ret4)
+		# streamblock_ret5 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_dst_mode='increment',
+		# 	mac_dst_repeat_count='0',
+		# 	mac_dst_count='16',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_dst='01:80:C2:00:00:20',
+		# 	enable_control_plane='0',
+		# 	l3_length='537',
+		# 	name='GARP/GMRP_StreamBlock',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='555',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9147',
+		# 	enable_stream='false');
 
-		status = streamblock_ret5['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret5)
-		else:
-			print("***** run sth.traffic_config GARP/GMRP_StreamBlock successfully")
-			streamblock_ret5['name'] = 'GARP/GMRP'
-			l2CP_stream_handle.append(streamblock_ret5)
+		# status = streamblock_ret5['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret5)
+		# else:
+		# 	print("***** run sth.traffic_config GARP/GMRP_StreamBlock successfully")
+		# 	streamblock_ret5['name'] = 'GARP/GMRP'
+		# 	l2CP_stream_handle.append(streamblock_ret5)
 		
 
-		streamblock_ret6 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_src='00:10:94:00:00:02',
-			mac_dst='01:80:C2:00:00:02',
-			enable_control_plane='0',
-			l3_length='138',
-			name='LACP_MARKER',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='156',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9203');
+		# streamblock_ret6 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_dst='01:80:C2:00:00:02',
+		# 	enable_control_plane='0',
+		# 	l3_length='138',
+		# 	name='LACP_MARKER',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='156',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9203');
 
-		status = streamblock_ret6['status']
+		# status = streamblock_ret6['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret6)
+		# else:
+		# 	print("***** run sth.traffic_config LACP_MARKER successfully")
+		# 	streamblock_ret6['name'] = 'LACP_MARKER'
+		# 	l2CP_stream_handle.append(streamblock_ret6)
+
+		# streamblock_ret7 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	enable_control_plane='0',
+		# 	l3_length='128',
+		# 	name='Link_OAM',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='128',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9100');
+
+		# status = streamblock_ret7['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret7)
+		# else:
+		# 	print("***** run sth.traffic_config Link_OAM successfully")
+		# 	streamblock_ret7['name'] = 'Link_OAM'
+		# 	l2CP_stream_handle.append(streamblock_ret7)
+
+		# streamblock_ret8 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_8023_snap',
+		# 	custom_pattern='ABCDEFABCDEF',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_dst='01:00:0C:CC:CC:CC',
+		# 	llc_control='03',
+		# 	llc_ssap='AA',
+		# 	llc_dsap='AA',
+		# 	snap_oui_id='00000C',
+		# 	snap_ether_type='2000',
+		# 	enable_control_plane='0',
+		# 	l3_length='555',
+		# 	name='Cisco_CDP_VTP',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='555',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9116');
+
+		# status = streamblock_ret8['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret8)
+		# else:
+		# 	print("***** run sth.traffic_config Cisco_CDP_VTP successfully")
+		# 	streamblock_ret8['name'] = 'Cisco_CDP_VTP'
+		# 	l2CP_stream_handle.append(streamblock_ret8)
+
+		# streamblock_ret9 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	ether_type='0802',
+		# 	mac_dst='01:00:0C:CC:CC:CC',
+		# 	enable_control_plane='0',
+		# 	l3_length='110',
+		# 	name='Cicso_Shared_STP_',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='128',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9223');
+
+		# status = streamblock_ret9['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret9)
+		# else:
+		# 	print("***** run sth.traffic_config Cicso_Shared_STP_ successfully")
+		# 	streamblock_ret9['name'] = 'Cicso_Shared_STP_'
+		# 	l2CP_stream_handle.append(streamblock_ret9)
+
+		# streamblock_ret10 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	l3_protocol='ipv4',
+		# 	l4_protocol='igmp',
+		# 	igmp_max_response_time='0',
+		# 	igmp_version='2',
+		# 	igmp_type='16',
+		# 	igmp_msg_type='report',
+		# 	igmp_group_addr='225.0.0.1',
+		# 	ip_id='0',
+		# 	ip_src_addr='192.85.1.2',
+		# 	ip_dst_addr='224.0.0.1',
+		# 	ip_ttl='255',
+		# 	ip_hdr_length='5',
+		# 	ip_protocol='2',
+		# 	ip_fragment_offset='0',
+		# 	ip_mbz='0',
+		# 	ip_precedence='0',
+		# 	ip_tos_field='0',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	ether_type='0800',
+		# 	mac_dst='01:00:5E:00:00:01',
+		# 	enable_control_plane='0',
+		# 	l3_length='110',
+		# 	name='IPV4_IGMP_multicast',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='128',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9100',
+		# 	mac_discovery_gw='192.85.1.1');
+
+		# status = streamblock_ret10['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret10)
+		# else:
+		# 	print("***** run sth.traffic_config IPV4_IGMP_multicast successfully")
+		# 	streamblock_ret10['name'] = 'IPV4_IGMP_multicast'
+		# 	l2CP_stream_handle.append(streamblock_ret10)
+
+		# streamblock_ret11 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	custom_pattern='ABCDEFABCDEF',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	ether_type='0000',
+		# 	mac_dst='01:00:0C:00:00:01',
+		# 	enable_control_plane='0',
+		# 	l3_length='110',
+		# 	name='Cisco_Inter_Switch_Protocol_(ISL)',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='128',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9100');
+
+		# status = streamblock_ret11['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret11)
+		# else:
+		# 	print("***** run sth.traffic_config Cisco_Inter_Switch_Protocol_(ISL) successfully")
+		# 	streamblock_ret11['name'] = 'Cisco_Inter_Switch_Protocol_(ISL)'
+		# 	l2CP_stream_handle.append(streamblock_ret11)
+
+		# streamblock_ret12 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	ether_type='8902',
+		# 	mac_dst='01:80:C2:00:00:35',
+		# 	enable_control_plane='0',
+		# 	l3_length='537',
+		# 	name='SOAM_CCM_Level_5',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='555',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9116');
+
+		# status = streamblock_ret12['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret12)
+		# else:
+		# 	print("***** run sth.traffic_config SOAM_CCM_Level_5 successfully")
+		# 	streamblock_ret12['name'] = 'SOAM_CCM_Level_5'
+		# 	l2CP_stream_handle.append(streamblock_ret12)
+
+		# streamblock_ret13 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_dst='01:80:C2:00:00:0E',
+		# 	enable_control_plane='0',
+		# 	l3_length='110',
+		# 	name='PTP_Delay_Request',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='128',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9100');
+
+		# status = streamblock_ret13['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret13)
+		# else:
+		# 	print("***** run sth.traffic_config PTP_Delay_Request successfully")
+		# 	streamblock_ret13['name'] = 'PTP_Delay_Request'
+		# 	l2CP_stream_handle.append(streamblock_ret13)
+
+		# streamblock_ret14 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_dst_mode='increment',
+		# 	mac_dst_repeat_count='0',
+		# 	mac_dst_count='16',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_dst='01:80:C2:00:00:00',
+		# 	enable_control_plane='0',
+		# 	l3_length='110',
+		# 	name='L2CP_MAC_Frame',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='128',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9100',
+		# 	enable_stream='false');
+
+		# status = streamblock_ret14['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret14)
+		# else:
+		# 	print("***** run sth.traffic_config L2CP_MAC_Frame successfully")
+		# 	streamblock_ret14['name'] = 'L2CP_MAC_Frame'
+		# 	l2CP_stream_handle.append(streamblock_ret14)
+
+		# streamblock_ret15 = sth.traffic_config(
+		# 	mode='create',
+		# 	port_handle=self.port_handle[src_port_handle_index],
+		# 	l2_encap='ethernet_ii',
+		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_dst='01:80:C2:00:00:DD',
+		# 	enable_control_plane='0',
+		# 	l3_length='110',
+		# 	name='Provider_Bridge_MVRP_Address',
+		# 	fill_type='constant',
+		# 	fcs_error='0',
+		# 	fill_value='0',
+		# 	frame_size='128',
+		# 	traffic_state='1',
+		# 	high_speed_result_analysis='1',
+		# 	length_mode='fixed',
+		# 	tx_port_sending_traffic_to_self_en='false',
+		# 	disable_signature='0',
+		# 	enable_stream_only_gen='1',
+		# 	pkts_per_burst='1',
+		# 	inter_stream_gap_unit='bytes',
+		# 	burst_loop_count='30',
+		# 	transmit_mode='continuous',
+		# 	inter_stream_gap='12',
+		# 	rate_pps='9100');
+
+		# status = streamblock_ret15['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_config failed")
+		# 	print(streamblock_ret15)
+		# else:
+		# 	print("***** run sth.traffic_config Provider_Bridge_MVRP_Address successfully")
+		# 	streamblock_ret15['name'] = 'Provider_Bridge_MVRP_Address'
+		# 	l2CP_stream_handle.append(streamblock_ret15)
+
+		streamblock_ret16 = sth.traffic_config (
+				mode = 'create',
+				port_handle = self.port_handle[src_port_handle_index],
+				custom_pattern = 'AAAA0300000C011121036D850001000F464F43313033315A374A47000200094769302F310003000800000000000400050700050005050006000653310007000800000001',
+				enable_control_plane = '0',
+				l2_encap = 'ethernet_8023_raw',
+				# length_mode = '128',
+				name = 'UDLD-STP',
+				fill_type = 'constant',
+				fcs_error = '0',
+				fill_value = '0',
+				# frame_size = '128',
+				traffic_state = '1',
+				high_speed_result_analysis = '1',
+				length_mode = 'auto',
+				tx_port_sending_traffic_to_self_en = 'false',
+				disable_signature = '0',
+				enable_stream_only_gen = '1',
+				mac_src = '00:19:06:EA:B8:81',
+				mac_dst = '01:00:0C:CC:CC:CC',
+				pkts_per_burst = '1',
+				inter_stream_gap_unit = 'bytes',
+				burst_loop_count = '30',
+				transmit_mode = 'continuous',
+				inter_stream_gap = '12',
+				rate_pps = '1000');
+
+		status = streamblock_ret16['status']
 		if (status == '0'):
 			print("run sth.traffic_config failed")
-			print(streamblock_ret6)
+			print(streamblock_ret16)
 		else:
-			print("***** run sth.traffic_config LACP_MARKER successfully")
-			streamblock_ret6['name'] = 'LACP_MARKER'
-			l2CP_stream_handle.append(streamblock_ret6)
+			print("***** run sth.traffic_config UDLD-STP successfully")
+			streamblock_ret16['name'] = 'UDLD-STP'
+			l2CP_stream_handle.append(streamblock_ret16)
 
-		streamblock_ret7 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			enable_control_plane='0',
-			l3_length='128',
-			name='Link_OAM',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='128',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9100');
-
-		status = streamblock_ret7['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret7)
-		else:
-			print("***** run sth.traffic_config Link_OAM successfully")
-			streamblock_ret7['name'] = 'Link_OAM'
-			l2CP_stream_handle.append(streamblock_ret7)
-
-		streamblock_ret8 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_8023_snap',
-			custom_pattern='ABCDEFABCDEF',
-			mac_src='00:10:94:00:00:02',
-			mac_dst='01:00:0C:CC:CC:CC',
-			llc_control='03',
-			llc_ssap='AA',
-			llc_dsap='AA',
-			snap_oui_id='00000C',
-			snap_ether_type='2000',
-			enable_control_plane='0',
-			l3_length='555',
-			name='Cisco_CDP_VTP',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='555',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9116');
-
-		status = streamblock_ret8['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret8)
-		else:
-			print("***** run sth.traffic_config Cisco_CDP_VTP successfully")
-			streamblock_ret8['name'] = 'Cisco_CDP_VTP'
-			l2CP_stream_handle.append(streamblock_ret8)
-
-		streamblock_ret9 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_src='00:10:94:00:00:02',
-			ether_type='0802',
-			mac_dst='01:00:0C:CC:CC:CC',
-			enable_control_plane='0',
-			l3_length='110',
-			name='Cicso_Shared_STP_',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='128',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9223');
-
-		status = streamblock_ret9['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret9)
-		else:
-			print("***** run sth.traffic_config Cicso_Shared_STP_ successfully")
-			streamblock_ret9['name'] = 'Cicso_Shared_STP_'
-			l2CP_stream_handle.append(streamblock_ret9)
-
-		streamblock_ret10 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			l3_protocol='ipv4',
-			l4_protocol='igmp',
-			igmp_max_response_time='0',
-			igmp_version='2',
-			igmp_type='16',
-			igmp_msg_type='report',
-			igmp_group_addr='225.0.0.1',
-			ip_id='0',
-			ip_src_addr='192.85.1.2',
-			ip_dst_addr='224.0.0.1',
-			ip_ttl='255',
-			ip_hdr_length='5',
-			ip_protocol='2',
-			ip_fragment_offset='0',
-			ip_mbz='0',
-			ip_precedence='0',
-			ip_tos_field='0',
-			mac_src='00:10:94:00:00:02',
-			ether_type='0800',
-			mac_dst='01:00:5E:00:00:01',
-			enable_control_plane='0',
-			l3_length='110',
-			name='IPV4_IGMP_multicast',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='128',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9100',
-			mac_discovery_gw='192.85.1.1');
-
-		status = streamblock_ret10['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret10)
-		else:
-			print("***** run sth.traffic_config IPV4_IGMP_multicast successfully")
-			streamblock_ret10['name'] = 'IPV4_IGMP_multicast'
-			l2CP_stream_handle.append(streamblock_ret10)
-
-		streamblock_ret11 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			custom_pattern='ABCDEFABCDEF',
-			mac_src='00:10:94:00:00:02',
-			ether_type='0000',
-			mac_dst='01:00:0C:00:00:01',
-			enable_control_plane='0',
-			l3_length='110',
-			name='Cisco_Inter_Switch_Protocol_(ISL)',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='128',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9100');
-
-		status = streamblock_ret11['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret11)
-		else:
-			print("***** run sth.traffic_config Cisco_Inter_Switch_Protocol_(ISL) successfully")
-			streamblock_ret11['name'] = 'Cisco_Inter_Switch_Protocol_(ISL)'
-			l2CP_stream_handle.append(streamblock_ret11)
-
-		streamblock_ret12 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_src='00:10:94:00:00:02',
-			ether_type='8902',
-			mac_dst='01:80:C2:00:00:35',
-			enable_control_plane='0',
-			l3_length='537',
-			name='SOAM_CCM_Level_5',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='555',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9116');
-
-		status = streamblock_ret12['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret12)
-		else:
-			print("***** run sth.traffic_config SOAM_CCM_Level_5 successfully")
-			streamblock_ret12['name'] = 'SOAM_CCM_Level_5'
-			l2CP_stream_handle.append(streamblock_ret12)
-
-		streamblock_ret13 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_src='00:10:94:00:00:02',
-			mac_dst='01:80:C2:00:00:0E',
-			enable_control_plane='0',
-			l3_length='110',
-			name='PTP_Delay_Request',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='128',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9100');
-
-		status = streamblock_ret13['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret13)
-		else:
-			print("***** run sth.traffic_config PTP_Delay_Request successfully")
-			streamblock_ret13['name'] = 'PTP_Delay_Request'
-			l2CP_stream_handle.append(streamblock_ret13)
-
-		streamblock_ret14 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_dst_mode='increment',
-			mac_dst_repeat_count='0',
-			mac_dst_count='16',
-			mac_src='00:10:94:00:00:02',
-			mac_dst='01:80:C2:00:00:00',
-			enable_control_plane='0',
-			l3_length='110',
-			name='L2CP_MAC_Frame',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='128',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9100',
-			enable_stream='false');
-
-		status = streamblock_ret14['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret14)
-		else:
-			print("***** run sth.traffic_config L2CP_MAC_Frame successfully")
-			streamblock_ret14['name'] = 'L2CP_MAC_Frame'
-			l2CP_stream_handle.append(streamblock_ret14)
-
-		streamblock_ret15 = sth.traffic_config(
-			mode='create',
-			port_handle=self.port_handle[src_port_handle_index],
-			l2_encap='ethernet_ii',
-			mac_src='00:10:94:00:00:02',
-			mac_dst='01:80:C2:00:00:DD',
-			enable_control_plane='0',
-			l3_length='110',
-			name='Provider_Bridge_MVRP_Address',
-			fill_type='constant',
-			fcs_error='0',
-			fill_value='0',
-			frame_size='128',
-			traffic_state='1',
-			high_speed_result_analysis='1',
-			length_mode='fixed',
-			tx_port_sending_traffic_to_self_en='false',
-			disable_signature='0',
-			enable_stream_only_gen='1',
-			pkts_per_burst='1',
-			inter_stream_gap_unit='bytes',
-			burst_loop_count='30',
-			transmit_mode='continuous',
-			inter_stream_gap='12',
-			rate_pps='9100');
-
-		status = streamblock_ret15['status']
-		if (status == '0'):
-			print("run sth.traffic_config failed")
-			print(streamblock_ret15)
-		else:
-			print("***** run sth.traffic_config Provider_Bridge_MVRP_Address successfully")
-			streamblock_ret15['name'] = 'Provider_Bridge_MVRP_Address'
-			l2CP_stream_handle.append(streamblock_ret15)
-		
 		return l2CP_stream_handle		
 	def Validate_Traffic_Result(self):
 
@@ -2063,9 +2099,9 @@ class Spirent_L2_Traffic_Gen:
 				time.sleep(5)
 		
 
-def Create_Spirent_L2_Gen(**kwargs):
-	Spirent_L2_Gen = Spirent_L2_Traffic_Gen (**kwargs)
-	return (Spirent_L2_Gen)
+# def Create_Spirent_L2_Gen(**kwargs):
+# 	Spirent_L2_Gen = Spirent_L2_Traffic_Gen (**kwargs)
+# 	return (Spirent_L2_Gen)
 
 #Spirent_InputParam = {'Ether_Speed':'ether1000', 'Stream_Name':'Spirent_Class_Test', 'Frame_Size':2000, 'Rate_Mbps': 100}
 
