@@ -1,4 +1,4 @@
-Flat_QOS: False # Boolean(True or False), if HQOS required Make it False, if Flat QOS is required, set as True.
+Flat_QOS: True # Boolean(True or False), if HQOS required Make it False, if Flat QOS is required, set as True.
 classify: PCP
 item: 2311 # item is used for VLAN, subinterface and many Other topics.
 service_BW: 1000000 # this is in Kbps.
@@ -43,13 +43,26 @@ site_list:
    device_type: "cisco_xr"
  - 
   main_interface: "Bundle-Ether112"
-  side: "L2PE_EP"
+  side: "L2PE_IP"
+  port_type: "P-type"
   Node_name: "AR11"
-  port_type: "F-type"
-  Local_MEP: 1
-  Remote_MEP: 2
   login: 
    host: "10.91.126.195"
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
+ - 
+  side: "CPE_EP"
+  Node_name: "LTS_144"
+  port_type: "P-type"
+  Uni_port: 8
+  Protected: "YES"
+  Nni_port: 5
+  Local_MEP: 1
+  Remote_MEP: 2
+  login: 
+   host: "10.91.243.144"
+   username: "admin"
+   password: "admin"
+   device_type: "accedian"
+   port: 22

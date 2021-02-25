@@ -114,7 +114,7 @@ def l2CP_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict):
         l2CP_stream_handle.append(StreamHandle1)
         l2CP_stream_handle.append(StreamHandle2)
         for i in range(len(l2CP_stream_handle[0])):
-            print(f"*** verify ccm transparancy for {l2CP_stream_handle[0][i]['name']} ***")
+            print(f"*** verify transparancy for {l2CP_stream_handle[0][i]['name']} ***")
             Spirent_L2_Gen.Generate_Stream_Traffic_timed(l2CP_stream_handle[0][i],l2CP_stream_handle[1][i],1)
             Spirent_L2_Gen.Traffic_Collection()
             l2cp_result['L2CP_{}'.format(l2CP_stream_handle[0][i]['name'])] = Spirent_L2_Gen.Validate_Traffic_Result2()['result']

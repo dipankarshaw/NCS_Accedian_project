@@ -18,6 +18,10 @@
 {% endif -%}
 {% if Flat_QOS -%}
     no policy-map {{service_BW}}-{{QOS_type}}_{{ item }}_DIP
+    {% if ELAN -%}
+        no policy-map SHAPE-{{service_BW}}_{{QOS_type}}_{{ item }}_DIP
+        no class-map {{QOS_type}}_Egress_{{ item }}_DIP
+    {% endif -%} 
 {% else -%}
     no policy-map P2P_PARENT_HQOS_INGRESS_{{ item }}_DIP
     no policy-map P2P_PARENT_HQOS_EGGRESS_{{ item }}_DIP

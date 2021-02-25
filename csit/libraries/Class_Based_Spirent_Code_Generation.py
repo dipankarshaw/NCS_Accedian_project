@@ -1065,13 +1065,14 @@ class Spirent_L2_Traffic_Gen:
 		##############################################################
 		# start to get the traffic results
 		##############################################################
+		time.sleep(2)
 		traffic_results_ret = sth.traffic_stats(
 			port_handle=self.port_handle,
 			mode='all');
 		print("**** Traffic collection completed")
-		status = traffic_results_ret['status']
-		if (status == '0'):
-			print("run sth.traffic_stats failed")
+		# status = traffic_results_ret['status']
+		# if (status == '0'):
+		# 	print("run sth.traffic_stats failed")
 		# pprint(traffic_results_ret)
 		self.traffic_result = traffic_results_ret	
 	def delete_streams_clear_counters(self):
@@ -1094,12 +1095,13 @@ class Spirent_L2_Traffic_Gen:
 			self.Rate_Mbps = kwargs['Rate_Mbps']
 		else:
 			self.Rate_Mbps = 100
+		# pprint(kwargs['MAC_Src'])
 		l2CP_stream_handle = []	
 		streamblock_ret1 = sth.traffic_config(
 			mode='create',
 			port_handle=self.port_handle[src_port_handle_index],
 			l2_encap='ethernet_ii',
-			mac_src='00:10:94:00:00:02',
+			mac_src= kwargs['MAC_Src'],
 			mac_dst='01:80:C2:00:00:02',
 			enable_control_plane='0',
 			l3_length='537',
@@ -1119,7 +1121,7 @@ class Spirent_L2_Traffic_Gen:
 			burst_loop_count='30',
 			transmit_mode='continuous',
 			inter_stream_gap='12',
-			rate_pps='9275');
+			rate_pps='1000');
 
 		status = streamblock_ret1['status']
 		if (status == '0'):
@@ -1134,7 +1136,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	mode='create',
 		# 	port_handle=self.port_handle[src_port_handle_index],
 		# 	l2_encap='ethernet_ii',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src= kwargs['MAC_Src'],
 		# 	ether_type='888E',
 		# 	mac_dst='01:80:C2:00:00:03',
 		# 	enable_control_plane='0',
@@ -1155,7 +1157,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9164');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret2['status']
 		# if (status == '0'):
@@ -1171,7 +1173,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	mode='create',
 		# 	port_handle=self.port_handle[src_port_handle_index],
 		# 	l2_encap='ethernet_ii',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src= kwargs['MAC_Src'],
 		# 	ether_type='88EE',
 		# 	mac_dst='01:80:C2:00:00:07',
 		# 	enable_control_plane='0',
@@ -1192,7 +1194,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9148');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret3['status']
 		# if (status == '0'):
@@ -1207,7 +1209,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	mode='create',
 		# 	port_handle=self.port_handle[src_port_handle_index],
 		# 	l2_encap='ethernet_ii',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src= kwargs['MAC_Src'],
 		# 	mac_dst='01:80:C2:00:00:0E',
 		# 	enable_control_plane='0',
 		# 	l3_length='982',
@@ -1227,7 +1229,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9199');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret4['status']
 		# if (status == '0'):
@@ -1244,7 +1246,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	mac_dst_mode='increment',
 		# 	mac_dst_repeat_count='0',
 		# 	mac_dst_count='16',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src= kwargs['MAC_Src'],
 		# 	mac_dst='01:80:C2:00:00:20',
 		# 	enable_control_plane='0',
 		# 	l3_length='537',
@@ -1264,7 +1266,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9147',
+		# 	rate_pps='1000',
 		# 	enable_stream='false');
 
 		# status = streamblock_ret5['status']
@@ -1281,7 +1283,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	mode='create',
 		# 	port_handle=self.port_handle[src_port_handle_index],
 		# 	l2_encap='ethernet_ii',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src= kwargs['MAC_Src'],
 		# 	mac_dst='01:80:C2:00:00:02',
 		# 	enable_control_plane='0',
 		# 	l3_length='138',
@@ -1301,7 +1303,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9203');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret6['status']
 		# if (status == '0'):
@@ -1333,7 +1335,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9100');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret7['status']
 		# if (status == '0'):
@@ -1374,7 +1376,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9116');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret8['status']
 		# if (status == '0'):
@@ -1389,7 +1391,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	mode='create',
 		# 	port_handle=self.port_handle[src_port_handle_index],
 		# 	l2_encap='ethernet_ii',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src= kwargs['MAC_Src'],
 		# 	ether_type='0802',
 		# 	mac_dst='01:00:0C:CC:CC:CC',
 		# 	enable_control_plane='0',
@@ -1410,7 +1412,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9223');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret9['status']
 		# if (status == '0'):
@@ -1442,7 +1444,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	ip_mbz='0',
 		# 	ip_precedence='0',
 		# 	ip_tos_field='0',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src= kwargs['MAC_Src'],
 		# 	ether_type='0800',
 		# 	mac_dst='01:00:5E:00:00:01',
 		# 	enable_control_plane='0',
@@ -1463,7 +1465,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9100',
+		# 	rate_pps='1000',
 		# 	mac_discovery_gw='192.85.1.1');
 
 		# status = streamblock_ret10['status']
@@ -1480,7 +1482,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	port_handle=self.port_handle[src_port_handle_index],
 		# 	l2_encap='ethernet_ii',
 		# 	custom_pattern='ABCDEFABCDEF',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src= kwargs['MAC_Src'],
 		# 	ether_type='0000',
 		# 	mac_dst='01:00:0C:00:00:01',
 		# 	enable_control_plane='0',
@@ -1501,7 +1503,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9100');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret11['status']
 		# if (status == '0'):
@@ -1512,47 +1514,11 @@ class Spirent_L2_Traffic_Gen:
 		# 	streamblock_ret11['name'] = 'Cisco_Inter_Switch_Protocol_(ISL)'
 		# 	l2CP_stream_handle.append(streamblock_ret11)
 
-		# streamblock_ret12 = sth.traffic_config(
-		# 	mode='create',
-		# 	port_handle=self.port_handle[src_port_handle_index],
-		# 	l2_encap='ethernet_ii',
-		# 	mac_src='00:10:94:00:00:02',
-		# 	ether_type='8902',
-		# 	mac_dst='01:80:C2:00:00:35',
-		# 	enable_control_plane='0',
-		# 	l3_length='537',
-		# 	name='SOAM_CCM_Level_5',
-		# 	fill_type='constant',
-		# 	fcs_error='0',
-		# 	fill_value='0',
-		# 	frame_size='555',
-		# 	traffic_state='1',
-		# 	high_speed_result_analysis='1',
-		# 	length_mode='fixed',
-		# 	tx_port_sending_traffic_to_self_en='false',
-		# 	disable_signature='0',
-		# 	enable_stream_only_gen='1',
-		# 	pkts_per_burst='1',
-		# 	inter_stream_gap_unit='bytes',
-		# 	burst_loop_count='30',
-		# 	transmit_mode='continuous',
-		# 	inter_stream_gap='12',
-		# 	rate_pps='9116');
-
-		# status = streamblock_ret12['status']
-		# if (status == '0'):
-		# 	print("run sth.traffic_config failed")
-		# 	print(streamblock_ret12)
-		# else:
-		# 	print("***** run sth.traffic_config SOAM_CCM_Level_5 successfully")
-		# 	streamblock_ret12['name'] = 'SOAM_CCM_Level_5'
-		# 	l2CP_stream_handle.append(streamblock_ret12)
-
 		# streamblock_ret13 = sth.traffic_config(
 		# 	mode='create',
 		# 	port_handle=self.port_handle[src_port_handle_index],
 		# 	l2_encap='ethernet_ii',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src=kwargs['MAC_Src'],
 		# 	mac_dst='01:80:C2:00:00:0E',
 		# 	enable_control_plane='0',
 		# 	l3_length='110',
@@ -1572,7 +1538,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9100');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret13['status']
 		# if (status == '0'):
@@ -1590,7 +1556,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	mac_dst_mode='increment',
 		# 	mac_dst_repeat_count='0',
 		# 	mac_dst_count='16',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src=kwargs['MAC_Src'],
 		# 	mac_dst='01:80:C2:00:00:00',
 		# 	enable_control_plane='0',
 		# 	l3_length='110',
@@ -1610,7 +1576,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9100',
+		# 	rate_pps='1000',
 		# 	enable_stream='false');
 
 		# status = streamblock_ret14['status']
@@ -1626,7 +1592,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	mode='create',
 		# 	port_handle=self.port_handle[src_port_handle_index],
 		# 	l2_encap='ethernet_ii',
-		# 	mac_src='00:10:94:00:00:02',
+		# 	mac_src=kwargs['MAC_Src'],
 		# 	mac_dst='01:80:C2:00:00:DD',
 		# 	enable_control_plane='0',
 		# 	l3_length='110',
@@ -1646,7 +1612,7 @@ class Spirent_L2_Traffic_Gen:
 		# 	burst_loop_count='30',
 		# 	transmit_mode='continuous',
 		# 	inter_stream_gap='12',
-		# 	rate_pps='9100');
+		# 	rate_pps='1000');
 
 		# status = streamblock_ret15['status']
 		# if (status == '0'):
@@ -1675,7 +1641,7 @@ class Spirent_L2_Traffic_Gen:
 				tx_port_sending_traffic_to_self_en = 'false',
 				disable_signature = '0',
 				enable_stream_only_gen = '1',
-				mac_src = '00:19:06:EA:B8:81',
+				mac_src =  kwargs['MAC_Src'],
 				mac_dst = '01:00:0C:CC:CC:CC',
 				pkts_per_burst = '1',
 				inter_stream_gap_unit = 'bytes',

@@ -13,19 +13,20 @@ from ttp import ttp
 file_path = os.path.dirname(os.path.realpath(__file__))
 result = {}
 
-def onnet_CCC(A,B,C,**kwargs):
+def onnet_CCC(A,B,C,D,**kwargs):
 
     print(f"!\n!!\n************** Test {A}{B}{C} type EP *************\n!!!")
     dict1 = yaml.load(open(file_path + '/../Topology/inputfile_CCC.yml'),Loader=yaml.Loader)
     qos_dict = yaml.load(open(file_path + '/../Topology/qos_class.yml'),Loader=yaml.Loader)
     dict1.update(qos_dict)
     pprint(kwargs)
-    dict1['site_list'][0]['port_type'],dict1['site_list'][1]['port_type'],dict1['site_list'][2]['port_type'] = f"{A}-type",f"{B}-type",f"{C}-type"
+    dict1['site_list'][0]['port_type'],dict1['site_list'][1]['port_type'],dict1['site_list'][2]['port_type'],dict1['site_list'][3]['port_type'] = f"{A}-type",f"{B}-type",f"{C}-type",f"{D}-type"
     if kwargs:
         dict1.update(kwargs)    
     my_config = Service(**dict1) ## create the object for service class.
     my_config.connect_nodes() ## connect the nodes.
     my_config.gather_facts() ## Update the dictionary with info from Nodes.
+    my_config.parse_accedian() ## perse accedian for MEG,MEP index
     my_config.SRTE_Config() ## do SRTE config via H-policy tool & attach the PW class to the Service.
     my_config.Command_Creation() ## create the commands to create and Delete service
     my_config.push_config() ## send the configs to the node.
@@ -35,7 +36,7 @@ def onnet_CCC(A,B,C,**kwargs):
     # test_result['ccm_status'] = my_config.Validate_ccm()  ## store CCM Test results.
     # test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
     # my_config.disconnect_nodes() ## release netmiko connection from NCS and Accedian.
-    input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
+    # input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
     # Spirent_L2_Gen = Spirent_L2_Traffic_Gen() ## create the spirent object.
     # Spirent_L2_Gen.Port_Init() # reserve the port.
     # test_result['ccm_transparency'] = ccm_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict) # perform ccm transparency test(same level and lower should not pass)
@@ -64,7 +65,7 @@ def onnet_CCC(A,B,C,**kwargs):
     my_config.disconnect_nodes() # release netmiko connection from NCS and Accedian.
     return test_result
 
-def onnet_CCC_delete(A,B,C,**kwargs):
+def onnet_CCC_delete(A,B,C,D,**kwargs):
 
     print(f"!\n!!\n************** Test {A}{B}{C} type EP *************\n!!!")
     dict1 = yaml.load(open(file_path + '/../Topology/inputfile_CCC.yml'),Loader=yaml.Loader)
@@ -72,7 +73,7 @@ def onnet_CCC_delete(A,B,C,**kwargs):
     dict1.update(qos_dict)
     if kwargs:
         dict1.update(kwargs)  
-    dict1['site_list'][0]['port_type'],dict1['site_list'][1]['port_type'],dict1['site_list'][2]['port_type'] = f"{A}-type",f"{B}-type",f"{C}-type"
+    dict1['site_list'][0]['port_type'],dict1['site_list'][1]['port_type'],dict1['site_list'][2]['port_type'],dict1['site_list'][3]['port_type'] = f"{A}-type",f"{B}-type",f"{C}-type",f"{D}-type"
     test_result = {}
     my_config = Service(**dict1)
     my_config.connect_nodes()
@@ -80,6 +81,6 @@ def onnet_CCC_delete(A,B,C,**kwargs):
     my_config.disconnect_nodes()
     return test_result
 
-result['FF'] = onnet_CCC_delete('F','F','F')
+result['FF'] = onnet_CCC_delete('F','F','F','F')
 pprint(result)
 

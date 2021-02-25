@@ -58,8 +58,8 @@
 {% endif -%}
 {% if ELAN -%}
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }}
-    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit maximum 100
-    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit action no-flood
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit maximum {{EVPN_MAC_limit}}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit action {{EVPN_MAC_limit_action}}
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mtu 9208
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} evi {{ 50000 + item|int }}
     evpn evi {{ 50000 + item|int }} advertise-mac
@@ -75,7 +75,7 @@
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }} storm-control broadcast kbps 20000
     {% endif -%}
 {% else -%}
-    l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} neighbor evpn evi {{ 50000 + item|int }} target {{ 50000 + item|int }} source {{ 50000 + item|int }}
+    l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} neighbor evpn evi {{ 50000 + item|int }} target {{ tar_evi }} source {{ src_evi }}
     {% if SRTE -%}
     pw-class {{pw_class}}
     {% endif -%}
@@ -119,6 +119,21 @@ evpn evi {{ 50000 + item|int }} bgp route-target export 8220001:{{ 50000 + item|
     !
     end-policy-map
     !
+    {% if ELAN -%}
+        interface {{ main_interface }}.{{ item }} l2transport service-policy output SHAPE-{{service_BW}}_{{QOS_type}}_{{ item }}_DIP
+        policy-map SHAPE-{{service_BW}}_{{QOS_type}}_{{ item }}_DIP
+        class {{QOS_type}}_Egress_{{ item }}_DIP
+        {% if 'Bundle' in main_interface -%}
+            shape average percent {{jinja_func.lag_13_per_extra_calc(service_BW,Lag_bw)}}
+        {% else -%}
+            shape average {{jinja_func.add_13_percent(service_BW,main_interface_bw)}} kbps
+        {% endif -%}
+        class class-default
+        end-policy-map
+        class-map match-any {{QOS_type}}_Egress_{{ item }}_DIP
+        match traffic-class {{TC}}
+        end-class-map
+    {% endif -%}  
 {% else -%}
     policy-map P2P_PARENT_HQOS_INGRESS_{{ item }}_DIP
     class class-default

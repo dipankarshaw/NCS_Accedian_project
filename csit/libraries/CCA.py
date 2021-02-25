@@ -49,7 +49,7 @@ def onnet_CCA(A,B,**kwargs):
     test_result,input_dict  = {},{} ## create a empty dictionary to hold results.
     test_result['ccm_status'] = my_config.Validate_ccm()
     # test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
-    test_result['Y1564_ext'] = my_config.Y1564_test_external('AR11','LTS_144')
+    # test_result['Y1564_ext'] = my_config.Y1564_test_external('AR11','LTS_144')
     # my_config.disconnect_nodes() ## release netmiko connection from NCS and Accedian.
     # input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
     # Spirent_L2_Gen = Create_Spirent_L2_Gen() ## create the spirent object.

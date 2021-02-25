@@ -50,6 +50,12 @@ class Jinja_user_func:
             return main_interface_bw
         else:
             return service_BW * 113 // 100
+    def add_13_percent(self,service_BW,main_interface_bw):
+        '''add 2 % extra bw in the Policy when 102 % of service BW is less than Main interface BW'''
+        if service_BW * 113 //100 >= main_interface_bw:
+            return main_interface_bw
+        else:
+            return service_BW * 113 // 100
     def lag_peak_percent_calc(self,service_BW,Lag_bw):
         ''' if percentage calculation of service BW w.r.t lag BW, comes in fraction then add move to next integer '''
         if service_BW * 100 % Lag_bw > 0:
@@ -75,7 +81,17 @@ class Jinja_user_func:
                 return row[2].value
             elif main_interface_bw == row[0].value and distributed_service_BW * percent // 100 > row[1].value and distributed_service_BW * percent // 100 < row[4].value:
                 return row[2].value       
-        
+    def lag_13_per_extra_calc(self,service_BW,Lag_bw):
+        ''' if 113 % of service BW is greater than LAG BW, then return what is service BW percentage of LAG BW
+        else, if 113 % of service BW comes to be an Float then Move to next Integer
+        else, return percentage of 113% of Service BW WRT LAG BW '''
+        if service_BW * 113 // 100 >= Lag_bw:
+            return service_BW * 100 // Lag_bw
+        else:
+            if service_BW * 113 % Lag_bw > 0:
+                return service_BW * 113 // Lag_bw + 1
+            else:
+                return service_BW * 113 // Lag_bw     
 
 
 
@@ -291,10 +307,7 @@ class Service:
                 olo['connect_obj'].commit()
                 olo['connect_obj'].exit_config_mode()               
     def Command_Creation(self):
-        self.data['wb'] = load_workbook(filename = file_path + '/QOS.xlsx',read_only=True)
-        for node in self.data["site_list"]:
-            if node['login']['device_type'] == 'cisco_xr':
-                node['UID'] = int(node['login']['host'].split('.')[-1])                        
+        self.data['wb'] = load_workbook(filename = file_path + '/QOS.xlsx',read_only=True)                        
         for create_delete in create_delete_list:
             for node in self.data["site_list"]:
                 with open(file_path + '/templates/create_xc_config_{}_{} copy.j2'.format(node["side"],create_delete),'r') as f:
@@ -422,11 +435,27 @@ class Service:
         self.set_CBS_EBS_for_flatQOS()
         self.get_UNI_NNI_port_speed()
         self.clear_voq_counters()
+        self.get_src_tar_evi()
     def get_version(self):
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr':
                 output = node['connect_obj'].send_command("show version",use_genie=True)
                 node['version'] = output['software_version']
+    def get_src_tar_evi(self):
+        for node in self.data["site_list"]:
+            if node['login']['device_type'] == 'cisco_xr':
+                node['UID'] = int(node['login']['host'].split('.')[-1])
+        if not self.data["ELAN"]:
+            for node in self.data["site_list"]:
+                if node['login']['device_type'] == 'cisco_xr':
+                    for rem_node in self.data["site_list"]:
+                        if rem_node['login']['device_type'] == 'cisco_xr':
+                            if node['Node_name'] == rem_node['Node_name']:
+                                pass
+                            else:                  
+                                node['src_evi'] = 50000 + self.data['item'] + node['UID']
+                                node['tar_evi'] = 50000 + self.data['item'] + rem_node['UID']         
+
     def clear_voq_counters(self):
         '''
         purpose is to clear the voq counters before the test.
@@ -517,8 +546,7 @@ class Service:
         for node in self.data["site_list"]:
             if node['login']['device_type'] == 'cisco_xr':
                 node['UID'] = int(node['login']['host'].split('.')[-1])
-            else:          
-                
+            else:                
                 print("****  Logged in node : {}".format(node['Node_name']))
                 node['index'] = {}
                 if node['Protected'] == 'YES':

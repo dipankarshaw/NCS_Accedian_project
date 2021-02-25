@@ -74,3 +74,5 @@ Pre_BM_CIR: 2
 Pre_BM_CIR_MAX: 2
 Nor_BM_CIR: 3
 Nor_BM_CIR_MAX: 5
+EVPN_MAC_limit_action: "no-flood"
+EVPN_MAC_limit: 300

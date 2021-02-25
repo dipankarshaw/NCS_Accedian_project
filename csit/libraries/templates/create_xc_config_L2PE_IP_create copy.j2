@@ -1,3 +1,20 @@
+{% if  QOS_type == 'Business3' -%}
+{% set TC = 3 -%}
+{% set EXP = 1 -%}
+{% elif QOS_type == 'Business1' -%}
+{% set TC = 5 -%}
+{% set EXP = 3 -%}
+{% elif QOS_type == 'Business2' -%}
+{% set TC = 4 -%}
+{% set EXP = 2 -%}
+{% elif QOS_type == 'Premium' -%}
+{% set TC = 6 -%}
+{% set EXP = 5 -%}
+{% elif QOS_type == 'Standard' -%}
+{% set TC = 2 -%}
+{% set EXP = 4 -%}
+{% else -%}
+{% endif -%}
 {% if OLO_type == 'U-OLO' -%}
     {% if olo_eth_type == 's-vlan' -%}
         {% set ethtag1 = 'dot1ad' -%}
@@ -52,17 +69,84 @@ interface {{ main_interface }}.{{ item }} l2transport
 interface {{ main_interface }}.{{ item }} l2transport service-policy input NNI-QOS-INGRESS
 interface {{ main_interface }}.{{ item }} l2transport service-policy output NNI-QOS-EGRESS
 {% if ELAN -%}
+    {% if Flat_QOS -%}
+        interface {{ main_interface }}.{{ item }} l2transport service-policy output SHAPE-{{service_BW}}_{{QOS_type}}_{{ item }}_DIP
+        policy-map SHAPE-{{service_BW}}_{{QOS_type}}_{{ item }}_DIP
+        class {{QOS_type}}_Egress_{{ item }}_DIP
+        {% if 'Bundle' in main_interface -%}
+            shape average percent {{jinja_func.lag_13_per_extra_calc(service_BW,Lag_bw)}}
+        {% else -%}
+            shape average {{jinja_func.add_13_percent(service_BW,main_interface_bw)}} kbps
+        {% endif -%}
+        class class-default
+        end-policy-map
+        class-map match-any {{QOS_type}}_Egress_{{ item }}_DIP
+        match traffic-class {{TC}}
+        end-class-map    
+    {% else -%}
+        interface {{ main_interface }}.{{ item }} l2transport service-policy output P2P_PARENT_HQOS_EGGRESS_{{ item }}_DIP account user-defined 26
+        policy-map P2P_PARENT_HQOS_EGGRESS_{{ item }}_DIP
+        class class-default
+        service-policy P2P_CHILD_HQOS_EGGRESS_{{ item }}_DIP
+        {% if 'Bundle' in main_interface -%}
+            shape average percent {{ jinja_func.lag_13_per_extra_calc(service_BW,Lag_bw) }}
+        {% else -%}
+            shape average {{jinja_func.add_13_percent(service_BW,main_interface_bw)}} kbps
+        {% endif -%}
+        end-policy-map
+        policy-map P2P_CHILD_HQOS_EGGRESS_{{ item }}_DIP
+        class Premium-TC6-{{ item }}_Egress
+        priority level 1
+        shape average percent 15
+        queue-limit 500 kbytes
+        class Business1-TC5-{{ item }}_Egress
+        priority level 2
+        shape average percent 30
+        queue-limit 500 kbytes
+        class Business2-TC4-{{ item }}_Egress
+        bandwidth percent 20
+        random-detect 5100 kbytes 6000 kbytes
+        class Business3-TC3-{{ item }}_Egress
+        bandwidth percent 20
+        random-detect 12750 kbytes 15000 kbytes
+        class Standard-CIR-TC2-{{ item }}_Egress
+        bandwidth percent 30
+        random-detect 3500 kbytes 5000 kbytes
+        class class-default
+        bandwidth percent 1
+        end-policy-map
+        class-map match-any Premium-TC6-{{ item }}_Egress
+        match traffic-class 6
+        end-class-map
+        class-map match-any Business1-TC5-{{ item }}_Egress
+        match traffic-class 5
+        end-class-map
+        class-map match-any Business2-TC4-{{ item }}_Egress
+        match traffic-class 4
+        end-class-map
+        class-map match-any Business3-TC3-{{ item }}_Egress
+        match traffic-class 3
+        end-class-map
+        class-map match-any Standard-CIR-TC2-{{ item }}_Egress
+        match traffic-class 2
+        end-class-map
+    {% endif -%}
+{% endif -%}
+{% if ELAN -%}
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }}
-    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit maximum 100
-    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit action no-flood
-    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mtu 1500
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit maximum {{EVPN_MAC_limit}}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mac limit action {{ EVPN_MAC_limit_action}}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} mtu 9208
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }}
     l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} evi {{ 50000 + item|int }}
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }} storm-control unknown-unicast kbps 20000
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }} storm-control multicast kbps 20000
+    l2vpn bridge group ALX_NCS_LE-{{ 100000 + item|int }} bridge-domain ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }} storm-control broadcast kbps 20000
     evpn evi {{ 50000 + item|int }} advertise-mac
 {% else -%}
     l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }}
     l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} interface {{ main_interface }}.{{ item }}
-    l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} neighbor evpn evi {{ 50000 + item|int }} target {{ 50000 + item|int }} source {{ 50000 + item|int }}
+    l2vpn xconnect group ALX_NCS_LE-{{ 100000 + item|int }} p2p ALX_NCS_LE-{{ 100000 + item|int }} neighbor evpn evi {{ 50000 + item|int }} target {{ tar_evi }} source {{ src_evi }}
     {% if SRTE -%}
     pw-class {{pw_class}}
     {% endif -%}
