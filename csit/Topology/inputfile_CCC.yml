@@ -1,7 +1,7 @@
-Flat_QOS: True # Boolean(True or False), if HQOS required Make it False, if Flat QOS is required, set as True.
+Flat_QOS: False # Boolean(True or False), if HQOS required Make it False, if Flat QOS is required, set as True.
 classify: PCP
 item: 2311 # item is used for VLAN, subinterface and many Other topics.
-service_BW: 1000000 # this is in Kbps.
+service_BW: 10000000 # this is in Kbps.
 MEG_level: 5 # SET MD level of the service.
 QOS_type: "Business2" # Possible values are Premium,Standard,Business2,Business1,Business3
 colt_vlan_ethType: "s-vlan"
@@ -18,14 +18,14 @@ Y1564_cisco_emix: True # this is Boolean, if FIX Frame size test Required, then 
 Y1564_frame_size: 64 # IF Y1564_cisco_emix == False, then this Frame size will be used for Y1564 Test.
 site_list: 
  - 
-  main_interface: "TenGigE0/0/0/5"
+  main_interface: "Bundle-Ether112"
   side: "L2PE_EP"
-  Node_name: "AR15"
+  Node_name: "AR11"
   port_type: "F-type"
-  Local_MEP: 2
-  Remote_MEP: 1
+  Local_MEP: 1
+  Remote_MEP: 2
   login: 
-   host: "10.91.126.201"
+   host: "10.91.126.195"
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
@@ -34,35 +34,47 @@ site_list:
   side: "L2PE_EP"
   Node_name: "AR5"
   port_type: "F-type"
-  Local_MEP: 1
-  Remote_MEP: 2
+  Local_MEP: 2
+  Remote_MEP: 1
   login: 
    host: "10.91.126.115"
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
  - 
-  main_interface: "Bundle-Ether112"
-  side: "L2PE_IP"
-  port_type: "P-type"
-  Node_name: "AR11"
-  login: 
-   host: "10.91.126.195"
-   username: "dshaw1"
-   password: "N0@ught33b0y"
-   device_type: "cisco_xr"
- - 
-  side: "CPE_EP"
-  Node_name: "LTS_144"
-  port_type: "P-type"
-  Uni_port: 8
-  Protected: "YES"
-  Nni_port: 5
+  main_interface: "TenGigE0/0/0/5"
+  side: "L2PE_EP"
+  Node_name: "AR15"
+  port_type: "F-type"
   Local_MEP: 1
   Remote_MEP: 2
   login: 
-   host: "10.91.243.144"
-   username: "admin"
-   password: "admin"
-   device_type: "accedian"
-   port: 22
+   host: "10.91.126.201"
+   username: "dshaw1"
+   password: "N0@ught33b0y"
+   device_type: "cisco_xr"
+#  - 
+#   main_interface: "Bundle-Ether112"
+#   side: "L2PE_IP"
+#   port_type: "F-type"
+#   Node_name: "AR11"
+#   login: 
+#    host: "10.91.126.195"
+#    username: "dshaw1"
+#    password: "N0@ught33b0y"
+#    device_type: "cisco_xr"
+#  - 
+#   side: "CPE_EP"
+#   Node_name: "LTS_144"
+#   port_type: "F-type"
+#   Uni_port: 8
+#   Protected: "YES"
+#   Nni_port: 5
+#   Local_MEP: 1
+#   Remote_MEP: 2
+#   login: 
+#    host: "10.91.243.144"
+#    username: "admin"
+#    password: "admin"
+#    device_type: "accedian"
+#    port: 22

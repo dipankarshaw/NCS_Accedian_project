@@ -70,7 +70,7 @@ interface {{ main_interface }}.{{ item }} l2transport service-policy input NNI-Q
 interface {{ main_interface }}.{{ item }} l2transport service-policy output NNI-QOS-EGRESS
 {% if ELAN -%}
     {% if Flat_QOS -%}
-        interface {{ main_interface }}.{{ item }} l2transport service-policy output SHAPE-{{service_BW}}_{{QOS_type}}_{{ item }}_DIP
+        interface {{ main_interface }}.{{ item }} l2transport service-policy output SHAPE-{{service_BW}}_{{QOS_type}}_{{ item }}_DIP account user-defined 26
         policy-map SHAPE-{{service_BW}}_{{QOS_type}}_{{ item }}_DIP
         class {{QOS_type}}_Egress_{{ item }}_DIP
         {% if 'Bundle' in main_interface -%}

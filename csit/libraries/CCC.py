@@ -13,14 +13,14 @@ from ttp import ttp
 file_path = os.path.dirname(os.path.realpath(__file__))
 result = {}
 
-def onnet_CCC(A,B,C,D,**kwargs):
+def onnet_CCC(A,B,C,**kwargs):
 
     print(f"!\n!!\n************** Test {A}{B}{C} type EP *************\n!!!")
     dict1 = yaml.load(open(file_path + '/../Topology/inputfile_CCC.yml'),Loader=yaml.Loader)
     qos_dict = yaml.load(open(file_path + '/../Topology/qos_class.yml'),Loader=yaml.Loader)
     dict1.update(qos_dict)
     pprint(kwargs)
-    dict1['site_list'][0]['port_type'],dict1['site_list'][1]['port_type'],dict1['site_list'][2]['port_type'],dict1['site_list'][3]['port_type'] = f"{A}-type",f"{B}-type",f"{C}-type",f"{D}-type"
+    dict1['site_list'][0]['port_type'],dict1['site_list'][1]['port_type'],dict1['site_list'][2]['port_type'] = f"{A}-type",f"{B}-type",f"{C}-type"
     if kwargs:
         dict1.update(kwargs)    
     my_config = Service(**dict1) ## create the object for service class.
@@ -65,7 +65,7 @@ def onnet_CCC(A,B,C,D,**kwargs):
     my_config.disconnect_nodes() # release netmiko connection from NCS and Accedian.
     return test_result
 
-def onnet_CCC_delete(A,B,C,D,**kwargs):
+def onnet_CCC_delete(A,B,C,**kwargs):
 
     print(f"!\n!!\n************** Test {A}{B}{C} type EP *************\n!!!")
     dict1 = yaml.load(open(file_path + '/../Topology/inputfile_CCC.yml'),Loader=yaml.Loader)
@@ -73,7 +73,7 @@ def onnet_CCC_delete(A,B,C,D,**kwargs):
     dict1.update(qos_dict)
     if kwargs:
         dict1.update(kwargs)  
-    dict1['site_list'][0]['port_type'],dict1['site_list'][1]['port_type'],dict1['site_list'][2]['port_type'],dict1['site_list'][3]['port_type'] = f"{A}-type",f"{B}-type",f"{C}-type",f"{D}-type"
+    dict1['site_list'][0]['port_type'],dict1['site_list'][1]['port_type'],dict1['site_list'][2]['port_type'] = f"{A}-type",f"{B}-type",f"{C}-type"
     test_result = {}
     my_config = Service(**dict1)
     my_config.connect_nodes()
@@ -81,6 +81,6 @@ def onnet_CCC_delete(A,B,C,D,**kwargs):
     my_config.disconnect_nodes()
     return test_result
 
-result['FF'] = onnet_CCC_delete('F','F','F','F')
+result['FF'] = onnet_CCC_delete('F','F','F')
 pprint(result)
 

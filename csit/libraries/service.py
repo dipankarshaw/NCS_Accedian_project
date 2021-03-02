@@ -572,7 +572,7 @@ class Service:
                 print("****  persing completed on {}".format(node['Node_name']))
                 print(node['index'])
 
-        return node['index']
+        # return node['index']
     def Validate_ccm(self):
         ''' Purpose:
         - to Check CCM status on Accedian

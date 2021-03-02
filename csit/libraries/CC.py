@@ -35,11 +35,11 @@ def onnet_CC(A,B,**kwargs):
     test_result['ccm_status'] = my_config.Validate_ccm()  ## store CCM Test results.
     # test_result['Y1564'] = my_config.Y1564_test() ## perform Y1564 test on Cisco(7.1.2) to Cisco, Acc to Acc, or Acc to Cisco
     # my_config.disconnect_nodes() ## release netmiko connection from NCS and Accedian.
-    input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
-    Spirent_L2_Gen = Spirent_L2_Traffic_Gen() ## create the spirent object.
-    Spirent_L2_Gen.Port_Init() # reserve the port.
+    # input_dict = my_config.create_spirent_input_dict() # create the required dictionary for spirent Traffic.
+    # Spirent_L2_Gen = Spirent_L2_Traffic_Gen() ## create the spirent object.
+    # Spirent_L2_Gen.Port_Init() # reserve the port.
     # test_result['ccm_transparency'] = ccm_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict) # perform ccm transparency test(same level and lower should not pass)
-    test_result['l2CP'] = l2CP_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict) # perform L2CP test for P,PL EP's
+    # test_result['l2CP'] = l2CP_transparency_test(A,B,my_config,Spirent_L2_Gen,**input_dict) # perform L2CP test for P,PL EP's
     # test_result['UC_traffic'] = UC_BC_MC_test(A,B,'UC',Spirent_L2_Gen,**input_dict) # test Known Unicast Traffic.
     # test_result['BC_traffic'] = UC_BC_MC_test(A,B,'BC',Spirent_L2_Gen,**input_dict) # test Broadcast Traffic.
     # test_result['MC_traffic'] = UC_BC_MC_test(A,B,'MC',Spirent_L2_Gen,**input_dict) # test Multicast Traffic.
@@ -52,10 +52,10 @@ def onnet_CC(A,B,**kwargs):
     #test_result['rfc_tput_test'] = Spirent_L2_Gen.rfc_2544_throughput_test(rfc_stream_handle[0],rfc_stream_handle[1])
     # test_result['rfc_b2b_test'] = Spirent_L2_Gen.rfc_2544_backtoback_test(rfc_stream_handle[0],rfc_stream_handle[1])
     # test_result['rfc_latency_test'] = Spirent_L2_Gen.rfc_2544_latency_test(rfc_stream_handle[0],rfc_stream_handle[1])
-    Spirent_L2_Gen.delete_streams_clear_counters() # delete all the spirent streams and clear all counters.
+    # Spirent_L2_Gen.delete_streams_clear_counters() # delete all the spirent streams and clear all counters.
     # my_config.connect_nodes() ## connect the nodes.
     # my_config.check_Mac_table() ## Just prints the MAC table ( no Validation added.)
-    Spirent_L2_Gen.Clean_Up_Spirent() ## Clean UP Spirent.
+    # Spirent_L2_Gen.Clean_Up_Spirent() ## Clean UP Spirent.
     # test_result['CFM_Stats_cisco'] = my_config.mep_statistic_cisco() # Check CCM,DM,SL statistics on NCS
     test_result['Polier_drop'] = my_config.check_QOS_counters_config() # Check drops on the input Policy.
     test_result['Polier_CIR'] = my_config.check_QOS_configured_CIR()
@@ -83,7 +83,7 @@ def onnet_CC_delete(A,B,**kwargs):
 
 # result['FF'] = onnet_CC('F','F')
 # result['XX'] = onnet_CC('X','X')
-result['PP'] = onnet_CC('P','P')
+result['PP'] = onnet_CC_delete('P','P')
 # result['XP'] = onnet_CC('X','P')
 # result['PX'] = onnet_CC('P','X')
 # result['FY'] = onnet_CC('F','Y')

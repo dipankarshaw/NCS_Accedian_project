@@ -10,10 +10,10 @@ olo_eth_type: "s-vlan"
 config_test: 1 # Duration in Seconds, for Y-1564 step test from Accedian.
 performance_test: 1 # Duration in Minutes, for Y-1564 Test from Accedian.
 STP_percentage: 50 # How much percent of service_BW, STP traffic is required?
-ELAN: True # Boolean(True or False), if ELAN required Make it True, if ELINE is required, set as False
+ELAN: False # Boolean(True or False), if ELAN required Make it True, if ELINE is required, set as False
 OLO_type: "P-OLO"
 olo_vlan: 2501
-SRTE: False # This is Boolean, set True if u need an SRTE Policy.
+SRTE: True # This is Boolean, set True if u need an SRTE Policy.
 Y1564_cisco_emix: True # this is Boolean, if FIX Frame size test Required, then Make it False.
 Y1564_frame_size: 64 # IF Y1564_cisco_emix == False, then this Frame size will be used for Y1564 Test.
 site_list: 
@@ -30,14 +30,14 @@ site_list:
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
  - 
-  main_interface: "TenGigE0/0/0/5"
+  main_interface: "HundredGigE0/0/0/2"
   side: "L2PE_EP"
-  Node_name: "AR15"
+  Node_name: "SR4"
   port_type: "F-type"
   Local_MEP: 1
   Remote_MEP: 2
   login: 
-   host: "10.91.126.201"
+   host: "10.91.126.104"
    username: "dshaw1"
    password: "N0@ught33b0y"
    device_type: "cisco_xr"
